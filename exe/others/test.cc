@@ -1,7 +1,7 @@
 #include "Math/Functor.h"
 #include <functional>
 
-double function(const double* a,bool b){
+double function(const double* a){
   return a[0];
 }
 
@@ -19,7 +19,7 @@ wrapped_function_test::wrapped_function_test(bool b)
   : b(b){}
 
 double wrapped_function_test::f(const double* a){
-  return function(a,b);
+  return function(a);
 }
 
 int main(){
