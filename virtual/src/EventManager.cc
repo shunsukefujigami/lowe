@@ -15,11 +15,13 @@ void EventManager::SetParameters()
   loop1manager->SetParameters();
 }
 
-void EventManager::ProcessOneEvent(VEvent* event)
+void EventManager::ProcessOneEvent(std::shared_ptr<VEvent> event)
 {
   currentevent = event;
-  eventaction->BeginOfEventAction(currentevent);
+  if(eventaction)
+    eventaction->BeginOfEventAction(currentevent);
   Doprocess();
-  eventaction->EndOfEventAction(currentevent);
+  if(eventaction)
+    eventaction->EndOfEventAction(currentevent);
 }
 

@@ -1,5 +1,7 @@
 #ifndef LIKELIHOODDIRECTIONRUNACTION_HH
 #define LIKELIHOODDIRECTIONRUNACTION_HH
+// c++ STL
+#include <memory>
 // ROOT library
 #include <TFile.h>
 #include <TTree.h>
@@ -16,8 +18,8 @@ public:
   virtual ~LikelihoodDirectionRunAction()
   {
   }
-  void BeginOfRunAction(VRun* run);
-  void EndOfRunAction(VRun* run);
+  void BeginOfRunAction(std::shared_ptr<VRun> run);
+  void EndOfRunAction(std::shared_ptr<VRun> run);
   l_dir_data* GetLikelihoodDirectiondata()
   {
     return data;

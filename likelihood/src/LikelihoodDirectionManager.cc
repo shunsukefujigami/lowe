@@ -36,9 +36,9 @@ LikelihoodDirectionManager::LikelihoodDirectionManager(const char* infiledata,co
   optionT = (TTree*)gfile->Get("optionT");
   optionT->GetEntry(0);
   Nevents = goodnessT->GetEntries();
-  run = new VRun();
+  run = std::make_shared<LikelihoodDirectionRun>();
   run->SetnumberOfEvent(Nevents);
-  eventmanager = new LikelihoodDirectionEventManager();
+  eventmanager.reset(new LikelihoodDirectionEventManager());
   std::cout << "input file data is below" << std::endl;
   dfile->Print();
   gfile->Print();
@@ -58,10 +58,6 @@ LikelihoodDirectionManager::~LikelihoodDirectionManager()
     delete gfile;
   if(goodnessdata)
     delete goodnessdata;
-  if(run)
-    delete run;
-  if(eventmanager)
-    delete eventmanager;
 }
 
 void LikelihoodDirectionManager::SetParameters()
@@ -73,14 +69,13 @@ void LikelihoodDirectionManager::ProcessOneEvent(int i_event)
 {
   wcsimT->GetEntry(i_event);
   goodnessT->GetEntry(i_event);
-  currentevent = new LikelihoodDirectionEvent(i_event);
+  currentevent = std::make_shared<LikelihoodDirectionEvent>(i_event);
   double x = goodnessdata->GetX();
   double y = goodnessdata->GetY();
   double z = goodnessdata->GetZ();
   double t = goodnessdata->GetT();
   CLHEP::HepLorentzVector fitted4vector;
   fitted4vector.set(x,y,z,t);
-  (dynamic_cast<LikelihoodDirectionEvent*>(currentevent))->Setfitted4Vector(fitted4vector);
+  (std::dynamic_pointer_cast<LikelihoodDirectionEvent>(currentevent))->Setfitted4Vector(fitted4vector);
   eventmanager->ProcessOneEvent(currentevent);
-  delete currentevent;
 }

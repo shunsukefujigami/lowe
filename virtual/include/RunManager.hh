@@ -1,6 +1,7 @@
 #ifndef RUNMANAGER_HH
 #define RUNMANAGER_HH
-
+// c++ STL
+#include <memory>
 // self-introduced library
 #include "VParameters.hh"
 #include "EventManager.hh"
@@ -17,52 +18,42 @@ public:
   void Run(int Nevent);
   virtual void SetParameters();
   virtual void ProcessOneEvent(int i_event);
-  void SetEventManager(EventManager* manager)
-  {
-    eventmanager = manager;
-  }
-  void SetLoop1Manager(VLoop1Manager* manager)
-  {
-    eventmanager->SetLoop1Manager(manager);
-  }
-  void SetLoop2Manager(VLoop2Manager* manager)
-  {
-    eventmanager->SetLoop2Manager(manager);
-  }
-  
-  VParameters* GetParameters()
+  std::shared_ptr<VParameters> GetParameters()
   {
     return parameters;
   }
-  void SetVParameters(VParameters* para)
+  void SetVParameters(std::shared_ptr<VParameters> para)
   {
     parameters = para;
   }
-  void SetRunAction(VRunAction* action)
+  void SetRunAction(std::shared_ptr<VRunAction> action)
   {
     runaction = action;
   }
-  void SetEventAction(VEventAction* action)
+  void SetEventAction(std::shared_ptr<VEventAction> action)
   {
     eventmanager->SetEventAction(action);
+    eventaction = action;
   }
-  void SetLoop1Action(VLoop1Action* action)
+  void SetLoop1Action(std::shared_ptr<VLoop1Action> action)
   {
     eventmanager->SetLoop1Action(action);
+    loop1action = action;
   }
-  void SetLoop2Action(VLoop2Action* action)
+  void SetLoop2Action(std::shared_ptr<VLoop2Action> action)
   {
     eventmanager->SetLoop2Action(action);
+    loop2action = action;
   }
 protected:
-  EventManager* eventmanager = nullptr;
-  VParameters* parameters = nullptr;
-  VRunAction* runaction = nullptr;
-  VEventAction* eventaction = nullptr;
-  VLoop1Action* loop1action = nullptr;
-  VLoop2Action* loop2action = nullptr;
-  VRun* run = nullptr;
-  VEvent* currentevent = nullptr;
+  std::unique_ptr<EventManager> eventmanager = nullptr;
+  std::shared_ptr<VParameters> parameters = nullptr;
+  std::shared_ptr<VRunAction> runaction = nullptr;
+  std::shared_ptr<VEventAction> eventaction = nullptr;
+  std::shared_ptr<VLoop1Action> loop1action = nullptr;
+  std::shared_ptr<VLoop2Action> loop2action = nullptr;
+  std::shared_ptr<VRun> run = nullptr;
+  std::shared_ptr<VEvent> currentevent = nullptr;
   int Nevents;
 };
 

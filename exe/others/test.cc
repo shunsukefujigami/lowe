@@ -1,30 +1,13 @@
-#include "Math/Functor.h"
-#include <functional>
+#include "FileList.hh"
+#include "MultiRunAnalizeManager.hh"
 
-double function(const double* a){
-  return a[0];
-}
-
-class wrapped_function_test
+int main()
 {
-public:
-  wrapped_function_test(bool b);
-  virtual ~wrapped_function_test(){};
-  double f(const double* a);
-private:
-  bool b;
-};
-
-wrapped_function_test::wrapped_function_test(bool b)
-  : b(b){}
-
-double wrapped_function_test::f(const double* a){
-  return function(a);
-}
-
-int main(){
-  wrapped_function_test func(true);
-  //  std::function<double(double*)> func = std::bind(function,std::placeholders::_1,b);
-  ROOT::Math::Functor f(&func,&wrapped_function_test::f,1);
+  FileList* dfilelist = new FileList("/home/fujigami/retro/lowe/filelist/wcsim_on_retro_threshold24_electron_5MeV_10000event_minus100cm_reflectivity.txt",11);
+  MultiRunAnalizeManager* mram = new MultiRunAnalizeManager(dfilelist,11);
+  delete mram;
+  delete dfilelist;
   return 0;
 }
+
+  

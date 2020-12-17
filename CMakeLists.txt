@@ -16,6 +16,8 @@ endif()
 include(${ROOT_USE_FILE})
 include_directories($ENV{WCSIMDIR}/include ${ROOT_INCLUDE_DIRS})
 set(CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
+set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 
 ROOT_GENERATE_DICTIONARY($ENV{MACRODIR}/src/macroRootDict $ENV{MACRODIR}/include/eventdisplay.hh $ENV{MACRODIR}/include/goodness_data.hh $ENV{MACRODIR}/include/likelihood_direction_data.hh $ENV{MACRODIR}/include/AnalizedData.hh $ENV{MACRODIR}/include/CSearch_range.hh LINKDEF $ENV{MACRODIR}/include/C4Number.hh $ENV{MACRODIR}/include/FileList.hh $ENV{MACRODIR}/include/efficiency.hh $ENV{MACRODIR}/include/HistByTree.hh $ENV{MACRODIR}/include/HistError.hh $ENV{MACRODIR}/include/HistBias.hh $ENV{MACRODIR}/include/MultiRunAnalizeManager.hh $ENV{MACRODIR}/include/OneRunAnalizeManager.hh $ENV{MACRODIR}/include/AngleRange.hh macro/include/macroRootLinkDef.hh)
 
@@ -126,8 +128,17 @@ target_compile_options(N200 PRIVATE "-Wall")
 target_link_libraries(N200 lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
 
 add_executable(test1 ./exe/others/test.cc)
+
+# Google Performance Analyzer
+if (USE_PERF)
+   find_library(GPERFTOOLS_LIBRARIES NAMES profiler HINTS $ENV{GPERFTOOLS})
+   target_link_libraries (test1 ${GPERFTOOLS_LIBRARIES})
+   message (STATUS "USE_PERF=${USE_PERF}")
+   message (STATUS "GPERFTOOLS_LIBRARIES=${GPERFTOOLS_LIBRARIES}")
+endif (USE_PERF)
+
 target_compile_options(test1 PRIVATE "-Wall")
-target_link_libraries(test1 ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
+target_link_libraries(test1 lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
 
 add_executable(likelihood_direction_grid_search_exe ./exe/likelihood/likelihood_direction_grid_search_exe.cc)
 target_compile_options(likelihood_direction_grid_search_exe PRIVATE "-Wall")

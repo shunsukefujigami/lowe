@@ -1,10 +1,10 @@
 #include "VEventAction.hh"
 
-void VEventAction::BeginOfEventAction(VEvent*)
+void VEventAction::BeginOfEventAction(std::shared_ptr<VEvent>)
 {
 }
 
-void VEventAction::EndOfEventAction(VEvent*)
+void VEventAction::EndOfEventAction(std::shared_ptr<VEvent>)
 {
 }
 

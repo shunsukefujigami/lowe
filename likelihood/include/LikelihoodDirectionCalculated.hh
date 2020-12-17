@@ -47,7 +47,7 @@ public:
   }
   
   
-  void AddLikelihoodDirection(OneLikelihoodDirectionCalculated* onelikelihooddirectioncalculated)
+  void AddLikelihoodDirection(std::shared_ptr<OneLikelihoodDirectionCalculated> onelikelihooddirectioncalculated)
   {
     likelihood += onelikelihooddirectioncalculated->GetLikelihood();
   }

@@ -11,17 +11,16 @@
 
 LikelihoodDirectionEventManager::LikelihoodDirectionEventManager()
 {
-  loop1manager = new LikelihoodDirectionCalculateManager();
+  loop1manager = std::make_shared<LikelihoodDirectionCalculateManager>();
 }
 
 LikelihoodDirectionEventManager::~LikelihoodDirectionEventManager()
 {
-  delete loop1manager;
 }
 
 void LikelihoodDirectionEventManager::SetParameters()
 {
-  range = dynamic_cast<LikelihoodDirectionParameters*>(LikelihoodDirectionManager::GetLikelihoodDirectionManager()->GetParameters())->GetAngleRange();
+  range = std::dynamic_pointer_cast<LikelihoodDirectionParameters>(LikelihoodDirectionManager::GetLikelihoodDirectionManager()->GetParameters())->GetAngleRange();
   loop1manager->SetParameters();
 }
 
@@ -43,17 +42,16 @@ void LikelihoodDirectionEventManager::Doprocess()
 
 void LikelihoodDirectionEventManager::Doloopin(CLHEP::Hep3Vector hvector)
 {
-  LikelihoodDirectionCalculated* likelihooddirectioncalculated = new LikelihoodDirectionCalculated();
+  std::shared_ptr<LikelihoodDirectionCalculated> likelihooddirectioncalculated = std::make_shared<LikelihoodDirectionCalculated>();
   likelihooddirectioncalculated->SetLikelihood(0.);
   likelihooddirectioncalculated->Set3Vector(hvector);
-  likelihooddirectioncalculated->Setfitted4Vector((dynamic_cast<LikelihoodDirectionEvent*>(currentevent))->Getfitted4Vector());
+  likelihooddirectioncalculated->Setfitted4Vector((std::dynamic_pointer_cast<LikelihoodDirectionEvent>(currentevent))->Getfitted4Vector());
   loop1manager->DoProcess(likelihooddirectioncalculated);
   double likelihood = likelihooddirectioncalculated->GetLikelihood();
-  if((dynamic_cast<LikelihoodDirectionEvent*>(currentevent))->Getlikelihood() < likelihood)
+  if((std::dynamic_pointer_cast<LikelihoodDirectionEvent>(currentevent))->Getlikelihood() < likelihood)
     {
-      (dynamic_cast<LikelihoodDirectionEvent*>(currentevent))->Setlikelihood(likelihood);
-      (dynamic_cast<LikelihoodDirectionEvent*>(currentevent))->Set3Vector(hvector);
+      (std::dynamic_pointer_cast<LikelihoodDirectionEvent>(currentevent))->Setlikelihood(likelihood);
+      (std::dynamic_pointer_cast<LikelihoodDirectionEvent>(currentevent))->Set3Vector(hvector);
     }
-  delete likelihooddirectioncalculated;
 }
 

@@ -1,6 +1,7 @@
 #ifndef LIKELIHOODDIRECTIONEVENTACTION_HH
 #define LIKELIHOODDIRECTIONEVENTACTION_HH
-
+// c++ STL
+#include <memory>
 // self introduced library
 #include "VEventAction.hh"
 #include "VEvent.hh"
@@ -9,16 +10,17 @@
 class LikelihoodDirectionEventAction : public VEventAction
 {
 public:
-  LikelihoodDirectionEventAction(LikelihoodDirectionRunAction* action)
-    :likelihooddirectionrunaction(action)
-  {}
+  LikelihoodDirectionEventAction(std::shared_ptr<LikelihoodDirectionRunAction> action)
+  {
+    likelihooddirectionrunaction = action;
+  }
   virtual ~LikelihoodDirectionEventAction()
   {
   }
-  void BeginOfEventAction(VEvent*){};
-  void EndOfEventAction(VEvent* event);
+  void BeginOfEventAction(std::shared_ptr<VEvent>){};
+  void EndOfEventAction(std::shared_ptr<VEvent> event);
 private:
-  LikelihoodDirectionRunAction* likelihooddirectionrunaction = nullptr;
+  std::shared_ptr<LikelihoodDirectionRunAction> likelihooddirectionrunaction = nullptr;
 };
 
 #endif

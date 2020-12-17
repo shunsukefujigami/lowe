@@ -8,20 +8,20 @@ LikelihoodDirectionRunAction::LikelihoodDirectionRunAction(const char* outfile_i
 }
 
 
-void LikelihoodDirectionRunAction::BeginOfRunAction(VRun*)
+void LikelihoodDirectionRunAction::BeginOfRunAction(std::shared_ptr<VRun>)
 {
   file = new TFile(outfile,"recreate","Likelihood ROOT File");
   likelihoodtree = new TTree("likelihoodT","LikelihoodData Tree");
   optiontree = new TTree("loptionT","LikelihoodOption Tree");
   data = new l_dir_data();
   likelihoodtree->Branch("likelihooddata",&data);
-  AngleRange rangein = (dynamic_cast<LikelihoodDirectionParameters*>(LikelihoodDirectionManager::GetLikelihoodDirectionManager()->GetParameters()))->GetAngleRange();
+  AngleRange rangein = (std::dynamic_pointer_cast<LikelihoodDirectionParameters>(LikelihoodDirectionManager::GetLikelihoodDirectionManager()->GetParameters()))->GetAngleRange();
   range = new AngleRange();
   optiontree->Branch("anglerange",&range);
   range->Setrange(rangein);
   optiontree->Fill();
 }
-void LikelihoodDirectionRunAction::EndOfRunAction(VRun*)
+void LikelihoodDirectionRunAction::EndOfRunAction(std::shared_ptr<VRun>)
 {
   std::cout << "End of RunAction" << std::endl;
   file->Write();

@@ -17,11 +17,13 @@ void VLoop1Manager::SetParameters()
   loop2manager->SetParameters();
 }
 
-void VLoop1Manager::DoProcess(VLoop1* loop1)
+void VLoop1Manager::DoProcess(std::shared_ptr<VLoop1> loop1)
 {
   currentloop1 = loop1;
-  loop1action->BeginOfLoop1Action(currentloop1);
+  if(loop1action)
+    loop1action->BeginOfLoop1Action(currentloop1);
   Doloop();
-  loop1action->EndOfLoop1Action(currentloop1);
+  if(loop1action)
+    loop1action->EndOfLoop1Action(currentloop1);
 }
 

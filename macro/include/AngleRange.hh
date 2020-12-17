@@ -58,6 +58,15 @@ public:
   {
     phinum = num;
   }
+  double GetCosthetamax() const
+  {
+    return (costhetamin + (costhetanum - 1)* costhetawidth);
+  }
+  double GetPhimax() const 
+  {
+    return (phimin + (phinum -1 )* phiwidth);
+  }
+  
   
 private:
   double costhetamin;

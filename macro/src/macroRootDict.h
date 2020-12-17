@@ -123,7 +123,7 @@ extern G__linked_taginfo G__macroRootDictLN_vectorlEfloatcOallocatorlEfloatgRsPg
 extern G__linked_taginfo G__macroRootDictLN_reverse_iteratorlEvectorlEfloatcOallocatorlEfloatgRsPgRcLcLiteratorgR;
 extern G__linked_taginfo G__macroRootDictLN_WCSimRootEvent;
 extern G__linked_taginfo G__macroRootDictLN_WCSimRootGeom;
-extern G__linked_taginfo G__macroRootDictLN_OneRunAnalizeManager;
 extern G__linked_taginfo G__macroRootDictLN_AngleRange;
+extern G__linked_taginfo G__macroRootDictLN_OneRunAnalizeManager;
 
 /* STUB derived class for protected member access */

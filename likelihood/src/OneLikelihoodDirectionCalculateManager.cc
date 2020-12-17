@@ -1,6 +1,7 @@
 // c++ STL
 #include <iostream>
 #include <cmath>
+#include <memory>
 // geant4 library
 #include <CLHEP/Vector/LorentzVector.h>
 #include <CLHEP/Vector/ThreeVector.h>
@@ -21,11 +22,11 @@ OneLikelihoodDirectionCalculateManager::~OneLikelihoodDirectionCalculateManager(
 
 void OneLikelihoodDirectionCalculateManager::SetParameters()
 {
-  onelikelihooddirectioncalculatetype = (dynamic_cast<LikelihoodDirectionParameters*>(LikelihoodDirectionManager::GetLikelihoodDirectionManager()->GetParameters()))->GetOneLikelihoodDirectionCalculateType();
-  fdirfuncnoretrotype = (dynamic_cast<LikelihoodDirectionParameters*>(LikelihoodDirectionManager::GetLikelihoodDirectionManager()->GetParameters()))->GetFDirFuncNoretroType();
-  fdirfunconretrotype = (dynamic_cast<LikelihoodDirectionParameters*>(LikelihoodDirectionManager::GetLikelihoodDirectionManager()->GetParameters()))->GetFDirFuncOnretroType();
-  afunconretrotype = (dynamic_cast<LikelihoodDirectionParameters*>(LikelihoodDirectionManager::GetLikelihoodDirectionManager()->GetParameters()))->GetAFuncOnretroType();
-  afuncnoretrotype = (dynamic_cast<LikelihoodDirectionParameters*>(LikelihoodDirectionManager::GetLikelihoodDirectionManager()->GetParameters()))->GetAFuncNoretroType();
+  onelikelihooddirectioncalculatetype = (std::dynamic_pointer_cast<LikelihoodDirectionParameters>(LikelihoodDirectionManager::GetLikelihoodDirectionManager()->GetParameters()))->GetOneLikelihoodDirectionCalculateType();
+  fdirfuncnoretrotype = (std::dynamic_pointer_cast<LikelihoodDirectionParameters>(LikelihoodDirectionManager::GetLikelihoodDirectionManager()->GetParameters()))->GetFDirFuncNoretroType();
+  fdirfunconretrotype = (std::dynamic_pointer_cast<LikelihoodDirectionParameters>(LikelihoodDirectionManager::GetLikelihoodDirectionManager()->GetParameters()))->GetFDirFuncOnretroType();
+  afunconretrotype = (std::dynamic_pointer_cast<LikelihoodDirectionParameters>(LikelihoodDirectionManager::GetLikelihoodDirectionManager()->GetParameters()))->GetAFuncOnretroType();
+  afuncnoretrotype = (std::dynamic_pointer_cast<LikelihoodDirectionParameters>(LikelihoodDirectionManager::GetLikelihoodDirectionManager()->GetParameters()))->GetAFuncNoretroType();
 }
 
 void OneLikelihoodDirectionCalculateManager::Doloop()
@@ -55,10 +56,10 @@ void OneLikelihoodDirectionCalculateManager::Setup()
   double pmtZ = pmt.GetPosition(2);
   pmtposition.set(pmtX,pmtY,pmtZ); 
   hminusv = pmtposition - fitted4vector.vect();
-  theta_dir_i = (dynamic_cast<OneLikelihoodDirectionCalculated*>(currentloop2))->Get3Vector().angle(hminusv);
+  theta_dir_i = (std::dynamic_pointer_cast<OneLikelihoodDirectionCalculated>(currentloop2))->Get3Vector().angle(hminusv);
   theta_i = theta_i_func();
   costheta_dir_i = std::cos(theta_dir_i);
-  fitted4vector = (dynamic_cast<OneLikelihoodDirectionCalculated*>(currentloop2))->Getfitted4Vector();
+  fitted4vector = (std::dynamic_pointer_cast<OneLikelihoodDirectionCalculated>(currentloop2))->Getfitted4Vector();
 }
 
 double OneLikelihoodDirectionCalculateManager::theta_i_func()
@@ -215,7 +216,7 @@ void OneLikelihoodDirectionCalculateManager::OneLikelihoodDirectionNoretro()
     {
       likelihood = 0;
     }
-  (dynamic_cast<OneLikelihoodDirectionCalculated*>(currentloop2))->SetLikelihood(likelihood);
+  (std::dynamic_pointer_cast<OneLikelihoodDirectionCalculated>(currentloop2))->SetLikelihood(likelihood);
 }
 
 void OneLikelihoodDirectionCalculateManager::OneLikelihoodDirectionOnretro()
@@ -238,7 +239,7 @@ void OneLikelihoodDirectionCalculateManager::OneLikelihoodDirectionOnretro()
     {
       likelihood = 0;
     }
-  (dynamic_cast<OneLikelihoodDirectionCalculated*>(currentloop2))->SetLikelihood(likelihood);
+  (std::dynamic_pointer_cast<OneLikelihoodDirectionCalculated>(currentloop2))->SetLikelihood(likelihood);
 }
 
 void OneLikelihoodDirectionCalculateManager::OneLikelihoodDirectionSum()
@@ -275,6 +276,6 @@ void OneLikelihoodDirectionCalculateManager::OneLikelihoodDirectionSum()
 	afunc = afuncprototype();
       likelihood += (std::log(fdir))* std::cos(theta_i) / afunc;
     }
-  (dynamic_cast<OneLikelihoodDirectionCalculated*>(currentloop2))->SetLikelihood(likelihood);
+  (std::dynamic_pointer_cast<OneLikelihoodDirectionCalculated>(currentloop2))->SetLikelihood(likelihood);
 }
 

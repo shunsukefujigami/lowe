@@ -14,9 +14,10 @@ public:
   MultiRunAnalizeManager();
   MultiRunAnalizeManager(FileList* datafilelist,FileList* goodnessfilelist,int NRun_in);
   MultiRunAnalizeManager(FileList*datafilelist,int NRun_in);
-
+  MultiRunAnalizeManager(FileList* datafilelist,FileList* goodnessfilelist,FileList* likelihoodfilellist,int NRun_in);
+  void Setdatafile(FileList* datafilelist);
   void SetGoodnessfile(FileList* goodnessfilelist);
-  
+  void Setlikelihoodfile(FileList* likelihoodfilelist);
   virtual ~MultiRunAnalizeManager();
   int GetNRun()
   {
@@ -52,6 +53,12 @@ public:
   {
     return zbias;
   }
+  void fitanglemean(double xmin,double xmax,double xwidth);
+
+  TH1D* Getanglemean()
+  {
+    return anglemean;
+  }
   
 private:
   int NRun;
@@ -62,6 +69,7 @@ private:
   TH1D* xbias = nullptr;
   TH1D* ybias = nullptr;
   TH1D* zbias = nullptr;
+  TH1D* anglemean = nullptr;
 public:
   ClassDef(MultiRunAnalizeManager,1)
 };

@@ -1,6 +1,7 @@
 #ifndef VLOOP1MANAGER_HH
 #define VLOOP1MANAGER_HH
-
+// c++ STL
+#include <memory>
 // self-introduced library
 #include "VLoop1Action.hh"
 #include "VLoop2Action.hh"
@@ -13,25 +14,20 @@ public:
   VLoop1Manager();
   virtual ~VLoop1Manager();
   virtual void SetParameters();
-  virtual void DoProcess(VLoop1* loop1);
+  virtual void DoProcess(std::shared_ptr<VLoop1> loop1);
   virtual void Doloop() = 0;
-  void SetLoop2Manager(VLoop2Manager* manager)
-  {
-    loop2manager = manager;
-  }
-  
-  void SetLoop1Action(VLoop1Action* action)
+  void SetLoop1Action(std::shared_ptr<VLoop1Action> action)
   {
     loop1action = action;
   }
-  void SetLoop2Action(VLoop2Action* action)
+  void SetLoop2Action(std::shared_ptr<VLoop2Action> action)
   {
     loop2manager->SetLoop2Action(action);
   }
 protected:
-  VLoop1Action* loop1action = nullptr;
-  VLoop1* currentloop1 = nullptr;
-  VLoop2Manager* loop2manager = nullptr;
+  std::shared_ptr<VLoop1Action> loop1action = nullptr;
+  std::shared_ptr<VLoop1> currentloop1 = nullptr;
+  std::shared_ptr<VLoop2Manager> loop2manager = nullptr;
 };
 
 #endif
