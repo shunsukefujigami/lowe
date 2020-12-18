@@ -62,6 +62,12 @@ public:
   }
   TH2D* GetTH2D();
   void FillTH2D(const char* name,const char*title,int n,int xnum,double xmin,double xmax,int ynum,double ymin,double ymax,const char* xvar,const char* yvar);
+  void FillHitTime(int xnum,double xmin,double xmax);
+  TH1D* GetHitTime();
+  void Filltofnoretro(int xnum,double xmin,double xmax);
+  TH1D* Gettofnoretro();
+  void Filltofonretro(int xnum,double xmin,double xmax);
+  TH1D* Gettofonretro();
   double GetEfficiency();
   WCSimRootEvent* GetWCSimRootEvent()
   {
@@ -69,7 +75,6 @@ public:
   }
   
 private:
-  void Setdatafile();
   TFile* dfile = nullptr;
   TFile* gfile = nullptr;
   TFile* lfile = nullptr;
@@ -98,6 +103,9 @@ private:
   TH1D* deltaanglehist = nullptr;
   TF1* fgaussiancostheta = nullptr;
   TF1* fgaussianphi = nullptr;
+  TH1D* hittime = nullptr;
+  TH1D* tofnoretro = nullptr;
+  TH1D* tofonretro = nullptr;
   int neventdata;
   int neventgoodness;
   int neventlikelihood;
@@ -106,6 +114,11 @@ private:
   std::string s_fgaussiany;
   std::string s_fgaussianz;
   std::vector<int> vncherenkovdigihits;
+  double Gettofnoretro(WCSimRootCherenkovDigiHit* hit);
+  double Gettofonretro(WCSimRootCherenkovDigiHit* hit);
+  double WClength;
+  double WCradius;
+  
 public:
   ClassDef(OneRunAnalizeManager,1)
 };

@@ -6,6 +6,7 @@
 // self-introduced library
 #include "OneRunAnalizeManager.hh"
 #include "CSearch_range.hh"
+#include "constants.hh"
 
 OneRunAnalizeManager::OneRunAnalizeManager()
 {
@@ -45,6 +46,8 @@ void OneRunAnalizeManager::Setdatafile(TFile* datafile)
   wcsimT->SetBranchAddress("wcsimrootevent",&wcsimrootevent);
   wcsimGeoT->SetBranchAddress("wcsimrootgeom",&wcsimrootgeom);
   wcsimGeoT->GetEntry(0);
+  WClength = wcsimrootgeom->GetWCCylLength();
+  WCradius = wcsimrootgeom->GetWCCylRadius();
   neventdata = wcsimT->GetEntries();
   for(int i = 0;i < neventdata ; i++ )
     {
@@ -262,6 +265,84 @@ TH2D* OneRunAnalizeManager::GetTH2D()
 }
 
 
+void OneRunAnalizeManager::FillHitTime(int xnum,double xmin,double xmax)
+{
+  if(hittime)
+    {
+      delete hittime;
+    }
+  hittime = new TH1D("","",xnum,xmin,xmax);
+  for(int i = 0; i < neventdata; i++)
+    {
+      wcsimT->GetEntry(i);
+      WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
+      int ncherenkovdigihits = wcsimroottrigger->GetNcherenkovdigihits();
+      for(int k = 0; k < ncherenkovdigihits;k++)
+	{
+	  WCSimRootCherenkovDigiHit* hit = (WCSimRootCherenkovDigiHit*)(wcsimroottrigger->GetCherenkovDigiHits()->At(k));
+	  double time = hit->GetT();
+	  hittime->Fill(time - offset + wcsimroottrigger->GetTriggerTime());
+	}
+    }
+}
+
+TH1D* OneRunAnalizeManager::GetHitTime()
+{
+  return hittime;
+}
+
+void OneRunAnalizeManager::Filltofnoretro(int xnum,double xmin,double xmax)
+{
+  if(tofnoretro)
+    {
+      delete tofnoretro;
+    }
+  tofnoretro = new TH1D("","",xnum,xmin,xmax);
+  for(int i = 0; i < neventdata; i++)
+    {
+      wcsimT->GetEntry(i);
+      WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
+      int ncherenkovdigihits = wcsimroottrigger->GetNcherenkovdigihits();
+      for(int k = 0; k < ncherenkovdigihits;k++)
+	{
+	  WCSimRootCherenkovDigiHit* hit = (WCSimRootCherenkovDigiHit*)(wcsimroottrigger->GetCherenkovDigiHits()->At(k));
+	  double time = Gettofnoretro(hit);
+	  tofnoretro->Fill(time);
+	}
+    }
+}
+
+TH1D* OneRunAnalizeManager::Gettofnoretro()
+{
+  return tofnoretro;
+}
+
+void OneRunAnalizeManager::Filltofonretro(int xnum,double xmin,double xmax)
+{
+  if(tofonretro)
+    {
+      delete tofonretro;
+    }
+  tofonretro = new TH1D("","",xnum,xmin,xmax);
+  for(int i = 0; i < neventdata; i++)
+    {
+      wcsimT->GetEntry(i);
+      WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
+      int ncherenkovdigihits = wcsimroottrigger->GetNcherenkovdigihits();
+      for(int k = 0; k < ncherenkovdigihits;k++)
+	{
+	  WCSimRootCherenkovDigiHit* hit = (WCSimRootCherenkovDigiHit*)(wcsimroottrigger->GetCherenkovDigiHits()->At(k));
+	  double time = Gettofonretro(hit);
+	  tofonretro->Fill(time);
+	}
+    }
+}
+
+TH1D* OneRunAnalizeManager::Gettofonretro()
+{
+  return tofonretro;
+}
+
 double OneRunAnalizeManager::GetVariable(const char* valname)
 {
   std::string s_valname = valname;
@@ -327,3 +408,73 @@ double OneRunAnalizeManager::GetEfficiency()
   double efficiency = (double)ntrigger/(double)neventdata;
   return efficiency;
 }
+
+double OneRunAnalizeManager::Gettofnoretro(WCSimRootCherenkovDigiHit* hit)
+{
+  double time = hit->GetT();
+  int tubeId = hit->GetTubeId();
+  WCSimRootPMT pmt = wcsimrootgeom->GetPMT(tubeId-1);
+  double pmtX = pmt.GetPosition(0);
+  double pmtY = pmt.GetPosition(1);
+  double pmtZ = pmt.GetPosition(2);
+  TVector3 pmt_position(pmtX,pmtY,pmtZ);
+  WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
+  double positionX = wcsimroottrigger->GetVtx(0);
+  double positionY = wcsimroottrigger->GetVtx(1);
+  double positionZ = wcsimroottrigger->GetVtx(2);
+  TVector3 position(positionX,positionY,positionZ);
+  double vtime = (-1)* wcsimroottrigger->GetTriggerTime();
+  TVector3 position_pmt = position - pmt_position;
+  double d1 = std::sqrt(position_pmt*position_pmt);
+  double tof = time - vtime - offset - d1/v_light_in_water;
+  return tof;
+}
+
+double OneRunAnalizeManager::Gettofonretro(WCSimRootCherenkovDigiHit* hit)
+{
+  double time = hit->GetT();
+  int tubeId = hit->GetTubeId();
+  WCSimRootPMT pmt = wcsimrootgeom->GetPMT(tubeId-1);
+  double pmtX = pmt.GetPosition(0);
+  double pmtY = pmt.GetPosition(1);
+  double pmtZ = pmt.GetPosition(2);
+  TVector3 pmt_position(pmtX,pmtY,pmtZ);
+  WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
+  double positionX = wcsimroottrigger->GetVtx(0);
+  double positionY = wcsimroottrigger->GetVtx(1);
+  double positionZ = wcsimroottrigger->GetVtx(2);
+  TVector3 position(positionX,positionY,positionZ);
+  double vtime = (-1)* wcsimroottrigger->GetTriggerTime();
+  TVector3 position_pmt = position - pmt_position;
+  double d1 = std::sqrt(position_pmt*position_pmt);
+  double half_WClength = WClength/2.;
+  double a = (pmtX-positionX)*(pmtX-positionX)+(pmtY-positionY)*(pmtY-positionY);
+  double b = positionX*(positionX-pmtX)+positionY*(positionY-pmtY);
+  double c = positionX*positionX+positionY*positionY-WCradius*WCradius;
+  double t;
+  if(a != 0){
+    t = (b-sqrt(b*b-a*c))/a;
+  }
+  else{
+    t = -c/(2*b);
+  }
+  double z = positionZ + (pmtZ - positionZ)*t;
+  if(-half_WClength < z && half_WClength > z){
+
+}
+  else if(z > half_WClength){
+    t = (half_WClength - positionX)/(pmtZ-positionX);
+    z = half_WClength;
+  }
+  else{
+    t = (-half_WClength - positionX)/(pmtZ-positionX);
+    z = - half_WClength;
+  }
+  double x = positionX + (pmtX-positionX)*t;
+  double y = positionY + (pmtY-positionY)*t;
+  double d2 = std::sqrt((positionX-x)*(positionX-x)+(positionY-y)*(positionY-y)+(positionZ-z)*(positionZ-z));
+  double distance_fly_retro = d1 + 2* d2;
+  double tof = time - vtime - offset - distance_fly_retro/v_light_in_water;
+  return tof;
+}
+
