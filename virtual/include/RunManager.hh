@@ -13,6 +13,13 @@
 class RunManager
 {
 public:
+  static RunManager* GetRunManager()
+  {
+    return frunmanager;
+  }
+private:
+  static RunManager* frunmanager;
+public:
   RunManager();
   virtual ~RunManager();
   void Run(int Nevent);

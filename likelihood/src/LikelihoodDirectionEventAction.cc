@@ -2,11 +2,11 @@
 #include "LikelihoodDirectionEventAction.hh"
 #include <CLHEP/Vector/ThreeVector.h>
 
-void LikelihoodDirectionEventAction::EndOfEventAction(std::shared_ptr<VEvent> event)
+void LikelihoodDirectionEventAction::EndOfEventAction(std::shared_ptr<Process> process)
 {
   l_dir_data data;
-  data.SetL((std::dynamic_pointer_cast<LikelihoodDirectionEvent>(event))->Getlikelihood());
-  CLHEP::Hep3Vector vector = (std::dynamic_pointer_cast<LikelihoodDirectionEvent>(event))->Get3Vector();
+  data.SetL(process->GetMaxlikelihood());
+  CLHEP::Hep3Vector vector = process->GetMax3Direction();
   double costheta = vector.cosTheta();
   double phi = vector.phi();
   data.SetCosTheta(costheta);

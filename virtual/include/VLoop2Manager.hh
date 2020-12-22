@@ -9,6 +9,13 @@
 class VLoop2Manager
 {
 public:
+  static VLoop2Manager* GetLoop2Manager()
+  {
+    return floop2manager;
+  }
+private:
+  static VLoop2Manager* floop2manager;
+public:
   VLoop2Manager();
   virtual ~VLoop2Manager();
   virtual void SetParameters();

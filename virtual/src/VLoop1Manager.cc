@@ -6,6 +6,11 @@
 
 VLoop1Manager::VLoop1Manager()
 {
+  if(floop1manager)
+    {
+      std::cout << "Error! Loop1Manager constructed twice." << std::endl;
+      throw "VLoop1Manager::VLoop1Manager()";
+    }
 }
 
 VLoop1Manager::~VLoop1Manager()

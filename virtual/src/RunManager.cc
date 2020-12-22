@@ -5,7 +5,14 @@
 #include "RunManager.hh"
 
 RunManager::RunManager()
-{}
+{
+  if(frunmanager)
+    {
+      std::cout << "Error! RunManager constructed twice." << std::endl;
+      throw "RunManager::RunManager()";
+    }
+  frunmanager = this;
+}
 
 RunManager::~RunManager()
 {

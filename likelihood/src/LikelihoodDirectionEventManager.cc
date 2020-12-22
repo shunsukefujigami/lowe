@@ -7,23 +7,14 @@
 #include "LikelihoodDirectionEventManager.hh"
 #include "LikelihoodDirectionCalculateManager.hh"
 #include "LikelihoodDirectionManager.hh"
-#include "LikelihoodDirectionCalculated.hh"
 
 LikelihoodDirectionEventManager::LikelihoodDirectionEventManager()
 {
-  loop1manager = std::make_shared<LikelihoodDirectionCalculateManager>();
 }
 
 LikelihoodDirectionEventManager::~LikelihoodDirectionEventManager()
 {
 }
-
-void LikelihoodDirectionEventManager::SetParameters()
-{
-  range = std::dynamic_pointer_cast<LikelihoodDirectionParameters>(LikelihoodDirectionManager::GetLikelihoodDirectionManager()->GetParameters())->GetAngleRange();
-  loop1manager->SetParameters();
-}
-
 
 void LikelihoodDirectionEventManager::Doprocess()
 {
@@ -42,16 +33,14 @@ void LikelihoodDirectionEventManager::Doprocess()
 
 void LikelihoodDirectionEventManager::Doloopin(CLHEP::Hep3Vector hvector)
 {
-  std::shared_ptr<LikelihoodDirectionCalculated> likelihooddirectioncalculated = std::make_shared<LikelihoodDirectionCalculated>();
-  likelihooddirectioncalculated->SetLikelihood(0.);
-  likelihooddirectioncalculated->Set3Vector(hvector);
-  likelihooddirectioncalculated->Setfitted4Vector((std::dynamic_pointer_cast<LikelihoodDirectionEvent>(currentevent))->Getfitted4Vector());
-  loop1manager->DoProcess(likelihooddirectioncalculated);
-  double likelihood = likelihooddirectioncalculated->GetLikelihood();
-  if((std::dynamic_pointer_cast<LikelihoodDirectionEvent>(currentevent))->Getlikelihood() < likelihood)
+  currentprocess->SetCurrentlikelihood(0.);
+  currentprocess->SetCurrent3Direction(hvector);
+  nextmanager->ProcessOne(currentprocess);
+  double likelihood = currentprocess->GetCurrentlikelihood();
+  if(currentprocess->GetMaxlikelihood() < likelihood)
     {
-      (std::dynamic_pointer_cast<LikelihoodDirectionEvent>(currentevent))->Setlikelihood(likelihood);
-      (std::dynamic_pointer_cast<LikelihoodDirectionEvent>(currentevent))->Set3Vector(hvector);
+      currentprocess->SetMaxlikelihood(likelihood);
+      currentprocess->SetMax3Direction(hvector);
     }
 }
 

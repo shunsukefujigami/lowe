@@ -44,20 +44,19 @@ target_link_libraries(lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.
 add_library(lowe SHARED ./goodness/src/WCGoodness_calculate.cc
 			    ./general/src/config.cc
 			    ./goodness/src/goodness_given_4Vector.cc
-			    ./goodness/src/one_goodness.cc
-			    ./funcparts/src/distance_pmt.cc
-			    ./funcparts/src/tof.cc
-			    ./general/src/runoption.cc
 			    ./goodness/src/goodness_bias_err_func.cc
 			    ./likelihood/src/get_function_direction_func.cc
 			    ./general/src/wrapped_function.cc
+			    ./general/src/funcmap.cc
 			    ./others/src/test.cc
 			    ./likelihood/src/acceptance_pmt.cc
 			    ./likelihood/src/f_direction.cc
-			    ./likelihood/src/likelihood_direction.cc
-			    ./likelihood/src/likelihood_direction_grid_search.cc
 			    ./funcparts/src/theta_i_func.cc
-			    ./funcparts/src/numberofhit.cc
+			    ./funcparts/src/distance_function.cc
+			    ./funcparts/src/fdirection.cc
+			    ./funcparts/src/likelihood.cc
+			    ./funcparts/src/theta_dir_i.cc
+			    ./funcparts/src/tof.cc
 			    ./goodness/src/goodness_x_f_direction.cc
 			    ./goodness/src/GoodnessManager.cc
 			    ./goodness/src/GoodnessRunAction.cc
@@ -72,17 +71,10 @@ add_library(lowe SHARED ./goodness/src/WCGoodness_calculate.cc
 			    ./likelihood/src/LikelihoodDirectionCalculateManager.cc
 			    ./likelihood/src/LikelihoodDirectionRunAction.cc
 			    ./likelihood/src/LikelihoodDirectionEventAction.cc
-
 			    ./likelihood/src/LikelihoodDirectionEventManager.cc
 			    ./likelihood/src/OneLikelihoodDirectionCalculateManager.cc
-			    ./virtual/src/EventManager.cc
-			    ./virtual/src/RunManager.cc
-			    ./virtual/src/VLoop1Manager.cc
-			    ./virtual/src/VLoop2Manager.cc
-			    ./virtual/src/VLoop1Action.cc
-			    ./virtual/src/VLoop2Action.cc
-			    ./virtual/src/VEventAction.cc
-			    ./virtual/src/VRunAction.cc
+			    ./virtual/src/ProcessManager.cc
+			    ./virtual/src/VAction.cc
 			    )
 target_include_directories(lowe PUBLIC ./goodness/include
 				       ./likelihood/include
@@ -90,6 +82,7 @@ target_include_directories(lowe PUBLIC ./goodness/include
 				       ./funcparts/include
 				       ./others/include
 				       ./virtual/include
+				       ./interface/include
 				       $ENV{MACRODIR}/include
 				       $ENV{WCSIMDIR}/include
 				       ${ROOT_INCLUDE_DIRS}

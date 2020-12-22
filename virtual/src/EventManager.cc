@@ -4,6 +4,12 @@
 
 EventManager::EventManager()
 {
+  if(feventmanager)
+    {
+      std::cout << "Error! EventManager constructed twice." << std::endl;
+      throw "EventManager::EventManager()";
+    }
+  feventmanager = this;
 }
 
 EventManager::~EventManager()

@@ -9,17 +9,10 @@
 #include "LikelihoodDirectionEventManager.hh"
 #include "LikelihoodDirectionEvent.hh"
 
-LikelihoodDirectionManager* LikelihoodDirectionManager::flikelihooddirectionmanager = 0;
 
 LikelihoodDirectionManager::LikelihoodDirectionManager(const char* infiledata,const char* infilegoodness)
-  :RunManager()
+  :ProcessManager()
 {
-  if(flikelihooddirectionmanager)
-    {
-      std::cout << "Error! LikelihoodDirectionManager constructed twice." << std::endl;
-      throw "LikelihoodDirectionManager::LikelihoodDirectionManager";
-    }
-  flikelihooddirectionmanager = this;
   dfile = new TFile(infiledata);
   wcsimT = (TTree*)dfile->Get("wcsimT");
   wcsimGeoT = (TTree*)dfile->Get("wcsimGeoT");
@@ -36,9 +29,6 @@ LikelihoodDirectionManager::LikelihoodDirectionManager(const char* infiledata,co
   optionT = (TTree*)gfile->Get("optionT");
   optionT->GetEntry(0);
   Nevents = goodnessT->GetEntries();
-  run = std::make_shared<LikelihoodDirectionRun>();
-  run->SetnumberOfEvent(Nevents);
-  eventmanager.reset(new LikelihoodDirectionEventManager());
   std::cout << "input file data is below" << std::endl;
   dfile->Print();
   gfile->Print();
@@ -60,22 +50,16 @@ LikelihoodDirectionManager::~LikelihoodDirectionManager()
     delete goodnessdata;
 }
 
-void LikelihoodDirectionManager::SetParameters()
+void LikelihoodDirectionManager::ProcessOneEvent(int i)
 {
-  eventmanager->SetParameters();
-}
-
-void LikelihoodDirectionManager::ProcessOneEvent(int i_event)
-{
-  wcsimT->GetEntry(i_event);
-  goodnessT->GetEntry(i_event);
-  currentevent = std::make_shared<LikelihoodDirectionEvent>(i_event);
+  wcsimT->GetEntry(i);
+  goodnessT->GetEntry(i);
   double x = goodnessdata->GetX();
   double y = goodnessdata->GetY();
   double z = goodnessdata->GetZ();
   double t = goodnessdata->GetT();
   CLHEP::HepLorentzVector fitted4vector;
   fitted4vector.set(x,y,z,t);
-  (std::dynamic_pointer_cast<LikelihoodDirectionEvent>(currentevent))->Setfitted4Vector(fitted4vector);
-  eventmanager->ProcessOneEvent(currentevent);
+  currentprocess->Setfitted4Vector(fitted4vector);
+  nextmanager->ProcessOne(currentprocess);
 }

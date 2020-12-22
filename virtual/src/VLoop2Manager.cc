@@ -1,8 +1,17 @@
+// c++ STL
+#include <iostream>
+
 // self-introduced library
 #include "VLoop2Manager.hh"
 
 VLoop2Manager::VLoop2Manager()
 {
+  if(floop2manager)
+    {
+      std::cout << "Error! Loop2Manager constructed twice." << std::endl;
+      throw "VLoop2Manager::VLoop2Manager()";
+    }
+  floop2manager = this;
 }
 
 VLoop2Manager::~VLoop2Manager()

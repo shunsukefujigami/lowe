@@ -5,17 +5,21 @@
 #include <CLHEP/Vector/ThreeVector.h>
 
 // self-introduced library
-#include "EventManager.hh"
+#include "ProcessManager.hh"
 #include "AngleRange.hh"
 
-class LikelihoodDirectionEventManager : public EventManager
+class LikelihoodDirectionEventManager : public ProcessManager
 {
 public:
   LikelihoodDirectionEventManager();
-  virtual ~LikelihoodDirectionEventManager();
-  void SetParameters();
+  virtual ~LikelihoodDirectionEventManager();  
   void Doprocess();
   void Doloopin(CLHEP::Hep3Vector hvector);
+  void SetAngleRange(AngleRange rangein)
+  {
+    range = rangein;
+  }
+  
 private:
   AngleRange range;
 };

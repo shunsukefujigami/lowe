@@ -6,16 +6,6 @@
 #include "AngleRange.hh"
 #include "EnumManager.hh"
 
-ENUM(OneLikelihoodDirectionCalculateType,noretro,onretro,sum);
-
-ENUM(FDirFuncNoretroType,prototype,bydata);
-
-ENUM(FDirFuncOnretroType,prototype,bydata);
-
-ENUM(AFuncOnretroType,prototype);
-
-ENUM(AFuncNoretroType,prototype);
-
 class LikelihoodDirectionParameters :public VParameters
 {
 public:

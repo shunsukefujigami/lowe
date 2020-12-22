@@ -7,7 +7,7 @@
 #include "VEvent.hh"
 #include "LikelihoodDirectionRunAction.hh"
 
-class LikelihoodDirectionEventAction : public VEventAction
+class LikelihoodDirectionEventAction : public VAction
 {
 public:
   LikelihoodDirectionEventAction(std::shared_ptr<LikelihoodDirectionRunAction> action)
@@ -17,8 +17,8 @@ public:
   virtual ~LikelihoodDirectionEventAction()
   {
   }
-  void BeginOfEventAction(std::shared_ptr<VEvent>){};
-  void EndOfEventAction(std::shared_ptr<VEvent> event);
+  void BeginOfEventAction(std::shared_ptr<Process>){};
+  void EndOfEventAction(std::shared_ptr<Process> process);
 private:
   std::shared_ptr<LikelihoodDirectionRunAction> likelihooddirectionrunaction = nullptr;
 };

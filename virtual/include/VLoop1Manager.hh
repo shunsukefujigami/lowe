@@ -11,6 +11,13 @@
 class VLoop1Manager
 {
 public:
+  static VLoop1Manager* GetLoop1Manager()
+  {
+    return floop1manager;
+  }
+private:
+  static VLoop1Manager* floop1manager;
+public:
   VLoop1Manager();
   virtual ~VLoop1Manager();
   virtual void SetParameters();

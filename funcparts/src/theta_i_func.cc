@@ -1,13 +1,14 @@
-// ROOT library
-#include <TVector3.h>
+// geant4 library
+#include <CLHEP/Vector/ThreeVector.h>
 
-// WCSim library
-#include "WCSimRootGeom.hh"
+// self-introduced library
+#include "theta_i_func.hh"
 
-double theta_i_func(WCSimRootPMT pmt,TVector3 hminusv){
-  double orientX = pmt.GetOrientation(0);
-  double orientY = pmt.GetOrientation(1);
-  double orientZ = pmt.GetOrientation(2);
-  TVector3 orientation(orientX,orientY,orientZ);
-  return orientation.Angle(-hminusv);
+double theta_i_func::returnvalue()
+{
+  CLHEP::Hep3Vector vector = info.Get3Orientation();
+  CLHEP::Hep3Vector hminusv = info.Get3Position() - data.Get3Position();
+  CLHEP::Hep3Vector orientation = info.Get3Orientation();
+  return orientation.angle(-hminusv);
 }
+

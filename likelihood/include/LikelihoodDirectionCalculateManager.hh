@@ -3,18 +3,17 @@
 // geant4 library
 #include <CLHEP/Vector/ThreeVector.h>
 // self-introduced library
-#include "VLoop1Manager.hh"
+#include "ProcessManager.hh"
 #include "LikelihoodDirectionCalculated.hh"
 #include "OneLikelihoodDirectionCalculateManager.hh"
 
-class LikelihoodDirectionCalculateManager : public VLoop1Manager
+class LikelihoodDirectionCalculateManager : public ProcessManager
 {
 public:
   LikelihoodDirectionCalculateManager();
   virtual ~LikelihoodDirectionCalculateManager();
-  void SetParameters();
   void Doloop();
-  void Doloopin(int k,CLHEP::Hep3Vector vector);
+  void Doloopin(int k);
   void LikelihoodDirectionNoRetro();
   void LikelihoodDirectionOnRetro();
   void LikelihoodDirectionSum();

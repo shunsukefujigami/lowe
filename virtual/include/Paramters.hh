@@ -8,9 +8,5 @@ public:
   virtual ~Parameters()
   {
   }
-  virtual void Print()
-  {
-  }
-  
 };
 #endif

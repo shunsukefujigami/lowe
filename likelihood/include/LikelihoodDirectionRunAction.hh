@@ -8,18 +8,18 @@
 
 // self-introduced library
 #include "AngleRange.hh"
-#include "VRunAction.hh"
+#include "VAction.hh"
 #include "likelihood_direction_data.hh"
 
-class LikelihoodDirectionRunAction : public VRunAction
+class LikelihoodDirectionRunAction : public VAction
 {
 public:
   LikelihoodDirectionRunAction(const char* outfile_in);
   virtual ~LikelihoodDirectionRunAction()
   {
   }
-  void BeginOfRunAction(std::shared_ptr<VRun> run);
-  void EndOfRunAction(std::shared_ptr<VRun> run);
+  void BeginOfRunAction(std::shared_ptr<Process> process);
+  void EndOfRunAction(std::shared_ptr<Process> process);
   l_dir_data* GetLikelihoodDirectiondata()
   {
     return data;
@@ -27,6 +27,10 @@ public:
   TTree* GetTTree()
   {
     return likelihoodtree;
+  }
+  void SetAngleRange(AngleRange rangein)
+  {
+    this->rangein = rangein;
   }
   
 private:
@@ -36,6 +40,7 @@ private:
   TTree* optiontree = nullptr;
   l_dir_data* data = nullptr;
   AngleRange* range = nullptr;
+  AngleRange rangein;
 };
 
 #endif

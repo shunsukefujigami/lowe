@@ -10,25 +10,19 @@
 
 // self-introduced library
 #include "goodness_data.hh"
-#include "LikelihoodDirectionParameters.hh"
 #include "LikelihoodDirectionRunAction.hh"
 #include "LikelihoodDirectionRun.hh"
 #include "LikelihoodDirectionEventManager.hh"
 #include "LikelihoodDirectionEvent.hh"
-#include "RunManager.hh"
+#include "ProcessManager.hh"
 
-class LikelihoodDirectionManager : public RunManager
+class LikelihoodDirectionManager : public ProcessManager
 {
-public:
-  static LikelihoodDirectionManager* GetLikelihoodDirectionManager(){ return flikelihooddirectionmanager;}
-private:
-  static LikelihoodDirectionManager* flikelihooddirectionmanager;
 public:
   LikelihoodDirectionManager() = delete;
   LikelihoodDirectionManager(const char* infiledata,const char* infilegoodness);
   virtual ~LikelihoodDirectionManager();
-  void SetParameters();
-  void ProcessOneEvent(int i_event);
+  void ProcessOneEvent(int i);
   WCSimRootEvent* GetWCSimRootEvent()
   {
     return wcsimrootevent;
@@ -47,6 +41,7 @@ private:
   TTree* goodnessT = nullptr;
   TTree* optionT = nullptr;
   goodness_data* goodnessdata = nullptr;
+  int Nevents;
 };
 
 #endif

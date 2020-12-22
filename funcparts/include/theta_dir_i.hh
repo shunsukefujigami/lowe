@@ -1,20 +1,18 @@
-#ifndef THETA_I_FUNC_HH
-#define THETA_I_FUNC_HH
+#ifndef THETA_DIR_I_HH
+#define THETA_DIR_I_HH
 
-// ROOT library
-#include <TVector3.h>
 // self-introduced library
 #include "function.hh"
 #include "hitinfo.hh"
 #include "Reconstructdata.hh"
 
-class theta_i_func : public function
+class theta_dir_i : public function
 {
 public:
-  theta_i_func()
+  theta_dir_i()
   {
   }
-  virtual ~theta_i_func()
+  virtual ~theta_dir_i()
   {
   }
   void SetHitInfo(hitinfo infoin)

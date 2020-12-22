@@ -12,6 +12,13 @@
 class EventManager
 {
 public:
+  static EventManager* GetEventManager()
+  {
+    return feventmanager;
+  }
+private:
+  static EventManager* feventmanager;
+public:
   EventManager();
   virtual ~EventManager();
   virtual void SetParameters();
