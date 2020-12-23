@@ -3,8 +3,6 @@
 // c++ STL
 #include <memory>
 // self introduced library
-#include "VEventAction.hh"
-#include "VEvent.hh"
 #include "LikelihoodDirectionRunAction.hh"
 
 class LikelihoodDirectionEventAction : public VAction

@@ -24,7 +24,7 @@ void OneLikelihoodDirectionCalculateManager::SetParameters()
   wcsimrootgeom = ProcessManager::GetProcessManager(0)->GetWCSimRootGeom();
 }
 
-void OneLikelihoodDirectionCalculateManager::Doloop()
+void OneLikelihoodDirectionCalculateManager::Doprocess()
 {
   hitinfo info;
   info.Sethit(hit,wcsimrootgeom);
@@ -33,6 +33,10 @@ void OneLikelihoodDirectionCalculateManager::Doloop()
   data.Setdirection(currentprocess->GetCurrent3Direction());
   lh->SetHitInfo(info);
   lh->SetReconstructdata(data);
+  lh->Setfdirectionnoretro(fn);
+  lh->Setfdirectiononretro(fo);
+  lh->Setafunctionnoretro(an);
+  lh->Setafunctiononretro(ao);
   double l = lh->returnvalue();
   currentprocess->AddLikelihoodDirection(l);
 }

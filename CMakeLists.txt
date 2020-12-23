@@ -100,17 +100,9 @@ add_executable(convert ./exe/others/convert.cc)
 target_compile_options(convert PRIVATE "-Wall")
 target_link_libraries(convert lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
 
-add_executable(distance_image ./exe/others/distance_image.cc)
-target_compile_options(distance_image PRIVATE "-Wall")
-target_link_libraries(distance_image lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
-
 add_executable(minimize ./exe/others/NumericalMinimization.cc)
 target_compile_options(minimize PRIVATE "-Wall")
 target_link_libraries(minimize lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
-
-add_executable(goodness_minimize ./exe/goodness/goodness_minimize.cc)
-target_compile_options(goodness_minimize PRIVATE "-Wall")
-target_link_libraries(goodness_minimize lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
 
 add_executable(get_function_direction ./exe/likelihood/get_function_direction.cc)
 target_compile_options(get_function_direction PRIVATE "-Wall")
@@ -133,21 +125,9 @@ endif (USE_PERF)
 target_compile_options(test1 PRIVATE "-Wall")
 target_link_libraries(test1 lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
 
-add_executable(likelihood_direction_grid_search_exe ./exe/likelihood/likelihood_direction_grid_search_exe.cc)
-target_compile_options(likelihood_direction_grid_search_exe PRIVATE "-Wall")
-target_link_libraries(likelihood_direction_grid_search_exe lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
-
 add_executable(f_direction_use_fitting ./exe/likelihood/f_direction_use_fitting.cc)
 target_compile_options(f_direction_use_fitting PRIVATE "-Wall")
 target_link_libraries(f_direction_use_fitting ${ROOT_LIBRARIES})
-
-add_executable(f_direction_define ./exe/likelihood/f_direction_define.cc)
-target_compile_options(f_direction_define PRIVATE "-Wall")
-target_link_libraries(f_direction_define lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
-
-add_executable(tof_exe ./exe/others/tof_exe.cc)
-target_compile_options(tof_exe PRIVATE "-Wall")
-target_link_libraries(tof_exe lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
 
 add_executable(Goodness ./exe/goodness/Goodness.cc)
 # Google Performance Analyzer

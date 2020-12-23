@@ -11,9 +11,7 @@
 // self-introduced library
 #include "goodness_data.hh"
 #include "LikelihoodDirectionRunAction.hh"
-#include "LikelihoodDirectionRun.hh"
 #include "LikelihoodDirectionEventManager.hh"
-#include "LikelihoodDirectionEvent.hh"
 #include "ProcessManager.hh"
 
 class LikelihoodDirectionManager : public ProcessManager
@@ -22,6 +20,10 @@ public:
   LikelihoodDirectionManager() = delete;
   LikelihoodDirectionManager(const char* infiledata,const char* infilegoodness);
   virtual ~LikelihoodDirectionManager();
+  void Doprocess()
+  {
+  }
+  
   void ProcessOneEvent(int i);
   WCSimRootEvent* GetWCSimRootEvent()
   {

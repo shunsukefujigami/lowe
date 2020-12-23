@@ -5,9 +5,7 @@
 
 // self-introduced library
 #include "LikelihoodDirectionManager.hh"
-#include "LikelihoodDirectionRun.hh"
 #include "LikelihoodDirectionEventManager.hh"
-#include "LikelihoodDirectionEvent.hh"
 
 
 LikelihoodDirectionManager::LikelihoodDirectionManager(const char* infiledata,const char* infilegoodness)

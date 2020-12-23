@@ -1,4 +1,3 @@
-#include "LikelihoodDirectionEvent.hh"
 #include "LikelihoodDirectionEventAction.hh"
 #include <CLHEP/Vector/ThreeVector.h>
 

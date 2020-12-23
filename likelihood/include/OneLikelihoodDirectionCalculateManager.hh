@@ -22,7 +22,7 @@ public:
   OneLikelihoodDirectionCalculateManager();
   virtual ~OneLikelihoodDirectionCalculateManager();
   void SetParameters();
-  void Doloop();
+  void Doprocess();
   void Setup();
   void SetHit(WCSimRootCherenkovDigiHit* h)
   {

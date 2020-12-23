@@ -19,7 +19,7 @@ LikelihoodDirectionCalculateManager::~LikelihoodDirectionCalculateManager()
 {
 }
 
-void LikelihoodDirectionCalculateManager::Doloop()
+void LikelihoodDirectionCalculateManager::Doprocess()
 {
   wcsimroottrigger = ProcessManager::GetProcessManager(0)->GetWCSimRootEvent()->GetTrigger(0);
   ncherenkovdigihits = wcsimroottrigger->GetNcherenkovdigihits();
