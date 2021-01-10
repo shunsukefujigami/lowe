@@ -9,6 +9,7 @@
 // self-introduced library
 #include "Process.hh"
 #include "VAction.hh"
+#include "TReconstructdata.hh"
 
 class ProcessManager : public std::enable_shared_from_this<ProcessManager>
 {
@@ -38,10 +39,14 @@ public:
   }
   
   virtual void SetHit(WCSimRootCherenkovDigiHit* hit);
-  
-  void SetAction(std::shared_ptr<VAction> action)
+  virtual TReconstructdata* GetTReconstructdata()
   {
-    this->action = action;
+    return nullptr;
+  }
+  
+  void SetAction(std::shared_ptr<VAction> action_in)
+  {
+    action = action_in;
   }
   void SetNextManager(std::shared_ptr<ProcessManager> manager)
   {

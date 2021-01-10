@@ -11,8 +11,9 @@
 #include "hitinfo.hh"
 #include "Reconstructdata.hh"
 
-OneLikelihoodDirectionCalculateManager::OneLikelihoodDirectionCalculateManager()
+OneLikelihoodDirectionCalculateManager::OneLikelihoodDirectionCalculateManager(const char* likelihoodtype)
 {
+  ltype = likelihoodtype;
 }
 
 OneLikelihoodDirectionCalculateManager::~OneLikelihoodDirectionCalculateManager()
@@ -31,14 +32,29 @@ void OneLikelihoodDirectionCalculateManager::Doprocess()
   Reconstructdata data;
   data.Set4Vector(currentprocess->Getfitted4Vector());
   data.Setdirection(currentprocess->GetCurrent3Direction());
-  lh->SetHitInfo(info);
-  lh->SetReconstructdata(data);
-  lh->Setfdirectionnoretro(fn);
-  lh->Setfdirectiononretro(fo);
-  lh->Setafunctionnoretro(an);
-  lh->Setafunctiononretro(ao);
-  double l = lh->returnvalue();
-  currentprocess->AddLikelihoodDirection(l);
+  ln->SetHitInfo(info);
+  ln->SetReconstructdata(data);
+  lo->SetHitInfo(info);
+  lo->SetReconstructdata(data);
+  ln->Setfdirectionnoretro(fn);
+  lo->Setfdirectiononretro(fo);
+  ln->Setafunctionnoretro(an);
+  lo->Setafunctiononretro(ao);
+  double lnoretro = ln->returnvalue();
+  currentprocess->onelikelihoodnoretro.at(currentprocess->Gethitnumber()) = lnoretro;
+  double lonretro = lo->returnvalue();
+  currentprocess->onelikelihoodonretro.at(currentprocess->Gethitnumber()) = lonretro;
+  if(ltype == "sum")
+    currentprocess->AddLikelihoodDirection(lnoretro + lonretro);
+  else if(ltype == "noretro")
+    currentprocess->AddLikelihoodDirection(lnoretro);
+  else
+    {
+      std::cout << "invaild ltype: " << ltype << std::endl;
+      throw "void OneLikelihoodDirectionCalculateManager::Doprocess()";
+    }
+  
+      
 }
 
 

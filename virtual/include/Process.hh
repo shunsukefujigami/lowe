@@ -1,6 +1,7 @@
 #ifndef PROCESS_HH
 #define PROCESS_HH
-
+// c++ STL
+#include <vector>
 // geant4 library
 #include <CLHEP/Vector/LorentzVector.h>
 #include <CLHEP/Vector/ThreeVector.h>
@@ -71,16 +72,69 @@ public:
   {
     return maxdirection;
   }
+  void Setgoodness_onretro(double g)
+  {
+    goodness_onretro = g;
+  }
+  double Getgoodness_onretro()
+  {
+    return goodness_onretro;
+  }
+  void Setgoodness_noretro(double g)
+  {
+    goodness_noretro = g;
+  }
+  double Getgoodness_noretro()
+  {
+    return goodness_noretro;
+  }
+  void Sethittype(int t)
+  {
+    hittype = t;
+  }
+  int Gethittype()
+  {
+    return hittype;
+  }
+  void Sethitnumber(int hitnum)
+  {
+    currenthitnumber = hitnum;
+  }
+  int Gethitnumber()
+  {
+    return currenthitnumber;
+  }
+  void Setncherenkovdigihits(int n)
+  {
+    ncherenkovdigihits = n;
+  }
+  int Getncherenkovdigihits()
+  {
+    return ncherenkovdigihits;
+  }
+  std::vector<double> onelikelihoodonretro;
+  std::vector<double> maxonelikelihoodonretro;
+  std::vector<double> onelikelihoodnoretro;
+  std::vector<double> maxonelikelihoodnoretro;
+  void SetMaxonelikelihood()
+  {
+    maxonelikelihoodonretro = onelikelihoodonretro;
+    maxonelikelihoodnoretro = onelikelihoodnoretro;
+  }
   
 private:
   CLHEP::HepLorentzVector fitted4Vector;
   CLHEP::Hep3Vector currentdirection;
   CLHEP::Hep3Vector pmtposition;
+  double goodness_onretro;
+  double goodness_noretro;
+  int hittype;
   double currentlikelihood = -10000000.;
   CLHEP::Hep3Vector maxdirection;
   double maxlikelihood = -10000000.;
   int nevents;
+  int currenthitnumber;
+  int ncherenkovdigihits;
 };
-
 
 #endif

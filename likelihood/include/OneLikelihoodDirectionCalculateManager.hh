@@ -19,7 +19,7 @@
 class OneLikelihoodDirectionCalculateManager : public ProcessManager
 {
 public:
-  OneLikelihoodDirectionCalculateManager();
+  OneLikelihoodDirectionCalculateManager(const char* likelihoodtype);
   virtual ~OneLikelihoodDirectionCalculateManager();
   void SetParameters();
   void Doprocess();
@@ -28,10 +28,15 @@ public:
   {
     hit = h;
   }
-  void Setlikelihoodfunc(std::shared_ptr<likelihood> lhin)
+  void Setlikelihoodfuncnoretro(std::shared_ptr<likelihood> lhin)
   {
-    lh = lhin;
+    ln = lhin;
   }
+  void Setlikelihoodfunconretro(std::shared_ptr<likelihood> lhin)
+  {
+    lo = lhin;
+  }
+  
   void Setfdirectionnoretro(std::shared_ptr<fdirection> f)
   {
     fn = f;
@@ -54,12 +59,13 @@ private:
   double WCradius;
   double WClength;
   WCSimRootCherenkovDigiHit* hit;
-  hitinfo info;
-  std::shared_ptr<likelihood> lh;
+  std::shared_ptr<likelihood> ln;
+  std::shared_ptr<likelihood> lo;
   std::shared_ptr<fdirection> fn;
   std::shared_ptr<fdirection> fo;
   std::shared_ptr<afunction> an;
   std::shared_ptr<afunction> ao;
+  std::string ltype;
 };
 
 #endif

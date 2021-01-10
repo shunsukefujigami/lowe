@@ -19,7 +19,7 @@ set(CMAKE_CXX_STANDARD 11)
 set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 
-ROOT_GENERATE_DICTIONARY($ENV{MACRODIR}/src/macroRootDict $ENV{MACRODIR}/include/eventdisplay.hh $ENV{MACRODIR}/include/goodness_data.hh $ENV{MACRODIR}/include/likelihood_direction_data.hh $ENV{MACRODIR}/include/AnalizedData.hh $ENV{MACRODIR}/include/CSearch_range.hh LINKDEF $ENV{MACRODIR}/include/C4Number.hh $ENV{MACRODIR}/include/FileList.hh $ENV{MACRODIR}/include/efficiency.hh $ENV{MACRODIR}/include/HistByTree.hh $ENV{MACRODIR}/include/HistError.hh $ENV{MACRODIR}/include/HistBias.hh $ENV{MACRODIR}/include/MultiRunAnalizeManager.hh $ENV{MACRODIR}/include/OneRunAnalizeManager.hh $ENV{MACRODIR}/include/AngleRange.hh macro/include/macroRootLinkDef.hh)
+ROOT_GENERATE_DICTIONARY($ENV{MACRODIR}/src/macroRootDict $ENV{MACRODIR}/include/eventdisplay.hh $ENV{MACRODIR}/include/goodness_data.hh $ENV{MACRODIR}/include/likelihood_direction_data.hh $ENV{MACRODIR}/include/AnalizedData.hh $ENV{MACRODIR}/include/CSearch_range.hh LINKDEF $ENV{MACRODIR}/include/C4Number.hh $ENV{MACRODIR}/include/FileList.hh $ENV{MACRODIR}/include/efficiency.hh $ENV{MACRODIR}/include/HistByTree.hh $ENV{MACRODIR}/include/HistError.hh $ENV{MACRODIR}/include/HistBias.hh $ENV{MACRODIR}/include/OneRunAnalizeManager.hh $ENV{MACRODIR}/include/AngleRange.hh $ENV{MACRODIR}/include/Thitinfo.hh $ENV{MACRODIR}/include/TReconstructdata.hh $ENV{MACRODIR}/include/Tfunction.hh $ENV{MACRODIR}/include/Tafunction.hh $ENV{MACRODIR}/include/Tdistance_function.hh $ENV{MACRODIR}/include/Tfdirection.hh $ENV{MACRODIR}/include/Tlikelihood.hh $ENV{MACRODIR}/include/Ttheta_dir_i.hh $ENV{MACRODIR}/include/Ttheta_i_func.hh $ENV{MACRODIR}/include/Ttof.hh $ENV{MACRODIR}/include/OneRunDataAnalizeManager.hh $ENV{MACRODIR}/include/OneRunGoodnessAnalizeManager.hh $ENV{MACRODIR}/include/OneRunLikelihoodAnalizeManager.hh $ENV{MACRODIR}/include/OneDataParameters.hh $ENV{MACRODIR}/include/MyString.hh $ENV{MACRODIR}/include/MultiRunAnalizeManager.hh $ENV{MACRODIR}/include/OneGoodnessParameters.hh $ENV{MACRODIR}/include/OneLikelihoodParameters.hh macro/include/macroRootLinkDef.hh)
 
 add_library(lowemacro SHARED $ENV{MACRODIR}/src/eventdisplay.cc
 		      	     $ENV{MACRODIR}/src/goodness_data.cc
@@ -35,29 +35,38 @@ add_library(lowemacro SHARED $ENV{MACRODIR}/src/eventdisplay.cc
 			     $ENV{MACRODIR}/src/HistBias.cc
 			     $ENV{MACRODIR}/src/OneRunAnalizeManager.cc
 			     $ENV{MACRODIR}/src/MultiRunAnalizeManager.cc
-			     $ENV{MACRODIR}/src/AngleRange.cc)
+			     $ENV{MACRODIR}/src/AngleRange.cc
+			     $ENV{MACRODIR}/src/Thitinfo.cc
+			     $ENV{MACRODIR}/src/TReconstructdata.cc
+			     $ENV{MACRODIR}/src/Tafunction.cc
+			     $ENV{MACRODIR}/src/Tdistance_function.cc
+			     $ENV{MACRODIR}/src/Tfdirection.cc
+			     $ENV{MACRODIR}/src/Tlikelihood.cc
+			     $ENV{MACRODIR}/src/Ttheta_dir_i.cc
+			     $ENV{MACRODIR}/src/Ttheta_i_func.cc
+			     $ENV{MACRODIR}/src/Ttof.cc
+			     $ENV{MACRODIR}/src/OneRunDataAnalizeManager.cc
+			     $ENV{MACRODIR}/src/OneRunGoodnessAnalizeManager.cc
+			     $ENV{MACRODIR}/src/OneRunLikelihoodAnalizeManager.cc
+			     $ENV{MACRODIR}/src/OneDataParameters.cc
+			     $ENV{MACRODIR}/src/OneGoodnessParameters.cc
+			     $ENV{MACRODIR}/src/OneLikelihoodParameters.cc
+			     $ENV{MACRODIR}/src/MyString.cc)
 target_include_directories(lowemacro PUBLIC $ENV{MACRODIR}/include
 				             $ENV{WCSIMDIR}/include
 					     ${ROOT_INCLUDE_DIRS})
 target_link_libraries(lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
 
-add_library(lowe SHARED ./goodness/src/WCGoodness_calculate.cc
-			    ./general/src/config.cc
-			    ./goodness/src/goodness_given_4Vector.cc
-			    ./goodness/src/goodness_bias_err_func.cc
-			    ./likelihood/src/get_function_direction_func.cc
-			    ./general/src/wrapped_function.cc
+add_library(lowe SHARED     ./general/src/config.cc
 			    ./general/src/funcmap.cc
 			    ./others/src/test.cc
-			    ./likelihood/src/acceptance_pmt.cc
-			    ./likelihood/src/f_direction.cc
 			    ./funcparts/src/theta_i_func.cc
 			    ./funcparts/src/distance_function.cc
 			    ./funcparts/src/fdirection.cc
 			    ./funcparts/src/likelihood.cc
 			    ./funcparts/src/theta_dir_i.cc
 			    ./funcparts/src/tof.cc
-			    ./goodness/src/goodness_x_f_direction.cc
+			    ./funcparts/src/fgoodness.cc
 			    ./goodness/src/GoodnessManager.cc
 			    ./goodness/src/GoodnessRunAction.cc
 			    ./goodness/src/GoodnessCalculateManager.cc
@@ -67,6 +76,10 @@ add_library(lowe SHARED ./goodness/src/WCGoodness_calculate.cc
 			    ./goodness/src/GoodnessParameters.cc
 			    ./goodness/src/OneGoodnessCalculated.cc
 			    ./goodness/src/OneGoodnessCalculateManager.cc
+			    ./goodness/src/GoodnessVerboseManager.cc
+			    ./goodness/src/GoodnessVerboseEventManager.cc
+			    ./goodness/src/GoodnessVerboseCalculateManager.cc
+			    ./goodness/src/GoodnessVerboseCalculateAction.cc
 			    ./likelihood/src/LikelihoodDirectionManager.cc
 			    ./likelihood/src/LikelihoodDirectionCalculateManager.cc
 			    ./likelihood/src/LikelihoodDirectionRunAction.cc
@@ -103,10 +116,6 @@ target_link_libraries(convert lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/
 add_executable(minimize ./exe/others/NumericalMinimization.cc)
 target_compile_options(minimize PRIVATE "-Wall")
 target_link_libraries(minimize lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
-
-add_executable(get_function_direction ./exe/likelihood/get_function_direction.cc)
-target_compile_options(get_function_direction PRIVATE "-Wall")
-target_link_libraries(get_function_direction lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
 
 add_executable(N200 ./exe/others/N200.cc)
 target_compile_options(N200 PRIVATE "-Wall")

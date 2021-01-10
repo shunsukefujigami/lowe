@@ -15,8 +15,8 @@ public:
   virtual ~LikelihoodDirectionEventAction()
   {
   }
-  void BeginOfEventAction(std::shared_ptr<Process>){};
-  void EndOfEventAction(std::shared_ptr<Process> process);
+  void BeginOfAction(std::shared_ptr<Process> process);
+  void EndOfAction(std::shared_ptr<Process> process);
 private:
   std::shared_ptr<LikelihoodDirectionRunAction> likelihooddirectionrunaction = nullptr;
 };

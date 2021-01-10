@@ -38,7 +38,7 @@ public:
 private:
   CLHEP::HepLorentzVector vector;
   CLHEP::Hep3Vector direction;
-  double energy;
+  double energy = 0.;
 };
   
 #endif

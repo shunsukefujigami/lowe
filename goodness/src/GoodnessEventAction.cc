@@ -7,7 +7,7 @@
 #include "GoodnessEventAction.hh"
 #include "GoodnessRunAction.hh"
 #include "GoodnessEvent.hh"
-#include "goodness_data.hh"
+#include "Reconstructdata.hh"
 #include "AnalizedData.hh"
 
 GoodnessEventAction::GoodnessEventAction(GoodnessRunAction* goodnessrunaction_in)
@@ -21,7 +21,7 @@ void GoodnessEventAction::BeginOfEventAction()
 
 void GoodnessEventAction::EndOfEventAction(const GoodnessEvent* goodnessevent)
 {
-  goodness_data data;
+  TReconstructdata data;
   data.Setgoodness(goodnessevent->Getgoodness());
   CLHEP::HepLorentzVector vector = goodnessevent->Get4Vector();
   double x = vector.x();
@@ -30,7 +30,7 @@ void GoodnessEventAction::EndOfEventAction(const GoodnessEvent* goodnessevent)
   double t = vector.t();
   TLorentzVector vec(x,y,z,t);
   data.Set4Vector(vec);
-  goodness_data* datain = GetRunAction()->GetgoodnessData();
+  TReconstructdata* datain = GetRunAction()->GetReconstructdata();
   datain->Setdata(data);
   TTree* tree = GetRunAction()->GetTTree();
   tree->Fill();

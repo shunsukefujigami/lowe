@@ -17,110 +17,51 @@
 #include "CSearch_range.hh"
 #include "likelihood_direction_data.hh"
 #include "AngleRange.hh"
+#include "TReconstructdata.hh"
+#include "OneRunDataAnalizeManager.hh"
+#include "OneRunGoodnessAnalizeManager.hh"
+#include "OneRunLikelihoodAnalizeManager.hh"
+#include "BiasError.hh"
 
 class OneRunAnalizeManager : public TObject
 {
 public:
   OneRunAnalizeManager();
-  OneRunAnalizeManager(TFile* datafile);
-  OneRunAnalizeManager(TFile* datafile,TFile* goodnessfile,int filenumber = 0);
-  OneRunAnalizeManager(TFile* datafile,TFile* goodnessfile,TFile* likelihoodfile,int filenumber = 0);
-  void Setdatafile(TFile* datafile);
-  void SetGoodnessfile(TFile* goodnessfile,int filenumber = 0);
-  void SetLikelihoodfile(TFile* likelihoodfile,int filenumber = 0);
+  OneRunAnalizeManager(const char* datafile,const char* mode);
+  void Setdatafile(const char* datafile);
+  void SetGoodnessfile(const char* goodnessfile);
+  void SetLikelihoodfile(const char* likelihoodfile);
   virtual ~OneRunAnalizeManager();
-  TH1D* GetXHist(const char* name="",const char* title="");
-  TH1D* GetYHist(const char* name="",const char* title="");
-  TH1D* GetZHist(const char* name="",const char* title="");
-  TH1D* GetTHist(const char* name="",const char* title="");
-  TH1D* GetCosThetaHist()
+  OneRunDataAnalizeManager* Getdatamanager()
   {
-    return costhetahist;
+    return datamanager;
   }
-  TH1D* GetPhiHist()
+  OneRunGoodnessAnalizeManager* Getgoodnessmanager()
   {
-    return phihist;
+    return goodnessmanager;
   }
-  TH1D* GetDeltaAngleHist()
+  OneRunLikelihoodAnalizeManager* Getlikelihoodmanager()
   {
-    return deltaanglehist;
+    return likelihoodmanager;
   }
   
-  
-  void FitByGaussianAll();
-  TF1* Getfgaussianx()
-  {
-    return fgaussianx;
-  }
-  TF1* Getfgaussiany()
-  {
-    return fgaussiany;
-  }
-  TF1* Getfgaussianz()
-  {
-    return fgaussianz;
-  }
-  TH2D* GetTH2D();
-  void FillTH2D(const char* name,const char*title,int n,int xnum,double xmin,double xmax,int ynum,double ymin,double ymax,const char* xvar,const char* yvar);
-  void FillHitTime(int xnum,double xmin,double xmax);
-  TH1D* GetHitTime();
-  void Filltofnoretro(int xnum,double xmin,double xmax);
-  TH1D* Gettofnoretro();
-  void Filltofonretro(int xnum,double xmin,double xmax);
-  TH1D* Gettofonretro();
-  double GetEfficiency();
-  WCSimRootEvent* GetWCSimRootEvent()
-  {
-    return wcsimrootevent;
-  }
-  
+  TH2D GetTH2DEvent(int n,int xnum,double xmin,double xmax,int ynum,double ymin,double ymax,const char* xvar,const char* yvar);
+  TH2D GetTH2DHit(int n,int xnum,double xmin,double xmax,int ynum,double ymin,double ymax,const char* xvar,const char* yvar);
+  TH1D GetTH1DEvent(int n,int num,double min,double max,const char* var);
+  TH1D GetTH1DHit(int n,int num,double min,double max,const char* var);
+  BiasError GetXBiasErrorbygoodness();
+  BiasError GetYBiasErrorbygoodness();
+  BiasError GetZBiasErrorbygoodness();
+  double angleerror1sigma();
 private:
-  TFile* dfile = nullptr;
-  TFile* gfile = nullptr;
-  TFile* lfile = nullptr;
-  TTree* wcsimT = nullptr;
-  TTree* wcsimGeoT = nullptr;
-  TTree* goodnessT = nullptr;
-  TTree* optionT = nullptr;
-  TTree* likelihoodT = nullptr;
-  TTree* loptionT = nullptr;
-  goodness_data* gdata = nullptr;
-  CSearch_range* range = nullptr;
-  WCSimRootEvent* wcsimrootevent = nullptr;
-  WCSimRootGeom* wcsimrootgeom = nullptr;
-  l_dir_data* ldata = nullptr;
-  AngleRange* arange = nullptr;
-  TH1D* xhist = nullptr;
-  TH1D* yhist = nullptr;
-  TH1D* zhist = nullptr;
-  TH1D* thist = nullptr;
-  TF1* fgaussianx = nullptr;
-  TF1* fgaussiany = nullptr;
-  TF1* fgaussianz = nullptr;
-  TH2D* th2d = nullptr;
-  TH1D* costhetahist = nullptr;
-  TH1D* phihist = nullptr;
-  TH1D* deltaanglehist = nullptr;
-  TF1* fgaussiancostheta = nullptr;
-  TF1* fgaussianphi = nullptr;
-  TH1D* hittime = nullptr;
-  TH1D* tofnoretro = nullptr;
-  TH1D* tofonretro = nullptr;
-  int neventdata;
-  int neventgoodness;
-  int neventlikelihood;
-  double GetVariable(const char* valname);
-  std::string s_fgaussianx;
-  std::string s_fgaussiany;
-  std::string s_fgaussianz;
-  std::vector<int> vncherenkovdigihits;
-  double Gettofnoretro(WCSimRootCherenkovDigiHit* hit);
-  double Gettofonretro(WCSimRootCherenkovDigiHit* hit);
-  double WClength;
-  double WCradius;
-  
+  OneRunDataAnalizeManager* datamanager = nullptr;
+  OneRunGoodnessAnalizeManager* goodnessmanager = nullptr;
+  OneRunLikelihoodAnalizeManager* likelihoodmanager = nullptr;
+  double GetVariableEvent(const char* valname,int i);
+  double GetVariableHit(const char* valname,int ievent,int jhit);
 public:
   ClassDef(OneRunAnalizeManager,1)
 };
+
 
 #endif

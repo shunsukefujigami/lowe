@@ -1,10 +1,11 @@
 // c++ STL
 #include <iostream>
-
+#include <cstring>
+#include <dirent.h>
 // self-introduced libarary
 #include "MultiRunAnalizeManager.hh"
 #include "OneRunAnalizeManager.hh"
-#include "FileList.hh"
+#include "BiasError.hh"
 
 ClassImp(MultiRunAnalizeManager)
 
@@ -12,167 +13,288 @@ MultiRunAnalizeManager::MultiRunAnalizeManager()
 {
 }
 
-MultiRunAnalizeManager::MultiRunAnalizeManager(FileList* datafilelist,FileList* goodnessfilelist,int NRun_in)
-  :TClonesArray("OneRunAnalizeManager",NRun_in)
+
+void MultiRunAnalizeManager::SetBasefile(const char* basefile)
 {
-  NRun = NRun_in;
-  for(int i = 0;i < NRun;i++)
+  sbasefile = basefile;
+  if(sbasefile.find("LSR") != std::string::npos)
     {
-      new((*this)[i]) OneRunAnalizeManager((TFile*)datafilelist->At(i),(TFile*)goodnessfilelist->At(i),i);
+      mode = 2;
+      std::cout << "set likelihood mode!" << std::endl;
+      baselikelihoodparameters.Setpair(sbasefile);
+      baselikelihoodparameters.SetValue();
+    }
+  else if(sbasefile.find("GSR") != std::string::npos)
+    {
+      mode = 1;
+      std::cout << "set goodness mode!" << std::endl;
+      basegoodnessparameters.Setpair(sbasefile);
+      basegoodnessparameters.SetValue();
+    }
+  else if(sbasefile.find("DET") != std::string::npos)
+    {
+      mode = 0;
+      std::cout << "set data mode!" << std::endl;
+      basefileparameters.Setpair(sbasefile);
+      basefileparameters.SetValue();
+    }
+  else
+    {
+      std::cout << "invalid file name!" << std::endl;
+      throw "MultiRunAnalizeManager::SetComparefile(const char* file)";
     }
 }
 
-MultiRunAnalizeManager::MultiRunAnalizeManager(FileList*datafilelist,int NRun_in)
-  :TClonesArray("OneRunAnalizeManager",NRun_in)
+void MultiRunAnalizeManager::SetAllfile()
 {
-  NRun = NRun_in;
-  for(int i = 0;i < NRun;i++)
+  std::string directory;
+  if(mode == 0)
+    directory = "/home/fujigami/store/datafile/";
+  if(mode == 1)
+    directory = "/home/fujigami/store/goodnessfile/";
+  if(mode == 2)
+    directory = "/home/fujigami/store/likelihoodfile/";
+  DIR* dir;
+  dir = opendir(directory.c_str());
+  if(dir == NULL)
     {
-      new((*this)[i]) OneRunAnalizeManager((TFile*)datafilelist->At(i));
+      std::cout << "directory is not found";
+      throw "void MultiRunAnalizeManager::SetComparefile(std::vector<std::string> vexclusionname)";
     }
-}
-MultiRunAnalizeManager::MultiRunAnalizeManager(FileList* datafilelist,FileList* goodnessfilelist,FileList* likelihoodfilelist,int NRun_in)
-  :TClonesArray("OneRunAnalizeManager",NRun_in)
-{
-  NRun = NRun_in;
-  for(int i = 0;i < NRun;i++)
+  dirent* entry = readdir(dir);
+  while(entry != NULL)
     {
-      new((*this)[i]) OneRunAnalizeManager((TFile*)datafilelist->At(i),(TFile*)goodnessfilelist->At(i),(TFile*)likelihoodfilelist->At(i),i);
+      std::string sdname = entry->d_name;
+      std::string fullpath = directory + sdname;
+      if(fullpath.find("/.") == std::string::npos)
+	{
+	  if(mode == 0)
+	    {
+	      std::cout << fullpath << std::endl;
+	      OneDataParameters odp;
+	      odp.Setpair(fullpath);
+	      odp.SetValue();
+	      odp.PrintValue();
+	      vdataparameters.push_back(odp);
+	    }
+	  if(mode == 1)
+	    {
+	      std::cout << fullpath << std::endl;
+	      OneGoodnessParameters ogp;
+	      ogp.Setpair(fullpath);
+	      ogp.SetValue();
+	      ogp.PrintValue();
+	      vgoodnessparameters.push_back(ogp);
+	    }
+	  if(mode == 2)
+	    {
+	      std::cout << fullpath << std::endl;
+	      OneLikelihoodParameters olp;
+	      olp.Setpair(fullpath);
+	      olp.SetValue();
+	      olp.PrintValue();
+	      vlikelihoodparameters.push_back(olp);
+	    }
+	  
+	}
+      entry = readdir(dir);
     }
 }
 
-
-void MultiRunAnalizeManager::Setdatafile(FileList* datafilelist)
+void MultiRunAnalizeManager::SetComparefile(std::vector<std::string> vexclusionname)
 {
-  int NRundata= datafilelist->GetEntries();
-  if(NRun != NRundata)
+  int number = 0;
+  std::vector<std::string> vfile;
+  if(mode == 0)
     {
-      std::cout << "Number of data is no matching!" << std::endl;
-      throw "MultiRunAnalizeManager::Setdatafile(FileList* datafilelist)";
+      for(auto itr = vdataparameters.begin();itr != vdataparameters.end();itr++)
+	{
+	  if(basefileparameters.isEqual(*itr,vexclusionname))
+	    {
+	      number++;
+	      vfile.push_back((*itr).Getfile());
+	    }
+	}
+    }
+  if(mode == 1)
+    {
+      for(auto itrg = vgoodnessparameters.begin();itrg != vgoodnessparameters.end();itrg++)
+	{
+	  if(basegoodnessparameters.isEqual(*itrg,vexclusionname))
+	    {
+	      number++;
+	      vfile.push_back((*itrg).Getfile());
+	    }
+	}
+    }
+  if(mode == 2)
+    {
+      for(auto itrl = vlikelihoodparameters.begin();itrl != vlikelihoodparameters.end();itrl++)
+	{
+	  if(baselikelihoodparameters.isEqual(*itrl,vexclusionname))
+	    {
+	      number++;
+	      vfile.push_back((*itrl).Getfile());
+	    }
+	}
+    }
+  vrunanalizemanager = std::vector<OneRunAnalizeManager>(number);
+  size_t i = 0;
+  for(auto itrf = vfile.begin();itrf != vfile.end();itrf++)
+    {
+      if(mode == 0)
+	vrunanalizemanager.at(i).Setdatafile((*itrf).c_str());
+      if(mode == 1)
+	vrunanalizemanager.at(i).SetGoodnessfile((*itrf).c_str());
+      if(mode == 2)
+	vrunanalizemanager.at(i).SetLikelihoodfile((*itrf).c_str());
+      i++;
+    }
+}
+
+void MultiRunAnalizeManager::PrintAllfile()
+{
+  if(mode == 0)
+    {
+      for(auto itr = vdataparameters.begin();itr != vdataparameters.end();itr++)
+	{
+	  std::cout << (*itr).Getfile() << std::endl;
+	}
+    }
+  if(mode == 1)
+    {
+      for(auto itrg = vgoodnessparameters.begin();itrg != vgoodnessparameters.end();itrg++)
+	{
+	  std::cout << (*itrg).Getfile() << std::endl;
+	}
+    }
+  if(mode == 2)
+    {
+      for(auto itrl = vlikelihoodparameters.begin();itrl != vlikelihoodparameters.end();itrl++)
+	{
+	  std::cout << (*itrl).Getfile() << std::endl;
+	}
     }
   
-  for(int i = 0 ; i < NRun; i ++)
+}
+
+void MultiRunAnalizeManager::PrintComparefile()
+{
+  for(auto itr = vrunanalizemanager.begin();itr != vrunanalizemanager.end();itr++)
     {
-      ((OneRunAnalizeManager*)At(i))->Setdatafile((TFile*)datafilelist->At(i));
+      if(mode == 0)
+	std::cout << (*itr).Getdatamanager()->GetDataParameters()->Getfile() << std::endl;
+      if(mode == 1)
+	std::cout << (*itr).Getgoodnessmanager()->GetGoodnessParameters()->Getfile() << std::endl;
+      if(mode == 2)
+	std::cout << (*itr).Getlikelihoodmanager()->GetLikelihoodParameters()->Getfile() << std::endl;
     }
 }
 
-       
-void MultiRunAnalizeManager::SetGoodnessfile(FileList* goodnessfilelist)
-{
-  int NRungoodness = goodnessfilelist->GetEntries();
-  if(NRun != NRungoodness)
-    {
-      std::cout << "Number of data is no matching!" << std::endl;
-      throw "MultiRunAnalizeManager::SetGoodnessfile(FileList* goodnessfilelist)";
-    }
-  for(int i = 0; i < NRun;i++)
-    {
-      ((OneRunAnalizeManager*)At(i))->SetGoodnessfile((TFile*)goodnessfilelist->At(i),i);
-    }
-}
-void MultiRunAnalizeManager::Setlikelihoodfile(FileList* likelihoodfilelist)
-{
-  int NRunlikelihood = likelihoodfilelist->GetEntries();
-  if(NRun != NRunlikelihood)
-    {
-      std::cout << "Number of data is no matching!" << std::endl;
-      throw "MultiRunAnalizeManager::SetLikelihoodfile(FileList* likelihoodfilelist)";
-    }
-  for(int i = 0; i < NRun; i++)
-    {
-      ((OneRunAnalizeManager*)At(i))->SetLikelihoodfile((TFile*)likelihoodfilelist->At(i),i);
-    }
-}
-
-  
 MultiRunAnalizeManager::~MultiRunAnalizeManager()
 {
-  if(efficiency)
-    {
-      delete efficiency;
-    }
 }
 
-void MultiRunAnalizeManager::Fillefficiency(double xmin,double xmax,double xwidth)
+TH1D MultiRunAnalizeManager::GetTH1D(int num,double min,double max,const char* xvar,const char* yvar,bool berror,const char* errorval)
 {
-  if(efficiency)
+  TH1D th1d("","",num,min,max);
+  for(auto itr = vrunanalizemanager.begin();itr != vrunanalizemanager.end();itr++)
     {
-      delete efficiency;
+      double xval = GetVariable(xvar,*itr);
+      double yval = GetVariable(yvar,*itr);
+      th1d.Fill(xval,yval);
+      if(berror)
+	{
+	  int bin = th1d.FindBin(xval);
+	  double yerror = GetVariable(errorval,*itr);
+	  th1d.SetBinError(bin,yerror);
+	}
+      
+    }
+  return th1d;
+}
+
+double MultiRunAnalizeManager::GetVariable(const char* var,OneRunAnalizeManager& oram)
+{
+  std::string svar = var;
+  if(svar == "tzmaxreflectivity")
+    {
+      return oram.Getdatamanager()->GetDataParameters()->trapezoidreflectivity;
+    }
+  if(svar == "fixedenergy")
+    {
+      return oram.Getdatamanager()->GetDataParameters()->fixedenergy;
+    }
+  if(svar == "triggerefficiency")
+    {
+      return oram.Getdatamanager()->GetEfficiency();
+    }
+  if(svar == "xbiasbygoodness")
+    {
+      BiasError xbiaserror = oram.GetXBiasErrorbygoodness();
+      return xbiaserror.bias;
+    }
+  if(svar == "xbiaserrorbygoodness")
+    {
+      BiasError xbiaserror = oram.GetXBiasErrorbygoodness();
+      return xbiaserror.biaserror;
+    }
+  if(svar == "xerrorbygoodness")
+    {
+      BiasError xbiaserror = oram.GetXBiasErrorbygoodness();
+      return xbiaserror.error;
+    }
+  if(svar == "xerrorerrorbygoodness")
+    {
+      BiasError xbiaserror = oram.GetXBiasErrorbygoodness();
+      return xbiaserror.errorerror;
+    }
+    if(svar == "ybiasbygoodness")
+    {
+      BiasError ybiaserror = oram.GetYBiasErrorbygoodness();
+      return ybiaserror.bias;
+    }
+  if(svar == "ybiaserrorbygoodness")
+    {
+      BiasError ybiaserror = oram.GetYBiasErrorbygoodness();
+      return ybiaserror.biaserror;
+    }
+  if(svar == "yerrorbygoodness")
+    {
+      BiasError ybiaserror = oram.GetYBiasErrorbygoodness();
+      return ybiaserror.error;
+    }
+  if(svar == "yerrorerrorbygoodness")
+    {
+      BiasError ybiaserror = oram.GetYBiasErrorbygoodness();
+      return ybiaserror.errorerror;
+    }
+    if(svar == "zbiasbygoodness")
+    {
+      BiasError zbiaserror = oram.GetZBiasErrorbygoodness();
+      return zbiaserror.bias;
+    }
+  if(svar == "zbiaserrorbygoodness")
+    {
+      BiasError zbiaserror = oram.GetZBiasErrorbygoodness();
+      return zbiaserror.biaserror;
+    }
+  if(svar == "zerrorbygoodness")
+    {
+      BiasError zbiaserror = oram.GetZBiasErrorbygoodness();
+      return zbiaserror.error;
+    }
+  if(svar == "zerrorerrorbygoodness")
+    {
+      BiasError zbiaserror = oram.GetZBiasErrorbygoodness();
+      return zbiaserror.errorerror;
+    }
+  if(svar == "angleerrrorbylikeliihood")
+    {
+      double angle = oram.angleerror1sigma();
+      return angle;
     }
   
-  efficiency = new TH1D("","",NRun,xmin-xwidth/2.,xmax+xwidth/2.);
-  for(int i = 0; i < NRun ; i++)
-    {
-      double eff = ((OneRunAnalizeManager*)At(i))->GetEfficiency();
-      efficiency->Fill(xmin + i * xwidth,eff);
-    }
+  std::cout << svar << " is invalid!" << std::endl;
+  throw "double MultiRunAnalizeManager::GetVariable(const char* var,OneRunAnalizeManager oram)";
 }
-
-void MultiRunAnalizeManager::Fillerrorandbiasgaussian(double xmin,double xmax,double xwidth)
-{
-  if(xerror)
-    delete xerror;
-  if(yerror)
-    delete yerror;
-  if(zerror)
-    delete zerror;
-  if(xbias)
-    delete xbias;
-  if(ybias)
-    delete ybias;
-  if(zbias)
-    delete zbias;
-  xerror = new TH1D("","",NRun,xmin-xwidth/2.,xmax+xwidth/2.);
-  yerror = new TH1D("","",NRun,xmin-xwidth/2.,xmax+xwidth/2.);
-  zerror = new TH1D("","",NRun,xmin-xwidth/2.,xmax+xwidth/2.);
-  xbias = new TH1D("","",NRun,xmin-xwidth/2.,xmax+xwidth/2.);
-  ybias = new TH1D("","",NRun,xmin-xwidth/2.,xmax+xwidth/2.);
-  zbias = new TH1D("","",NRun,xmin-xwidth/2.,xmax+xwidth/2.);
-  for(int i = 0;i < NRun;i++)
-    {
-      OneRunAnalizeManager* oram = (OneRunAnalizeManager*)At(i);
-      oram->FitByGaussianAll();
-      double xerr = oram->Getfgaussianx()->GetParameter(2);
-      double yerr = oram->Getfgaussiany()->GetParameter(2);
-      double zerr = oram->Getfgaussianz()->GetParameter(2);
-      double xerrerr = oram->Getfgaussianx()->GetParError(2);
-      double yerrerr = oram->Getfgaussiany()->GetParError(2);
-      double zerrerr = oram->Getfgaussianz()->GetParError(2);
-      WCSimRootTrigger* wcsimroottrigger = oram->GetWCSimRootEvent()->GetTrigger(0);
-      double xbi = oram->Getfgaussianx()->GetParameter(1) - wcsimroottrigger->GetVtx(0);
-      double ybi = oram->Getfgaussiany()->GetParameter(1) - wcsimroottrigger->GetVtx(1);
-      double zbi = oram->Getfgaussianz()->GetParameter(1) - wcsimroottrigger->GetVtx(2);
-      double xbierr = oram->Getfgaussianx()->GetParError(1);
-      double ybierr = oram->Getfgaussiany()->GetParError(1);
-      double zbierr = oram->Getfgaussianz()->GetParError(1);
-      double bin = xmin + i * xwidth;
-      xerror->Fill(bin,xerr);
-      yerror->Fill(bin,yerr);
-      zerror->Fill(bin,zerr);
-      xerror->SetBinError(i+1,xerrerr);
-      yerror->SetBinError(i+1,yerrerr);
-      zerror->SetBinError(i+1,zerrerr);
-      xbias->Fill(bin,xbi);
-      ybias->Fill(bin,ybi);
-      zbias->Fill(bin,zbi);
-      xbias->SetBinError(i+1,xbierr);
-      ybias->SetBinError(i+1,ybierr);
-      zbias->SetBinError(i+1,zbierr);
-    }
-}
-
-void MultiRunAnalizeManager::fitanglemean(double xmin,double xmax,double xwidth)
-{
-  if(anglemean)
-    delete anglemean;
-  anglemean = new TH1D("","",NRun,xmin-xwidth/2.,xmax+xwidth/2.);
-  for(int i = 0;i < NRun; i++)
-    {
-      OneRunAnalizeManager* oram = (OneRunAnalizeManager*)At(i);
-      double mean = oram->GetDeltaAngleHist()->GetMean();
-      double bin = xmin + i * xwidth;
-      anglemean->Fill(bin,mean);
-    }
-}
-

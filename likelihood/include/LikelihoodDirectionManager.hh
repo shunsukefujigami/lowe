@@ -9,7 +9,7 @@
 #include "WCSimRootGeom.hh"
 
 // self-introduced library
-#include "goodness_data.hh"
+#include "TReconstructdata.hh"
 #include "LikelihoodDirectionRunAction.hh"
 #include "LikelihoodDirectionEventManager.hh"
 #include "ProcessManager.hh"
@@ -18,7 +18,7 @@ class LikelihoodDirectionManager : public ProcessManager
 {
 public:
   LikelihoodDirectionManager() = delete;
-  LikelihoodDirectionManager(const char* infiledata,const char* infilegoodness);
+  LikelihoodDirectionManager(const char* infilegoodness);
   virtual ~LikelihoodDirectionManager();
   void Doprocess()
   {
@@ -42,7 +42,7 @@ private:
   TFile* gfile = nullptr;
   TTree* goodnessT = nullptr;
   TTree* optionT = nullptr;
-  goodness_data* goodnessdata = nullptr;
+  TReconstructdata* reconstructdata = nullptr;
   int Nevents;
 };
 

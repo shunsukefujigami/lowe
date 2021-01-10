@@ -2,74 +2,38 @@
 #define MULTIRUNANALIZEMANAGER_HH
 // c++ STL
 #include <vector>
+#include <cstring>
 // ROOT library
 #include <TClonesArray.h>
 #include <TH1D.h>
 // self-introduced library
-#include "FileList.hh"
+#include "OneDataParameters.hh"
+#include "OneGoodnessParameters.hh"
+#include "OneLikelihoodParameters.hh"
+#include "OneRunAnalizeManager.hh"
 
-class MultiRunAnalizeManager : public TClonesArray
+class MultiRunAnalizeManager : public TObject
 {
 public:
   MultiRunAnalizeManager();
-  MultiRunAnalizeManager(FileList* datafilelist,FileList* goodnessfilelist,int NRun_in);
-  MultiRunAnalizeManager(FileList*datafilelist,int NRun_in);
-  MultiRunAnalizeManager(FileList* datafilelist,FileList* goodnessfilelist,FileList* likelihoodfilellist,int NRun_in);
-  void Setdatafile(FileList* datafilelist);
-  void SetGoodnessfile(FileList* goodnessfilelist);
-  void Setlikelihoodfile(FileList* likelihoodfilelist);
+  void SetBasefile(const char* file);
+  void SetComparefile(std::vector<std::string> vexclusionname);
+  void SetAllfile();
+  void PrintAllfile();
+  void PrintComparefile();
   virtual ~MultiRunAnalizeManager();
-  int GetNRun()
-  {
-    return NRun;
-  }
-  void Fillefficiency(double xmin,double xmax,double xwidth);
-  TH1D* Getefficiency()
-  {
-    return efficiency;
-  }
-  void Fillerrorandbiasgaussian(double xmin,double xmax,double xwidth);
-  TH1D* Getxerror()
-  {
-    return xerror;
-  }
-  TH1D* Getyerror()
-  {
-    return yerror;
-  }
-  TH1D* Getzerror()
-  {
-    return zerror;
-  }
-  TH1D* Getxbias()
-  {
-    return xbias;
-  }
-  TH1D* Getybias()
-  {
-    return ybias;
-  }
-  TH1D* Getzbias()
-  {
-    return zbias;
-  }
-  void fitanglemean(double xmin,double xmax,double xwidth);
-
-  TH1D* Getanglemean()
-  {
-    return anglemean;
-  }
-  
+  TH1D GetTH1D(int num,double min,double max,const char* xvar,const char* yvar,bool berror=false,const char* errorval="");
+  double GetVariable(const char* var,OneRunAnalizeManager& oram);
+  OneDataParameters basefileparameters;
+  OneGoodnessParameters basegoodnessparameters;
+  OneLikelihoodParameters baselikelihoodparameters;
+  std::vector<OneDataParameters> vdataparameters;
+  std::vector<OneGoodnessParameters> vgoodnessparameters;
+  std::vector<OneLikelihoodParameters> vlikelihoodparameters;
+  std::vector<OneRunAnalizeManager> vrunanalizemanager;
 private:
-  int NRun;
-  TH1D* efficiency = nullptr;
-  TH1D* xerror = nullptr;
-  TH1D* yerror = nullptr;
-  TH1D* zerror = nullptr;
-  TH1D* xbias = nullptr;
-  TH1D* ybias = nullptr;
-  TH1D* zbias = nullptr;
-  TH1D* anglemean = nullptr;
+  std::string sbasefile;
+  int mode; // datamode 0;goodnessmode 1;likelihoodmode 2
 public:
   ClassDef(MultiRunAnalizeManager,1)
 };

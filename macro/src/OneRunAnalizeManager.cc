@@ -7,474 +7,324 @@
 #include "OneRunAnalizeManager.hh"
 #include "CSearch_range.hh"
 #include "constants.hh"
+#include "Tdistance_function.hh"
+#include "Ttof.hh"
+#include "MyString.hh"
+#include "BiasError.hh"
 
 OneRunAnalizeManager::OneRunAnalizeManager()
 {
 }
 
-OneRunAnalizeManager::OneRunAnalizeManager(TFile* datafile)
+OneRunAnalizeManager::OneRunAnalizeManager(const char* datafile,const char* mode)
 {
-  Setdatafile(datafile);
+  std::string smode = mode;
+  if(smode == "d")
+    Setdatafile(datafile);
+  if(smode == "g")
+    SetGoodnessfile(datafile);
+  if(smode == "l")
+    SetLikelihoodfile(datafile);
 }
 
-OneRunAnalizeManager::OneRunAnalizeManager(TFile* datafile,TFile* goodnessfile,int filenumber)
-{
-  Setdatafile(datafile);
-  SetGoodnessfile(goodnessfile,filenumber);
-}
 
-
-OneRunAnalizeManager::OneRunAnalizeManager(TFile* datafile,TFile* goodnessfile,TFile* likelihoodfile,int filenumber)
+void OneRunAnalizeManager::Setdatafile(const char* datafile)
 {
-  Setdatafile(datafile);
-  SetGoodnessfile(goodnessfile,filenumber);
-  SetLikelihoodfile(likelihoodfile,filenumber);
-}
-
-void OneRunAnalizeManager::Setdatafile(TFile* datafile)
-{
-  if(dfile)
+  if(datamanager)
     {
       std::cout << "data file is already exist!" << std::endl;
-      throw "OneRunAnalizeManager::Setdatafile(TFile* goodnessfile,int number)";
-    } 
-  dfile = datafile;
-  wcsimT = (TTree*)dfile->Get("wcsimT");
-  wcsimGeoT = (TTree*)dfile->Get("wcsimGeoT");
-  wcsimrootevent = new WCSimRootEvent();
-  wcsimrootgeom = new WCSimRootGeom();
-  wcsimT->SetBranchAddress("wcsimrootevent",&wcsimrootevent);
-  wcsimGeoT->SetBranchAddress("wcsimrootgeom",&wcsimrootgeom);
-  wcsimGeoT->GetEntry(0);
-  WClength = wcsimrootgeom->GetWCCylLength();
-  WCradius = wcsimrootgeom->GetWCCylRadius();
-  neventdata = wcsimT->GetEntries();
-  for(int i = 0;i < neventdata ; i++ )
-    {
-      wcsimT->GetEntry(i);
-      WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
-      vncherenkovdigihits.push_back(wcsimroottrigger->GetNcherenkovdigihits());
-      
+      throw "void OneRunAnalizeManager::Setdatafile(const char* datafile)";
     }
+  datamanager = new OneRunDataAnalizeManager();
+  datamanager->Setdatafile(datafile);
 }
 
-
-void OneRunAnalizeManager::SetGoodnessfile(TFile* goodnessfile,int filenumber)
+void OneRunAnalizeManager::SetGoodnessfile(const char* goodnessfile)
 {
-  if(!dfile)
+  if(datamanager)
     {
-      std::cout << "data file is not exist!" << std::endl;
-      throw "OneRunAnalizeManager::SetGoodnessfile(TFile* goodnessfile,int number)";
+      std::cout << "data file is already exist!" << std::endl;
+      throw "OneRunAnalizeManager::SetGoodnessfile(const char* goodnessfile)";
     }
-  if(gfile)
+  TFile* gfile = new TFile(goodnessfile);
+  MyString* infiledataname = (MyString*)gfile->Get("infilename");
+  datamanager = new OneRunDataAnalizeManager();
+  datamanager->Setdatafile(infiledataname->Getstring().c_str());
+  goodnessmanager = new OneRunGoodnessAnalizeManager();
+  goodnessmanager->Setgoodnessfile(goodnessfile);
+  delete gfile;
+}
+
+void OneRunAnalizeManager::SetLikelihoodfile(const char* likelihoodfile)
+{
+  if(datamanager)
+    {
+      std::cout << "data file is already exist!" << std::endl;
+      throw "OneRunAnalizeManager::SetLikelihoodfile(const char* likelihoodfile)";
+    }
+  if(goodnessmanager)
     {
       std::cout << "goodness file is already exist!" << std::endl;
-      throw "OneRunAnalizeManager::SetGoodnessfile(TFile* goodnessfile,int number)";
+      throw "OnneRunAnalizeManager::SetLikelihoodfile(const char* likelihoodfile)";
     }
-  
-  gfile = goodnessfile;
-  goodnessT = (TTree*)gfile->Get("goodnessT");
-  gdata = new goodness_data();
-  goodnessT->SetBranchAddress("goodnessdata",&gdata);
-  neventgoodness = goodnessT->GetEntries();
-  optionT = (TTree*)gfile->Get("optionT");
-  range = new CSearch_range();
-  optionT->SetBranchAddress("csearchrange",&range);
-  optionT->GetEntry(0);
-  std::ostringstream oss;
-  oss << filenumber;
-  std::string s_number = oss.str();
-  std::string s_xhist = "xhist" + s_number;
-  std::string s_yhist = "yhist" + s_number;
-  std::string s_zhist = "zhist" + s_number;
-  std::string s_thist = "thist" + s_number;
-  xhist = new TH1D(s_xhist.c_str(),"",range->GetXNum(),range->GetXmin()-range->GetXwidth()/2.,range->GetXmax()+range->GetXwidth()/2.);
-  yhist = new TH1D(s_yhist.c_str(),"",range->GetYNum(),range->GetYmin()-range->GetYwidth()/2.,range->GetYmax()+range->GetYwidth()/2.);
-  zhist = new TH1D(s_zhist.c_str(),"",range->GetZNum(),range->GetZmin()-range->GetZwidth()/2.,range->GetZmax()+range->GetZwidth()/2.);
-  thist = new TH1D(s_thist.c_str(),"",range->GetTNum(),range->GetTmin()-range->GetTwidth()/2.,range->GetTmax()+range->GetTwidth()/2.);
-  for(int i = 0; i < neventgoodness; i++)
-    {
-      if(vncherenkovdigihits[i] != 0)
-	{
-	  goodnessT->GetEntry(i);
-	  xhist->Fill(gdata->GetX());
-	  yhist->Fill(gdata->GetY());
-	  zhist->Fill(gdata->GetZ());
-	  thist->Fill(gdata->GetT());
-	}
-      
-    }
-  s_fgaussianx = "fgaussianx" + s_number;
-  s_fgaussiany = "fgaussiany" + s_number;
-  s_fgaussianz = "fgaussianz" + s_number;
-  fgaussianx = new TF1(s_fgaussianx.c_str(),"[0]*exp(-0.5*pow((x-[1])/[2],2))",xhist->GetXaxis()->GetXmin(),xhist->GetXaxis()->GetXmax());
-  fgaussiany = new TF1(s_fgaussiany.c_str(),"[0]*exp(-0.5*pow((x-[1])/[2],2))",yhist->GetXaxis()->GetXmin(),yhist->GetXaxis()->GetXmax());
-  fgaussianz = new TF1(s_fgaussianz.c_str(),"[0]*exp(-0.5*pow((x-[1])/[2],2))",zhist->GetXaxis()->GetXmin(),zhist->GetXaxis()->GetXmax());
-  WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
-  fgaussianx->SetParameters(neventgoodness/10.,wcsimroottrigger->GetVtx(0),100.);
-  fgaussiany->SetParameters(neventgoodness/10.,wcsimroottrigger->GetVtx(1),100.);
-  fgaussianz->SetParameters(neventgoodness/10.,wcsimroottrigger->GetVtx(2),100.);
-}
-
-void OneRunAnalizeManager::SetLikelihoodfile(TFile* likelihoodfile,int filenumber)
-{
-  if(!dfile)
-    {
-      std::cout << "data file is not exist!" << std::endl;
-      throw "OneRunAnalizeManager::SetLikelihoodfile(TFile* likelihoodfile)";
-    }
-  if(!gfile)
-    {
-      std::cout << "goodness file is not exist!" << std::endl;
-      throw "OneRunAnalizeManager::SetLikelihoodfile(TFile* likelihoodfile)";
-    }
-  if(lfile)
-    {
-      std::cout << "likelihood file is already exist!" << std::endl;
-      throw "OneRunAnalizeManager::SetLikelihoodfile(TFile* likelihoodfile)";
-    }
-  
-  lfile = likelihoodfile;
-  likelihoodT = (TTree*)lfile->Get("likelihoodT");
-  ldata = new l_dir_data();
-  likelihoodT->SetBranchAddress("likelihooddata",&ldata);
-  neventlikelihood = likelihoodT->GetEntries();
-  loptionT = (TTree*)lfile->Get("loptionT");
-  arange = new AngleRange();
-  loptionT->SetBranchAddress("anglerange",&arange);
-  loptionT->GetEntry(0);
-  std::ostringstream oss;
-  oss << filenumber;
-  std::string s_number = oss.str();
-  std::string s_costhetahist = "costhetahist" + s_number;
-  std::string s_phihist = "phihist" + s_number;
-  std::string s_deltaanglehist = "deltaanglehist" + s_number;
-  costhetahist = new TH1D(s_costhetahist.c_str(),"",arange->GetCosthetaNum(),arange->GetCosthetamin() - arange->GetCosthetawidth()/2.,arange->GetCosthetamax() + arange->GetCosthetawidth()/2.);
-  phihist = new TH1D(s_phihist.c_str(),"",arange->GetPhiNum(),arange->GetPhimin() - arange->GetPhiwidth()/2.,arange->GetPhimax() + arange->GetPhiwidth()/2.);
-  deltaanglehist = new TH1D(s_deltaanglehist.c_str(),"",100,0.,3.141593);
-    for(int i = 0; i < neventlikelihood; i++)
-    {
-      if(vncherenkovdigihits[i] != 0)
-	{
-	  wcsimT->GetEntry(i);
-	  WCSimRootTrack* wcsimroottrack = (WCSimRootTrack*)wcsimrootevent->GetTrigger(0)->GetTracks()->At(0);
-	  double xdir = wcsimroottrack->GetDir(0);
-	  double ydir = wcsimroottrack->GetDir(1);
-	  double zdir = wcsimroottrack->GetDir(2);
-	  TVector3 truedir(xdir,ydir,zdir);
-	  TVector3 fitdir;
-	  likelihoodT->GetEntry(i);
-	  fitdir.SetMagThetaPhi(1.,std::acos(ldata->GetCosTheta()),ldata->GetPhi());
-	  double deltaangle = fitdir.Angle(truedir);
-	  costhetahist->Fill(ldata->GetCosTheta());
-	  phihist->Fill(ldata->GetPhi());
-	  deltaanglehist->Fill(deltaangle);
-	}
-      
-    }
-    
+  TFile* lfile = new TFile(likelihoodfile);
+  MyString* infiledataname = (MyString*)lfile->Get("infiledataname");
+  MyString* infilegoodnessname = (MyString*)lfile->Get("infilegoodnessname");
+  datamanager = new OneRunDataAnalizeManager();
+  datamanager->Setdatafile(infiledataname->Getstring().c_str());
+  goodnessmanager = new OneRunGoodnessAnalizeManager();
+  goodnessmanager->Setgoodnessfile(infilegoodnessname->Getstring().c_str());
+  likelihoodmanager = new OneRunLikelihoodAnalizeManager();
+  likelihoodmanager->Setlikelihoodfile(likelihoodfile);
 }
 
 OneRunAnalizeManager::~OneRunAnalizeManager()
 {
-  delete wcsimrootevent;
-  delete wcsimrootgeom;
-  if(gdata)
-    delete gdata;
-  if(range)
-    delete range;
-  if(ldata)
-    delete ldata;
-  if(arange)
-    delete arange;
-  if(xhist)
-    delete xhist;
-  if(yhist)
-    delete yhist;
-  if(zhist)
-    delete zhist;
-  if(thist)
-    delete thist;
-  if(th2d)
-    delete th2d;
+  if(datamanager)
+    delete datamanager;
+  if(goodnessmanager)
+    delete goodnessmanager;
+  if(likelihoodmanager)
+    delete likelihoodmanager;
 }
 
 
-TH1D* OneRunAnalizeManager::GetXHist(const char* name,const char* title)
+TH2D OneRunAnalizeManager::GetTH2DEvent(int n,int xnum,double xmin,double xmax,int ynum,double ymin,double ymax,const char* xvar,const char* yvar)
 {
-  xhist->SetName(name);
-  xhist->SetTitle(title);
-  return xhist;
-}
-
-TH1D* OneRunAnalizeManager::GetYHist(const char* name,const char* title)
-{
-  yhist->SetName(name);
-  yhist->SetTitle(title);
-  return yhist;
-}
-
-TH1D* OneRunAnalizeManager::GetZHist(const char* name,const char* title)
-{
-  zhist->SetName(name);
-  zhist->SetTitle(title);
-  return zhist;
-}
-
-TH1D* OneRunAnalizeManager::GetTHist(const char* name,const char* title)
-{
-  thist->SetName(name);
-  thist->SetTitle(title);
-  return thist;
-}
-
-void OneRunAnalizeManager::FitByGaussianAll()
-{
-  
-  xhist->Fit(s_fgaussianx.c_str());
-  yhist->Fit(s_fgaussiany.c_str());
-  zhist->Fit(s_fgaussianz.c_str());
-}
-
-void OneRunAnalizeManager::FillTH2D(const char* name,const char* title,int n,int xnum,double xmin,double xmax,int ynum,double ymin,double ymax,const char* xvar,const char* yvar)
-{
-  
-  if(th2d)
-    {
-      delete th2d;
-    }
-  th2d = new TH2D(name,title,xnum,xmin,xmax,ynum,ymin,ymax);
+  TH2D th2d("","",xnum,xmin,xmax,ynum,ymin,ymax);
   for(int i = 0;i < n;i++)
     {
-      wcsimT->GetEntry(i);
-      WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
-      goodnessT->GetEntry(i);
-      int ncherenkovdigihits = wcsimroottrigger->GetNcherenkovdigihits();
-      if(ncherenkovdigihits != 0)
+      if(datamanager->Getncherenkovdigihits(i) != 0)
 	{
-	  double xval = GetVariable(xvar);
-	  double yval = GetVariable(yvar);
-	  th2d->Fill(xval,yval);
+	  double xval = GetVariableEvent(xvar,i);
+	  double yval = GetVariableEvent(yvar,i);
+	  th2d.Fill(xval,yval);
 	}
     }
-}
-
-TH2D* OneRunAnalizeManager::GetTH2D()
-{
   return th2d;
 }
 
-
-void OneRunAnalizeManager::FillHitTime(int xnum,double xmin,double xmax)
+TH2D OneRunAnalizeManager::GetTH2DHit(int n,int xnum,double xmin,double xmax,int ynum,double ymin,double ymax,const char* xvar,const char* yvar)
 {
-  if(hittime)
+   TH2D th2d("","",xnum,xmin,xmax,ynum,ymin,ymax);
+  for(int i = 0;i < n;i++)
     {
-      delete hittime;
-    }
-  hittime = new TH1D("","",xnum,xmin,xmax);
-  for(int i = 0; i < neventdata; i++)
-    {
-      wcsimT->GetEntry(i);
-      WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
-      int ncherenkovdigihits = wcsimroottrigger->GetNcherenkovdigihits();
-      for(int k = 0; k < ncherenkovdigihits;k++)
+      for(int j = 0; j < datamanager->Getncherenkovdigihits(i); j++)
 	{
-	  WCSimRootCherenkovDigiHit* hit = (WCSimRootCherenkovDigiHit*)(wcsimroottrigger->GetCherenkovDigiHits()->At(k));
-	  double time = hit->GetT();
-	  hittime->Fill(time - offset + wcsimroottrigger->GetTriggerTime());
+	  double xval = GetVariableHit(xvar,i,j);
+	  double yval = GetVariableHit(yvar,i,j);
+	  th2d.Fill(xval,yval);
 	}
     }
+  return th2d;
 }
 
-TH1D* OneRunAnalizeManager::GetHitTime()
+TH1D OneRunAnalizeManager::GetTH1DEvent(int n,int num,double min,double max,const char* var)
 {
-  return hittime;
-}
-
-void OneRunAnalizeManager::Filltofnoretro(int xnum,double xmin,double xmax)
-{
-  if(tofnoretro)
+  TH1D th1d("","",num,min,max);
+  for(int i = 0; i < n;i++)
     {
-      delete tofnoretro;
-    }
-  tofnoretro = new TH1D("","",xnum,xmin,xmax);
-  for(int i = 0; i < neventdata; i++)
-    {
-      wcsimT->GetEntry(i);
-      WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
-      int ncherenkovdigihits = wcsimroottrigger->GetNcherenkovdigihits();
-      for(int k = 0; k < ncherenkovdigihits;k++)
+      if(datamanager->Getncherenkovdigihits(i) != 0)
 	{
-	  WCSimRootCherenkovDigiHit* hit = (WCSimRootCherenkovDigiHit*)(wcsimroottrigger->GetCherenkovDigiHits()->At(k));
-	  double time = Gettofnoretro(hit);
-	  tofnoretro->Fill(time);
+	  double val = GetVariableEvent(var,i);
+	  th1d.Fill(val);
+	}
+      
+    }
+  return th1d;
+}
+
+TH1D OneRunAnalizeManager::GetTH1DHit(int n,int num,double min,double max,const char* var)
+{
+  TH1D th1d("","",num,min,max);
+  for(int i = 0; i < n;i++)
+    {
+      for(int j = 0; j < datamanager->Getncherenkovdigihits(i);j++)
+	{
+	  double val = GetVariableHit(var,i,j);
+	  th1d.Fill(val);
 	}
     }
+  return th1d;
 }
 
-TH1D* OneRunAnalizeManager::Gettofnoretro()
-{
-  return tofnoretro;
-}
 
-void OneRunAnalizeManager::Filltofonretro(int xnum,double xmin,double xmax)
-{
-  if(tofonretro)
-    {
-      delete tofonretro;
-    }
-  tofonretro = new TH1D("","",xnum,xmin,xmax);
-  for(int i = 0; i < neventdata; i++)
-    {
-      wcsimT->GetEntry(i);
-      WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
-      int ncherenkovdigihits = wcsimroottrigger->GetNcherenkovdigihits();
-      for(int k = 0; k < ncherenkovdigihits;k++)
-	{
-	  WCSimRootCherenkovDigiHit* hit = (WCSimRootCherenkovDigiHit*)(wcsimroottrigger->GetCherenkovDigiHits()->At(k));
-	  double time = Gettofonretro(hit);
-	  tofonretro->Fill(time);
-	}
-    }
-}
-
-TH1D* OneRunAnalizeManager::Gettofonretro()
-{
-  return tofonretro;
-}
-
-double OneRunAnalizeManager::GetVariable(const char* valname)
+double OneRunAnalizeManager::GetVariableEvent(const char* valname,int i)
 {
   std::string s_valname = valname;
-  if(s_valname == "gdata->GetT()")
+  if(s_valname == "tvertexbygoodness")
     {
-      return gdata->GetT();
+      return goodnessmanager->GetT(i);
     }
-  if(s_valname == "wcsimroottrigger->GetTriggerTime()")
+  if(s_valname == "triggertimetrue")
     {
-      WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
-      return wcsimroottrigger->GetTriggerTime();
+      return datamanager->GetTriggerTime(i);
     }
-  if(s_valname == "gdata->GetX()")
+  if(s_valname == "xvertexbygoodness")
     {
-      return gdata->GetX();
+      return goodnessmanager->GetX(i);
     }
-  if(s_valname == "gdata->GetY()")
+  if(s_valname == "yvertexbygoodness")
     {
-      return gdata->GetY();
+      return goodnessmanager->GetY(i);
     }
-  if(s_valname == "gdata->GetZ()")
+  if(s_valname == "zvertexbygoodness")
     {
-      return gdata->GetZ();
+      return goodnessmanager->GetZ(i);
     }
-  if(s_valname == "gdata->Getgoodness()")
+  if(s_valname == "goodness")
     {
-      return gdata->Getgoodness();
+      return goodnessmanager->Getgoodness(i);
     }
-  if(s_valname == "wcsimroottrigger->GetNcherenkovdigihits()")
+  if(s_valname == "ncherenkovdigihits")
     {
-      WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
-      return (double)wcsimroottrigger->GetNcherenkovdigihits();
+      return (double)datamanager->Getncherenkovdigihits(i);
     }
-  if(s_valname == "wcsimroottrigger->GetVtx(0)")
+  if(s_valname == "xvertextrue")
     {
-      WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
-      return wcsimroottrigger->GetVtx(0);
+      return datamanager->Getxvtx(i);
     }
-  if(s_valname == "wcsimroottrigger->GetVtx(1)")
+  if(s_valname == "yvertextrue")
     {
-      WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
-      return wcsimroottrigger->GetVtx(1);
+      return datamanager->Getyvtx(i);
     }
-  if(s_valname == "wcsimroottrigger->GetVtx(2)")
+  if(s_valname == "zvertextrue")
     {
-      WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
-      return wcsimroottrigger->GetVtx(2);
+      return datamanager->Getzvtx(i);
     }
+  if(s_valname == "xbiasgoodness")
+    {
+      return goodnessmanager->GetX(i) - datamanager->Getxvtx(i);
+    }
+  if(s_valname == "ybiasgoodness")
+    {
+      return goodnessmanager->GetY(i) - datamanager->Getyvtx(i);
+    }
+  if(s_valname == "zbiasgoodness")
+    {
+      return goodnessmanager->GetZ(i) - datamanager->Getzvtx(i);
+    }
+  if(s_valname == "angleerrorlikelihood")
+    {
+      return likelihoodmanager->GetDirection(i).Angle(datamanager->Getdirection(i));
+    }
+  
   std::cout << "invalid valname!" << std::endl;
   throw "OneRunAnalizeManager::GetVariable(const char* valname)";;
 }
 
-double OneRunAnalizeManager::GetEfficiency()
+double OneRunAnalizeManager::GetVariableHit(const char* valname,int ievent,int jhit)
 {
-  int ntrigger = 0;
-  for(int i = 0; i < neventdata; i++)
+  std::string s_valname = valname;
+  if(s_valname == "hittimeraw")
     {
-      if(vncherenkovdigihits[i] != 0)
+      return datamanager->Gethittimeraw(ievent,jhit);
+    }
+  if(s_valname == "tofnoretrotrue")
+    {
+      return datamanager->Gettofnoretrotrue(ievent,jhit);
+    }
+  if(s_valname == "tofonretrotrue")
+    {
+      return datamanager->Gettofonretrotrue(ievent,jhit);
+    }
+  if(s_valname == "hittimetrue")
+    {
+      return datamanager->Gethittimetrue(ievent,jhit);
+    }
+  std::cout << "invalid valname!" << std::endl;
+  throw "OneRunAnalizeManager::GetVariableHit(const char* valname,int ievent,int jhit)";
+}
+
+BiasError OneRunAnalizeManager::GetXBiasErrorbygoodness()
+{
+  CSearch_range range = goodnessmanager->GetCSearch_range();
+  double histmin = -(range.GetXmax()-range.GetXmin())/2. - range.GetXwidth()/2;
+  double histmax = (range.GetXmax()-range.GetXmin())/2. + range.GetXwidth()/2.;
+  int histnum = range.GetXNum();
+  TH1D h1 = GetTH1DEvent(goodnessmanager->Getnevent(),histnum,histmin,histmax,"xbiasgoodness");
+  TF1* f1 = new TF1("f1","[0]*exp(-0.5*pow((x-[1])/[2],2))",h1.GetXaxis()->GetXmin(),h1.GetXaxis()->GetXmax());
+  f1->SetParameters(goodnessmanager->Getnevent()/10.,0.,100.);
+  h1.Fit("f1","0");
+  double xbias = f1->GetParameter(1);
+  double xbiaserror = f1->GetParError(1);
+  double xerror = f1->GetParameter(2);
+  double xerrorerror = f1->GetParError(2);
+  std::vector<double> xvec;
+  BiasError biaserror;
+  biaserror.bias = xbias;
+  biaserror.biaserror = xbiaserror;
+  biaserror.error = xerror;
+  biaserror.errorerror = xerrorerror;
+  delete f1;
+  return biaserror;
+}
+
+BiasError OneRunAnalizeManager::GetYBiasErrorbygoodness()
+{
+  CSearch_range range = goodnessmanager->GetCSearch_range();
+  double histmin = -(range.GetYmax()-range.GetYmin())/2. - range.GetYwidth()/2;
+  double histmax = (range.GetYmax()-range.GetYmin())/2. + range.GetYwidth()/2.;
+  int histnum = range.GetYNum();
+  TH1D h1 = GetTH1DEvent(goodnessmanager->Getnevent(),histnum,histmin,histmax,"ybiasgoodness");
+  TF1* f1 = new TF1("f1","[0]*exp(-0.5*pow((x-[1])/[2],2))",h1.GetXaxis()->GetXmin(),h1.GetXaxis()->GetXmax());
+  f1->SetParameters(goodnessmanager->Getnevent()/10.,0.,100.);
+  h1.Fit("f1","0");
+  double ybias = f1->GetParameter(1);
+  double ybiaserror = f1->GetParError(1);
+  double yerror = f1->GetParameter(2);
+  double yerrorerror = f1->GetParError(2);
+  std::vector<double> yvec;
+  BiasError biaserror;
+  biaserror.bias = ybias;
+  biaserror.biaserror = ybiaserror;
+  biaserror.error = yerror;
+  biaserror.errorerror = yerrorerror;
+  delete f1;
+  return biaserror;
+}
+
+BiasError OneRunAnalizeManager::GetZBiasErrorbygoodness()
+{
+  CSearch_range range = goodnessmanager->GetCSearch_range();
+  double histmin = -(range.GetZmax()-range.GetZmin())/2. - range.GetZwidth()/2;
+  double histmax = (range.GetZmax()-range.GetZmin())/2. + range.GetZwidth()/2.;
+  int histnum = range.GetZNum();
+  TH1D h1 = GetTH1DEvent(goodnessmanager->Getnevent(),histnum,histmin,histmax,"zbiasgoodness");
+  TF1* f1 = new TF1("f1","[0]*exp(-0.5*pow((x-[1])/[2],2))",h1.GetXaxis()->GetXmin(),h1.GetXaxis()->GetXmax());
+  f1->SetParameters(goodnessmanager->Getnevent()/10.,0.,100.);
+  h1.Fit("f1","0");
+  double zbias = f1->GetParameter(1);
+  double zbiaserror = f1->GetParError(1);
+  double zerror = f1->GetParameter(2);
+  double zerrorerror = f1->GetParError(2);
+  std::vector<double> zvec;
+  BiasError biaserror;
+  biaserror.bias = zbias;
+  biaserror.biaserror = zbiaserror;
+  biaserror.error = zerror;
+  biaserror.errorerror = zerrorerror;
+  delete f1;
+  return biaserror;
+}
+
+double OneRunAnalizeManager::angleerror1sigma()
+{
+  TH1D h1 = GetTH1DEvent(likelihoodmanager->Getevent(),10000,0.,3.141593,"angleerrorlikelihood");
+  double all = h1.Integral();
+  double angle = 0;
+  double ratio = 0.6827;
+  for(int min = 1;min < h1.GetMaximumBin();min++)
+    {
+      double integral = h1.Integral(1.,min);
+      
+      if(integral/all > ratio)
 	{
-	  ntrigger++;
+	  angle = h1.GetBinCenter(min);
+	  break;
 	}
     }
-  double efficiency = (double)ntrigger/(double)neventdata;
-  return efficiency;
+  return angle;
 }
 
-double OneRunAnalizeManager::Gettofnoretro(WCSimRootCherenkovDigiHit* hit)
-{
-  double time = hit->GetT();
-  int tubeId = hit->GetTubeId();
-  WCSimRootPMT pmt = wcsimrootgeom->GetPMT(tubeId-1);
-  double pmtX = pmt.GetPosition(0);
-  double pmtY = pmt.GetPosition(1);
-  double pmtZ = pmt.GetPosition(2);
-  TVector3 pmt_position(pmtX,pmtY,pmtZ);
-  WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
-  double positionX = wcsimroottrigger->GetVtx(0);
-  double positionY = wcsimroottrigger->GetVtx(1);
-  double positionZ = wcsimroottrigger->GetVtx(2);
-  TVector3 position(positionX,positionY,positionZ);
-  double vtime = (-1)* wcsimroottrigger->GetTriggerTime();
-  TVector3 position_pmt = position - pmt_position;
-  double d1 = std::sqrt(position_pmt*position_pmt);
-  double tof = time - vtime - offset - d1/v_light_in_water;
-  return tof;
-}
-
-double OneRunAnalizeManager::Gettofonretro(WCSimRootCherenkovDigiHit* hit)
-{
-  double time = hit->GetT();
-  int tubeId = hit->GetTubeId();
-  WCSimRootPMT pmt = wcsimrootgeom->GetPMT(tubeId-1);
-  double pmtX = pmt.GetPosition(0);
-  double pmtY = pmt.GetPosition(1);
-  double pmtZ = pmt.GetPosition(2);
-  TVector3 pmt_position(pmtX,pmtY,pmtZ);
-  WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
-  double positionX = wcsimroottrigger->GetVtx(0);
-  double positionY = wcsimroottrigger->GetVtx(1);
-  double positionZ = wcsimroottrigger->GetVtx(2);
-  TVector3 position(positionX,positionY,positionZ);
-  double vtime = (-1)* wcsimroottrigger->GetTriggerTime();
-  TVector3 position_pmt = position - pmt_position;
-  double d1 = std::sqrt(position_pmt*position_pmt);
-  double half_WClength = WClength/2.;
-  double a = (pmtX-positionX)*(pmtX-positionX)+(pmtY-positionY)*(pmtY-positionY);
-  double b = positionX*(positionX-pmtX)+positionY*(positionY-pmtY);
-  double c = positionX*positionX+positionY*positionY-WCradius*WCradius;
-  double t;
-  if(a != 0){
-    t = (b-sqrt(b*b-a*c))/a;
-  }
-  else{
-    t = -c/(2*b);
-  }
-  double z = positionZ + (pmtZ - positionZ)*t;
-  if(-half_WClength < z && half_WClength > z){
-
-}
-  else if(z > half_WClength){
-    t = (half_WClength - positionX)/(pmtZ-positionX);
-    z = half_WClength;
-  }
-  else{
-    t = (-half_WClength - positionX)/(pmtZ-positionX);
-    z = - half_WClength;
-  }
-  double x = positionX + (pmtX-positionX)*t;
-  double y = positionY + (pmtY-positionY)*t;
-  double d2 = std::sqrt((positionX-x)*(positionX-x)+(positionY-y)*(positionY-y)+(positionZ-z)*(positionZ-z));
-  double distance_fly_retro = d1 + 2* d2;
-  double tof = time - vtime - offset - distance_fly_retro/v_light_in_water;
-  return tof;
-}
-
+  

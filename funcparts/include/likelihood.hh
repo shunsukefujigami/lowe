@@ -50,8 +50,7 @@ protected:
   std::shared_ptr<fdirection> fdirnoretro;
   std::shared_ptr<afunction> afuncnoretro;
   std::shared_ptr<fdirection> fdironretro;
-  std::shared_ptr<afunction> afunconretro;
-  
+  std::shared_ptr<afunction> afunconretro;  
 };
 
 class likelihoodnoretro : public likelihood

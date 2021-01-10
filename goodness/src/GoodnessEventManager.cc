@@ -40,19 +40,6 @@ void GoodnessEventManager::ProcessOneEvent(GoodnessEvent* event)
     {
       Doloop();
     }
-  if(goodnessloop4vectortype == GoodnessLoop4VectorType::True)
-    {
-      double x = wcsimroottrigger->GetVtx(0);
-      double y = wcsimroottrigger->GetVtx(1);
-      double z = wcsimroottrigger->GetVtx(2);
-      double t = (-1)*wcsimroottrigger->GetTriggerTime();
-      CLHEP::HepLorentzVector hvector(x,y,z,t);
-      Doloopin(hvector);
-    }
-  
-  std::cout << "currentevent->Getgoodness() is " << currentevent->Getgoodness() << std::endl;
-  std::cout << "currentevent->Get4Vector().t() is " << currentevent->Get4Vector().t() << std::endl;
-  
   goodnesseventaction->EndOfEventAction(currentevent);
 }
 

@@ -5,8 +5,6 @@
 #include <CLHEP/Vector/ThreeVector.h>
 // self-introduced library
 #include "LikelihoodDirectionEventManager.hh"
-#include "LikelihoodDirectionCalculateManager.hh"
-#include "LikelihoodDirectionManager.hh"
 
 LikelihoodDirectionEventManager::LikelihoodDirectionEventManager()
 {
@@ -18,6 +16,13 @@ LikelihoodDirectionEventManager::~LikelihoodDirectionEventManager()
 
 void LikelihoodDirectionEventManager::Doprocess()
 {
+  WCSimRootTrigger* wcsimroottrigger = ProcessManager::GetProcessManager(0)->GetWCSimRootEvent()->GetTrigger(0);
+  int ncherenkovdigihits = wcsimroottrigger->GetNcherenkovdigihits();
+  currentprocess->Setncherenkovdigihits(ncherenkovdigihits);
+  currentprocess->onelikelihoodonretro = std::vector<double>(ncherenkovdigihits,0.);
+  currentprocess->onelikelihoodnoretro = std::vector<double>(ncherenkovdigihits,0.);
+  currentprocess->maxonelikelihoodonretro = std::vector<double>(ncherenkovdigihits,0.);
+  currentprocess->maxonelikelihoodnoretro = std::vector<double>(ncherenkovdigihits,0.);
   double costheta = range.GetCosthetamin();
   for(int i = 0; i < range.GetCosthetaNum(); ++i , costheta += range.GetCosthetawidth())
     {
@@ -41,6 +46,7 @@ void LikelihoodDirectionEventManager::Doloopin(CLHEP::Hep3Vector hvector)
     {
       currentprocess->SetMaxlikelihood(likelihood);
       currentprocess->SetMax3Direction(hvector);
+      currentprocess->SetMaxonelikelihood();
     }
 }
 
