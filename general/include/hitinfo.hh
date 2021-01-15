@@ -15,56 +15,58 @@ public:
   virtual ~hitinfo()
   {
   }
+  hitinfo& operator=(const hitinfo& info)
+  {
+    hittime = info.HitTime();
+    pmtposition = info.Get3Position();
+    pmtdirection = info.Get3Orientation();
+    WCradius = info.GetWCradius();
+    WClength = info.GetWClength();
+
+    return *this;
+  }
+  
   void Sethit(WCSimRootCherenkovDigiHit* h,WCSimRootGeom* wcsimrootgeom)
   {
-    hit = h;
-    int tubeId = hit->GetTubeId();
-    pmt = wcsimrootgeom->GetPMT(tubeId-1);
+    int tubeId = h->GetTubeId();
+    hittime = h->GetT();
+    WCSimRootPMT pmt = wcsimrootgeom->GetPMT(tubeId-1);
+    pmtposition.setX(pmt.GetPosition(0));
+    pmtposition.setY(pmt.GetPosition(1));
+    pmtposition.setZ(pmt.GetPosition(2));
+    pmtdirection.setX(pmt.GetOrientation(0));
+    pmtdirection.setY(pmt.GetOrientation(1));
+    pmtdirection.setZ(pmt.GetOrientation(2));
     WCradius = wcsimrootgeom->GetWCCylRadius();
     WClength = wcsimrootgeom->GetWCCylLength();
     
   }
-  double GetPosition(int i)
+  CLHEP::Hep3Vector Get3Position() const
   {
-    return pmt.GetPosition(i);
+    return pmtposition;
   }
-  CLHEP::Hep3Vector Get3Position()
+  CLHEP::Hep3Vector Get3Orientation() const
   {
-    double pmtX = GetPosition(0);
-    double pmtY = GetPosition(1);
-    double pmtZ = GetPosition(2);
-    CLHEP::Hep3Vector vector(pmtX,pmtY,pmtZ);
-    return vector;
+    return pmtdirection;
   }
-  double GetOrientation(int i)
+  double HitTime() const
   {
-    return pmt.GetOrientation(i);
+    return hittime;
   }
-  CLHEP::Hep3Vector Get3Orientation()
-  {
-    double orientX = GetOrientation(0);
-    double orientY = GetOrientation(1);
-    double orientZ = GetOrientation(2);
-    CLHEP::Hep3Vector vector(orientX,orientY,orientZ);
-    return vector;
-  }
-  double HitTime()
-  {
-    return hit->GetT();
-  }
-  double GetWCradius()
+  double GetWCradius() const 
   {
     return WCradius;
   }
-  double GetWClength()
+  double GetWClength() const 
   {
     return WClength;
   }
   
   
 private:
-  WCSimRootCherenkovDigiHit* hit;
-  WCSimRootPMT pmt;
+  double hittime;
+  CLHEP::Hep3Vector pmtposition;
+  CLHEP::Hep3Vector pmtdirection;
   double WCradius;
   double WClength;
 };

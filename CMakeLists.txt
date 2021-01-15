@@ -16,8 +16,12 @@ endif()
 include(${ROOT_USE_FILE})
 include_directories($ENV{WCSIMDIR}/include ${ROOT_INCLUDE_DIRS})
 set(CMAKE_CXX_STANDARD 11)
+
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG -mtune=native -march=native")
+
 set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
+
 
 ROOT_GENERATE_DICTIONARY($ENV{MACRODIR}/src/macroRootDict $ENV{MACRODIR}/include/eventdisplay.hh $ENV{MACRODIR}/include/goodness_data.hh $ENV{MACRODIR}/include/likelihood_direction_data.hh $ENV{MACRODIR}/include/AnalizedData.hh $ENV{MACRODIR}/include/CSearch_range.hh LINKDEF $ENV{MACRODIR}/include/C4Number.hh $ENV{MACRODIR}/include/FileList.hh $ENV{MACRODIR}/include/efficiency.hh $ENV{MACRODIR}/include/HistByTree.hh $ENV{MACRODIR}/include/HistError.hh $ENV{MACRODIR}/include/HistBias.hh $ENV{MACRODIR}/include/OneRunAnalizeManager.hh $ENV{MACRODIR}/include/AngleRange.hh $ENV{MACRODIR}/include/Thitinfo.hh $ENV{MACRODIR}/include/TReconstructdata.hh $ENV{MACRODIR}/include/Tfunction.hh $ENV{MACRODIR}/include/Tafunction.hh $ENV{MACRODIR}/include/Tdistance_function.hh $ENV{MACRODIR}/include/Tfdirection.hh $ENV{MACRODIR}/include/Tlikelihood.hh $ENV{MACRODIR}/include/Ttheta_dir_i.hh $ENV{MACRODIR}/include/Ttheta_i_func.hh $ENV{MACRODIR}/include/Ttof.hh $ENV{MACRODIR}/include/OneRunDataAnalizeManager.hh $ENV{MACRODIR}/include/OneRunGoodnessAnalizeManager.hh $ENV{MACRODIR}/include/OneRunLikelihoodAnalizeManager.hh $ENV{MACRODIR}/include/OneDataParameters.hh $ENV{MACRODIR}/include/MyString.hh $ENV{MACRODIR}/include/MultiRunAnalizeManager.hh $ENV{MACRODIR}/include/OneGoodnessParameters.hh $ENV{MACRODIR}/include/OneLikelihoodParameters.hh macro/include/macroRootLinkDef.hh)
 
@@ -67,19 +71,20 @@ add_library(lowe SHARED     ./general/src/config.cc
 			    ./funcparts/src/theta_dir_i.cc
 			    ./funcparts/src/tof.cc
 			    ./funcparts/src/fgoodness.cc
+			    ./funcparts/src/fgoodnessdirection.cc
+			    ./funcparts/src/fsumgoodness.cc
 			    ./goodness/src/GoodnessManager.cc
 			    ./goodness/src/GoodnessRunAction.cc
-			    ./goodness/src/GoodnessCalculateManager.cc
 			    ./goodness/src/GoodnessEventManager.cc
 			    ./goodness/src/GoodnessEvent.cc
 			    ./goodness/src/GoodnessEventAction.cc
 			    ./goodness/src/GoodnessParameters.cc
-			    ./goodness/src/OneGoodnessCalculated.cc
-			    ./goodness/src/OneGoodnessCalculateManager.cc
 			    ./goodness/src/GoodnessVerboseManager.cc
 			    ./goodness/src/GoodnessVerboseEventManager.cc
 			    ./goodness/src/GoodnessVerboseCalculateManager.cc
 			    ./goodness/src/GoodnessVerboseCalculateAction.cc
+			    ./goodness/src/GoodnessMinimizeManager.cc
+			    ./goodness/src/GoodnessMinimizeEventManager.cc
 			    ./likelihood/src/LikelihoodDirectionManager.cc
 			    ./likelihood/src/LikelihoodDirectionCalculateManager.cc
 			    ./likelihood/src/LikelihoodDirectionRunAction.cc
@@ -98,12 +103,13 @@ target_include_directories(lowe PUBLIC ./goodness/include
 				       ./interface/include
 				       $ENV{MACRODIR}/include
 				       $ENV{WCSIMDIR}/include
+				       ../../fmath
 				       ${ROOT_INCLUDE_DIRS}
 				       ${Geant4_INCLUDE_DIR})
 
 target_link_libraries(lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so ${Geant4_LIBRARIES})
 
-# set(ROOT_LIBRARIES ${ROOT_LIBRARIES} "/home/fujigami/retro/root_build/lib/libMinuit.so")
+set(ROOT_LIBRARIES ${ROOT_LIBRARIES} "/home/fujigami/retro/root_build/lib/libMinuit.so")
 
 #add_executable(goodness_moment ./exe/goodness/goodness_moment.cc)
 #target_compile_options(goodness_moment PRIVATE "-Wall")
@@ -112,10 +118,6 @@ target_link_libraries(lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSim
 add_executable(convert ./exe/others/convert.cc)
 target_compile_options(convert PRIVATE "-Wall")
 target_link_libraries(convert lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
-
-add_executable(minimize ./exe/others/NumericalMinimization.cc)
-target_compile_options(minimize PRIVATE "-Wall")
-target_link_libraries(minimize lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
 
 add_executable(N200 ./exe/others/N200.cc)
 target_compile_options(N200 PRIVATE "-Wall")
@@ -153,3 +155,7 @@ target_link_libraries(Goodness lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}
 add_executable(LikelihoodDirection ./exe/likelihood/LikelihoodDirection.cc)
 target_compile_options(LikelihoodDirection PRIVATE "-Wall")
 target_link_libraries(LikelihoodDirection lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
+
+add_executable(GoodnessMinimize ./exe/goodness/GoodnessMinimize.cc)
+target_compile_options(GoodnessMinimize PRIVATE "-Wall")
+target_link_libraries(GoodnessMinimize lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)

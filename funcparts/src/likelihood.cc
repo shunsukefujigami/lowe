@@ -22,7 +22,7 @@ double likelihoodnoretro::returnvalue()
   double tof_no_retro = tofnoretro.returnvalue();
   double toferror = tof_no_retro - data.Get4Vector().t();
   double l = 0;
-  if(toferror > -20. && toferror < 20.)
+  if(toferror > -timewindownoretro && toferror < timewindowonretro)
     {
       double fdir = fdirnoretro->returnvalue();
       double afunc = afuncnoretro->returnvalue();
@@ -49,7 +49,7 @@ double likelihoodonretro::returnvalue()
   double tof_on_retro = tofonretro.returnvalue();
   double toferror = tof_on_retro - data.Get4Vector().t();
   double l = 0;
-  if(toferror > -20. && toferror < 20.)
+  if(toferror > -timewindowonretro && toferror < timewindowonretro)
     {
       double fdir = fdironretro->returnvalue();
       double afunc = afunconretro->returnvalue();
@@ -87,7 +87,7 @@ double likelihoodsum::returnvalue()
   double tof_no_retro = tofnoretro.returnvalue();
   double toferrornoretro = tof_no_retro - data.Get4Vector().t();
   double l = 0;
-  if(toferroronretro > -20. && toferroronretro < 20.)
+  if(toferroronretro > -timewindowonretro && toferroronretro < timewindowonretro)
     {
       double fdir = fdironretro->returnvalue();
       double afunc = afunconretro->returnvalue();
@@ -97,7 +97,7 @@ double likelihoodsum::returnvalue()
       double theta_i = theta_i_f.returnvalue();
       l += (std::log(fdir))* std::cos(theta_i)/afunc;
     }
-  if(toferrornoretro > -20. && toferrornoretro < 20.)
+  if(toferrornoretro > -timewindownoretro && toferrornoretro < timewindownoretro)
     {
       double fdir = fdirnoretro->returnvalue();
       double afunc = afuncnoretro->returnvalue();

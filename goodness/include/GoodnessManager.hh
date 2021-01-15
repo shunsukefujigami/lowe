@@ -34,9 +34,6 @@ public:
     goodnessrunaction = goodnessrunaction_in;
   }
   void SetGoodnessEventAction(GoodnessEventAction* goodnesseventaction_in);
-
-  void SetGoodnessCalculateAction(GoodnessCalculateAction* goodnesscalculateaction);
-  void SetOneGoodnessCalculateAction(OneGoodnessCalculateAction* onegoodnesscalculateaction);
   WCSimRootEvent* GetWCSimRootEvent(){return wcsimrootevent;}
   WCSimRootGeom* GetWCSimRootGeom(){return wcsimrootgeom;}
 private:
@@ -49,7 +46,7 @@ private:
   GoodnessEventAction* goodnesseventaction = nullptr;
   GoodnessRun* goodnessrun = nullptr;
   GoodnessEvent* currentevent = nullptr;
-  GoodnessEventManager* goodnesseventmanager = nullptr;
+  GoodnessEventManager goodnesseventmanager;
   GoodnessParameters* goodnessparameters = nullptr;
   int nevent;
   

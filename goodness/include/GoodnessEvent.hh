@@ -22,9 +22,15 @@ public:
   {
     hvector = hvector_in;
   }
+  void SetNcherenkovdigihits(int n)
+  {
+    ncherenkovdigihits = n;
+  }
+  
 private:
   int eventID;
   double goodness = 0;
+  int ncherenkovdigihits;
   CLHEP::HepLorentzVector hvector;
 };
 

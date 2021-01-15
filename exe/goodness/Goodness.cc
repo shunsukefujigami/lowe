@@ -27,20 +27,18 @@ int main()
       CSearch_range range = GetCSearch_range();
       goodnessparameters->SetSearch_range(&range);
       goodnessparameters->Print();
-      GoodnessManager* goodnessmanager = new GoodnessManager(Getchar("INFILE"));
-      goodnessmanager->SetGoodnessParameters(goodnessparameters);
+      GoodnessManager goodnessmanager(Getchar("INFILE"));
+      goodnessmanager.SetGoodnessParameters(goodnessparameters);
       GoodnessRunAction* goodnessrunaction = new GoodnessRunAction(Getchar("OUTFILE"),Getchar("INFILE"));
-      goodnessmanager->SetGoodnessRunAction(goodnessrunaction);
-      goodnessmanager->SetGoodnessEventAction(new GoodnessEventAction(goodnessrunaction));
-      goodnessmanager->SetGoodnessCalculateAction(new GoodnessCalculateAction());
-      goodnessmanager->SetOneGoodnessCalculateAction(new OneGoodnessCalculateAction());
-      goodnessmanager->SetParameters();
+      goodnessmanager.SetGoodnessRunAction(goodnessrunaction);
+      goodnessmanager.SetGoodnessEventAction(new GoodnessEventAction(goodnessrunaction));
+      goodnessmanager.SetParameters();
       
-      goodnessmanager->Run(Getint("NEVENTS"));
-      delete goodnessmanager;
+      goodnessmanager.Run(Getint("NEVENTS"));
+      //      delete goodnessmanager;
 
 
-      std::shared_ptr<GoodnessVerboseManager> goodnessverbosemanager = std::make_shared<GoodnessVerboseManager>(Getchar("INFILEDATA"),Getchar("OUTFILE"));
+      std::shared_ptr<GoodnessVerboseManager> goodnessverbosemanager = std::make_shared<GoodnessVerboseManager>(Getchar("INFILE"),Getchar("OUTFILE"));
       std::shared_ptr<GoodnessVerboseEventManager> goodnessverboseeventmanager = std::make_shared<GoodnessVerboseEventManager>();
       std::shared_ptr<GoodnessVerboseCalculateManager> goodnessverbosecalculatemanager = std::make_shared<GoodnessVerboseCalculateManager>();
       goodnessverbosemanager->SetProcessManager();

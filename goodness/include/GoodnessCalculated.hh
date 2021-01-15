@@ -27,6 +27,8 @@ public:
 private:
   double goodness = 0.;
   CLHEP::HepLorentzVector vector;
+  CLHEP::Hep3Vector pmtposition;
+  
 };
 
 #endif

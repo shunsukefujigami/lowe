@@ -33,7 +33,9 @@ int main()
       AngleRange range = GetAngleRange();
       likelihooddirectioneventmanager->SetAngleRange(range);
       std::shared_ptr<likelihood> likelihoodfuncnoretro = std::make_shared<likelihoodnoretro>();
+      likelihoodfuncnoretro->Settimewindownoretro(Getdouble("TIMEWINDOWNORETRO"));
       std::shared_ptr<likelihood> likelihoodfunconretro = std::make_shared<likelihoodonretro>();
+      likelihoodfunconretro->Settimewindowonretro(Getdouble("TIMEWINDOWONRETRO"));
       std::shared_ptr<fdirection> fdirectionfuncnoretro = std::make_shared<fdirbydatanoretro>();
       std::shared_ptr<fdirection> fdirectionfunconretro = std::make_shared<fdirbydataonretro>();
       std::shared_ptr<afunction> afunctionnoretro = std::make_shared<afuncprototype>();

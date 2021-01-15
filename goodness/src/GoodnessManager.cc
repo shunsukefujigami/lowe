@@ -24,7 +24,6 @@ GoodnessManager::GoodnessManager(const char* infile){
   nevent = wcsimT->GetEntries();
   goodnessrun = new GoodnessRun();
   goodnessrun->SetnumberOfEvent(nevent);
-  goodnesseventmanager = new GoodnessEventManager();
   std::cout << "input file data is below" << std::endl;
   file->Print();
   std::cout << nevent << "event exist" << std::endl;
@@ -51,10 +50,6 @@ GoodnessManager::~GoodnessManager(){
     {
       delete goodnessrun;
     }
-  if(goodnesseventmanager)
-    {
-      delete goodnesseventmanager;
-    }
 }
 
 void GoodnessManager::Run(int Nevent){
@@ -70,28 +65,20 @@ void GoodnessManager::Run(int Nevent){
 
 void GoodnessManager::SetParameters()
 {
-  goodnesseventmanager->SetParameters();
+  goodnesseventmanager.SetParameters();
 }
 
 
 void GoodnessManager::ProcessOneEvent(int i_event){
   wcsimT->GetEntry(i_event);
   currentevent = new GoodnessEvent(i_event);
-  goodnesseventmanager->ProcessOneEvent(currentevent);
+  goodnesseventmanager.ProcessOneEvent(currentevent);
   delete currentevent;
 }
 
 void GoodnessManager::SetGoodnessEventAction(GoodnessEventAction* goodnesseventaction_in)
 {
   goodnesseventaction = goodnesseventaction_in;
-  goodnesseventmanager->SetGoodnessEventAction(goodnesseventaction_in);
+  goodnesseventmanager.SetGoodnessEventAction(goodnesseventaction_in);
 }
 
-void GoodnessManager::SetGoodnessCalculateAction(GoodnessCalculateAction* goodnesscalculateaction)
-{
-  goodnesseventmanager->SetGoodnessCalculateAction(goodnesscalculateaction);
-}
-void GoodnessManager::SetOneGoodnessCalculateAction(OneGoodnessCalculateAction* onegoodnesscalculateaction)
-{
-  goodnesseventmanager->SetOneGoodnessCalculateAction(onegoodnesscalculateaction);
-}

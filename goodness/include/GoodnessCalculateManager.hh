@@ -15,6 +15,7 @@ public:
   GoodnessCalculateManager();
   virtual ~GoodnessCalculateManager();
   void SetParameters();
+  std::vector<double> GetDistance(CLHEP::Hep3Vector vec);
   void DoProcess(GoodnessCalculated* goodnesscalculated);
   void  goodness_given_4Vector();
   void goodness_given_4Vector_in(int k);

@@ -44,13 +44,24 @@ public:
     afunconretro = afunc;
   }
   double returnvalue() = 0;
+  void Settimewindownoretro(double t)
+  {
+    timewindownoretro = t;
+  }
+  void Settimewindowonretro(double t)
+  {
+    timewindowonretro = t;
+  }
+  
 protected:
   hitinfo info;
   Reconstructdata data;
   std::shared_ptr<fdirection> fdirnoretro;
   std::shared_ptr<afunction> afuncnoretro;
   std::shared_ptr<fdirection> fdironretro;
-  std::shared_ptr<afunction> afunconretro;  
+  std::shared_ptr<afunction> afunconretro;
+  double timewindownoretro;
+  double timewindowonretro;
 };
 
 class likelihoodnoretro : public likelihood

@@ -72,6 +72,15 @@ public:
   {
     return maxdirection;
   }
+  void Setgoodness(double g)
+  {
+    goodness = g;
+  }
+  double Getgoodness()
+  {
+    return goodness;
+  }
+  
   void Setgoodness_onretro(double g)
   {
     goodness_onretro = g;
@@ -121,11 +130,40 @@ public:
     maxonelikelihoodonretro = onelikelihoodonretro;
     maxonelikelihoodnoretro = onelikelihoodnoretro;
   }
+  void Setminimizestatus(int s)
+  {
+    minimizestatus = s;
+  }
+  int Getminimizestatus()
+  {
+    return minimizestatus;
+  }
+  void Setminimizencalls(int n)
+  {
+    minimizencalls = n;
+  }
+  
+  int Getminimizencalls()
+  {
+    return minimizencalls;
+  }
+
+  void SetminimizenIterations(int n)
+  {
+    minimizenIterations = n;
+  }
+
+  int GetminimizenIterations()
+  {
+    return minimizenIterations;
+  }
+
   
 private:
   CLHEP::HepLorentzVector fitted4Vector;
   CLHEP::Hep3Vector currentdirection;
   CLHEP::Hep3Vector pmtposition;
+  double goodness;
   double goodness_onretro;
   double goodness_noretro;
   int hittype;
@@ -135,6 +173,9 @@ private:
   int nevents;
   int currenthitnumber;
   int ncherenkovdigihits;
+  int minimizestatus;
+  int minimizencalls;
+  int minimizenIterations;
 };
 
 #endif

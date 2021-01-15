@@ -16,6 +16,7 @@ LikelihoodDirectionEventManager::~LikelihoodDirectionEventManager()
 
 void LikelihoodDirectionEventManager::Doprocess()
 {
+  currentprocess->SetMaxlikelihood(-1000000.);
   WCSimRootTrigger* wcsimroottrigger = ProcessManager::GetProcessManager(0)->GetWCSimRootEvent()->GetTrigger(0);
   int ncherenkovdigihits = wcsimroottrigger->GetNcherenkovdigihits();
   currentprocess->Setncherenkovdigihits(ncherenkovdigihits);

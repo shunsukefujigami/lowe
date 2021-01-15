@@ -17,9 +17,9 @@ double distance_position_retro::returnvalue()
   double positionX = data.Get3Position().x();
   double positionY = data.Get3Position().y();
   double positionZ = data.Get3Position().z();
-  double pmtX = info.GetPosition(0);
-  double pmtY = info.GetPosition(1);
-  double pmtZ = info.GetPosition(2);
+  double pmtX = info.Get3Position().x();
+  double pmtY = info.Get3Position().y();
+  double pmtZ = info.Get3Position().z();
   double WCradius = info.GetWCradius();
   double WClength = info.GetWClength();
   double half_WClength = WClength/2.;

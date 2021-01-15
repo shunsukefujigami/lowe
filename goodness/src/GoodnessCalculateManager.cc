@@ -19,6 +19,18 @@ GoodnessCalculateManager::~GoodnessCalculateManager()
   delete onegoodnesscalculatemanager;
 }
 
+std::vector<double> GoodnessCalculateManager::GetDistance(CLHEP::Hep3Vector vec)
+{
+  wcsimroottrigger = GoodnessManager::GetGoodnessManager()->GetWCSimRootEvent()->GetTrigger(0);
+  ncherenkovdigihits = wcsimroottrigger->GetNcherenkovdigihits();
+  std::vector<double> vecd;
+  for(int k = 0;k < ncherenkovdigihits;k++)
+    {
+      double distance = s;
+    }
+}
+
+  
 void GoodnessCalculateManager::SetParameters()
 {
   
@@ -50,9 +62,6 @@ void GoodnessCalculateManager::goodness_given_4Vector()
 
 void GoodnessCalculateManager::goodness_given_4Vector_in(int k)
 {
-  static OneGoodnessCalculated onegoodnesscalculated;
-  CLHEP::HepLorentzVector vertex = currentgoodnesscalculated->Get4Vector();
-  onegoodnesscalculated.SetVertex(vertex);
   static WCSimRootCherenkovDigiHit* hit;
   hit = (WCSimRootCherenkovDigiHit*)(wcsimroottrigger->GetCherenkovDigiHits()->At(k));
   double time = hit->GetT();
@@ -64,7 +73,6 @@ void GoodnessCalculateManager::goodness_given_4Vector_in(int k)
   double pmtY = pmt.GetPosition(1);
   double pmtZ = pmt.GetPosition(2);
   CLHEP::Hep3Vector pmt_position(pmtX,pmtY,pmtZ);
-  onegoodnesscalculated.SetPMTPosition(pmt_position);
-  onegoodnesscalculatemanager->DoProcess(onegoodnesscalculated);
+  onegoodnesscalculated.SetPMTPosition(pmt_position); 
   currentgoodnesscalculated->AddGoodness(onegoodnesscalculated.GetOneGoodness());
 }
