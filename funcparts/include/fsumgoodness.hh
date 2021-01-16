@@ -47,8 +47,8 @@ protected:
 class fsumgoodnessnoretro : public fsumgoodness
 {
 public:
-  fsumgoodnessnoretro();
-  virtual ~fsumgoodnessnoretro();
+  fsumgoodnessnoretro(){};
+  virtual ~fsumgoodnessnoretro(){};
   double returnvalue();
   double returnvalueminus(const double* a);
 };

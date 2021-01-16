@@ -62,6 +62,7 @@ extern void G__set_cpp_environmentmacroRootDict();
 #include "/home/fujigami/retro/lowe/source/macro/include/MultiRunAnalizeManager.hh"
 #include "/home/fujigami/retro/lowe/source/macro/include/OneGoodnessParameters.hh"
 #include "/home/fujigami/retro/lowe/source/macro/include/OneLikelihoodParameters.hh"
+#include "/home/fujigami/retro/lowe/source/macro/include/TOption_minimize.hh"
 #include <algorithm>
 namespace std { }
 using namespace std;
@@ -146,6 +147,7 @@ extern G__linked_taginfo G__macroRootDictLN_TReconstructhit;
 extern G__linked_taginfo G__macroRootDictLN_TReconstructdata;
 extern G__linked_taginfo G__macroRootDictLN_vectorlETReconstructhitcOallocatorlETReconstructhitgRsPgR;
 extern G__linked_taginfo G__macroRootDictLN_reverse_iteratorlEvectorlETReconstructhitcOallocatorlETReconstructhitgRsPgRcLcLiteratorgR;
+extern G__linked_taginfo G__macroRootDictLN_TReconstructdata_minimize;
 extern G__linked_taginfo G__macroRootDictLN_Thitinfo;
 extern G__linked_taginfo G__macroRootDictLN_OneDataParameters;
 extern G__linked_taginfo G__macroRootDictLN_OneDataParameterscLcLDetector;
@@ -227,5 +229,6 @@ extern G__linked_taginfo G__macroRootDictLN_vectorlEOneLikelihoodParameterscOall
 extern G__linked_taginfo G__macroRootDictLN_reverse_iteratorlEvectorlEOneLikelihoodParameterscOallocatorlEOneLikelihoodParametersgRsPgRcLcLiteratorgR;
 extern G__linked_taginfo G__macroRootDictLN_vectorlEOneRunAnalizeManagercOallocatorlEOneRunAnalizeManagergRsPgR;
 extern G__linked_taginfo G__macroRootDictLN_reverse_iteratorlEvectorlEOneRunAnalizeManagercOallocatorlEOneRunAnalizeManagergRsPgRcLcLiteratorgR;
+extern G__linked_taginfo G__macroRootDictLN_TOption_minimize;
 
 /* STUB derived class for protected member access */

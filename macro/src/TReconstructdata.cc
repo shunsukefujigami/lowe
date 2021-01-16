@@ -2,6 +2,8 @@
 
 ClassImp(TReconstructdata)
 
+ClassImp(TReconstructdata_minimize)
+
 ClassImp(TReconstructhit)
 
 TReconstructdata::TReconstructdata()
@@ -33,5 +35,20 @@ void TReconstructdata::Setdata(TReconstructdata data)
   likelihoodonretro = data.Getlikelihoodonretro();
   likelihoodnoretro = data.Getlikelihoodnoretro();
   fhit = data.Getvhit();
+}
+
+void TReconstructdata_minimize::Setdata(TReconstructdata_minimize data)
+{
+  vector = data.Get4Vector();
+  direction = data.Getdirection();
+  energy = data.Getenergy();
+  goodness = data.Getgoodness();
+  likelihood = data.Getlikelihood();
+  likelihoodonretro = data.Getlikelihoodonretro();
+  likelihoodnoretro = data.Getlikelihoodnoretro();
+  fhit = data.Getvhit();
+  ncalls = data.Getncalls();
+  nIterations = data.GetnIterations();
+  status = data.Getstatus();
 }
 

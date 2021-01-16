@@ -36,8 +36,28 @@ int main()
       likelihoodfuncnoretro->Settimewindownoretro(Getdouble("TIMEWINDOWNORETRO"));
       std::shared_ptr<likelihood> likelihoodfunconretro = std::make_shared<likelihoodonretro>();
       likelihoodfunconretro->Settimewindowonretro(Getdouble("TIMEWINDOWONRETRO"));
-      std::shared_ptr<fdirection> fdirectionfuncnoretro = std::make_shared<fdirbydatanoretro>();
-      std::shared_ptr<fdirection> fdirectionfunconretro = std::make_shared<fdirbydataonretro>();
+      std::shared_ptr<fdirection> fdirectionfuncnoretro;
+      std::string sfdirfuncnoretrotype = Getchar("FDIRFUNCNORETROTYPE");
+      if(sfdirfuncnoretrotype == "prototype")
+	fdirectionfuncnoretro = std::make_shared<fdirprototypenoretro>();
+      else if(sfdirfuncnoretrotype == "bydata")
+	fdirectionfuncnoretro = std::make_shared<fdirbydatanoretro>();
+      else
+	{
+	  std::cout << "invalid fdirection noretro " << sfdirfuncnoretrotype << std::endl;
+	  throw "int main()";
+	}
+      std::shared_ptr<fdirection> fdirectionfunconretro;
+      std::string sfdirfunconretrotype = Getchar("FDIRFUNCONRETROTYPE");
+      if(sfdirfunconretrotype == "prototype")
+	fdirectionfunconretro = std::make_shared<fdirprototypeonretro>();
+      else if(sfdirfunconretrotype == "bydata")
+	fdirectionfunconretro = std::make_shared<fdirbydataonretro>();
+      else
+	{
+	  std::cout << "invalid fdirection onretro " << sfdirfunconretrotype << std::endl;
+	  throw "int main()";
+	}
       std::shared_ptr<afunction> afunctionnoretro = std::make_shared<afuncprototype>();
       std::shared_ptr<afunction> afunctiononretro = std::make_shared<afuncprototype>();
       onelikelihooddirectioncalculatemanager->Setlikelihoodfuncnoretro(likelihoodfuncnoretro);
@@ -48,6 +68,7 @@ int main()
       onelikelihooddirectioncalculatemanager->Setafunctiononretro(afunctiononretro);
       onelikelihooddirectioncalculatemanager->SetParameters();
       std::shared_ptr<LikelihoodDirectionRunAction> likelihooddirectionrunaction = std::make_shared<LikelihoodDirectionRunAction>(Getchar("OUTFILE"),Getchar("INFILEGOODNESS"));
+      likelihooddirectionrunaction->SetAngleRange(range);
       likelihooddirectionmanager->SetAction(likelihooddirectionrunaction);
       std::shared_ptr<LikelihoodDirectionEventAction> likelihooddirectioneventaction = std::make_shared<LikelihoodDirectionEventAction>(likelihooddirectionrunaction);
       likelihooddirectioneventmanager->SetAction(likelihooddirectioneventaction);

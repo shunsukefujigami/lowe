@@ -82,7 +82,7 @@ public:
   }
   
   void Setdata(TReconstructdata data);
-private:
+protected:
   TLorentzVector vector;
   TVector3 direction;
   double energy;
@@ -94,6 +94,50 @@ private:
 public:
   ClassDef(TReconstructdata,1)
 };
+
+class TReconstructdata_minimize : public TReconstructdata
+{
+public:
+  TReconstructdata_minimize()
+  {
+  }
+  virtual ~TReconstructdata_minimize()
+  {
+  }
+  void Setstatus(int s)
+  {
+    status = s;
+  }
+  int Getstatus() const
+  {
+    return status;
+  }
+  void Setncalls(int n)
+  {
+    ncalls = n;
+  }
+  int Getncalls() const
+  {
+    return ncalls;
+  }
+  void SetnIterations(int n)
+  {
+    nIterations = n;
+  }
+  int GetnIterations()
+  {
+    return nIterations;
+  }
+  void Setdata(TReconstructdata_minimize data);
+  
+private:
+  int status;
+  int ncalls;
+  int nIterations;
+public:
+  ClassDef(TReconstructdata_minimize,1)
+};
+
 
 class TReconstructhit : public TObject
 {
