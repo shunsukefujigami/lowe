@@ -1,6 +1,7 @@
 #ifndef THETA_DIR_I_HH
 #define THETA_DIR_I_HH
-
+// c++ STL
+#include <memory>
 // self-introduced library
 #include "function.hh"
 #include "hitinfo.hh"

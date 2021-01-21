@@ -5,6 +5,9 @@
 // geant4 library
 #include <CLHEP/Vector/LorentzVector.h>
 #include <CLHEP/Vector/ThreeVector.h>
+// self
+#include "hitinfo.hh"
+#include "Reconstructdata.hh"
 
 class Process 
 {
@@ -121,15 +124,8 @@ public:
   {
     return ncherenkovdigihits;
   }
-  std::vector<double> onelikelihoodonretro;
   std::vector<double> maxonelikelihoodonretro;
-  std::vector<double> onelikelihoodnoretro;
   std::vector<double> maxonelikelihoodnoretro;
-  void SetMaxonelikelihood()
-  {
-    maxonelikelihoodonretro = onelikelihoodonretro;
-    maxonelikelihoodnoretro = onelikelihoodnoretro;
-  }
   void Setminimizestatus(int s)
   {
     minimizestatus = s;

@@ -10,6 +10,7 @@
 #include "OneDataParameters.hh"
 #include "OneGoodnessParameters.hh"
 #include "OneLikelihoodParameters.hh"
+#include "OneGoodnessMinimizeParameters.hh"
 #include "OneRunAnalizeManager.hh"
 
 class MultiRunAnalizeManager : public TObject
@@ -22,18 +23,20 @@ public:
   void PrintAllfile();
   void PrintComparefile();
   virtual ~MultiRunAnalizeManager();
-  TH1D GetTH1D(int num,double min,double max,const char* xvar,const char* yvar,bool berror=false,const char* errorval="");
-  double GetVariable(const char* var,OneRunAnalizeManager& oram);
+  void GetTH1D(TH1D* h1,const char* xvar,const char* yvar,bool berror=false,const char* errorval="");
+  double GetVariable(const char* var,OneRunAnalizeManager* oram);
   OneDataParameters basefileparameters;
   OneGoodnessParameters basegoodnessparameters;
   OneLikelihoodParameters baselikelihoodparameters;
+  OneGoodnessMinimizeParameters basegoodnessminimizeparameters;
   std::vector<OneDataParameters> vdataparameters;
   std::vector<OneGoodnessParameters> vgoodnessparameters;
   std::vector<OneLikelihoodParameters> vlikelihoodparameters;
-  std::vector<OneRunAnalizeManager> vrunanalizemanager;
+  std::vector<OneGoodnessMinimizeParameters> vgoodnessminimizeparameters;
+  std::vector<OneRunAnalizeManager*> vrunanalizemanager;
 private:
   std::string sbasefile;
-  int mode; // datamode 0;goodnessmode 1;likelihoodmode 2
+  int mode; // datamode 0;goodnessmode 1;likelihoodmode 2;goodnessminimizemode 3
 public:
   ClassDef(MultiRunAnalizeManager,1)
 };

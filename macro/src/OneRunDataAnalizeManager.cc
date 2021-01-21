@@ -28,9 +28,15 @@ void OneRunDataAnalizeManager::Setdatafile(const char* filename)
   wcsimrootevent = new WCSimRootEvent();
   wcsimrootgeom = new WCSimRootGeom();
   wcsimT->SetBranchAddress("wcsimrootevent",&wcsimrootevent);
+  wcsimT->GetBranch("wcsimrootevent")->SetAutoDelete(kTRUE);
   wcsimGeoT->SetBranchAddress("wcsimrootgeom",&wcsimrootgeom);
   wcsimGeoT->GetEntry(0);
   neventdata = wcsimT->GetEntries();
+  for(int i = 0; i < neventdata; i++)
+    {
+      wcsimT->GetEntry(i);
+      vncherenkovdigihits.push_back(wcsimrootevent->GetTrigger(0)->GetNcherenkovdigihits());
+    }
   std::string sfilename = filename;
   onedataparameters = new OneDataParameters();
   onedataparameters->Setpair(sfilename);
@@ -62,8 +68,7 @@ void OneRunDataAnalizeManager::GetEntry(int ievent)
   reconstructdatatrue.Set4Vector(vec);
   TVector3 truedir(wcsimroottrack->GetDir(0),wcsimroottrack->GetDir(1),wcsimroottrack->GetDir(2));
   reconstructdatatrue.Setdirection(truedir);
-  ncherenkovdigihits = wcsimroottrigger->GetNcherenkovdigihits();
-  for(int j = 0; j < ncherenkovdigihits; j++)
+  for(int j = 0; j < vncherenkovdigihits[ievent]; j++)
     {
       WCSimRootCherenkovDigiHit* hit = (WCSimRootCherenkovDigiHit*)(wcsimroottrigger->GetCherenkovDigiHits()->At(j));
       Thitinfo info;
@@ -77,8 +82,7 @@ double OneRunDataAnalizeManager::GetEfficiency()
   int ntrigger = 0;
   for(int i = 0; i < neventdata; i++)
     {
-      GetEntry(i);
-      if(ncherenkovdigihits != 0)
+      if(vncherenkovdigihits[i] != 0)
 	{
 	  ntrigger++;
 	}

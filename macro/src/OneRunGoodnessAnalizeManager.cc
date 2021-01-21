@@ -23,8 +23,8 @@ void OneRunGoodnessAnalizeManager::Setgoodnessfile(const char* goodnessfile)
   gfile = new TFile(goodnessfile);
   goodnessT = (TTree*)gfile->Get("goodnessT");
   optionT = (TTree*)gfile->Get("optionT");
-  data = new TReconstructdata();
-  range = new CSearch_range();
+  //  data = new TReconstructdata();
+  //  range = new CSearch_range();
   goodnessT->SetBranchAddress("reconstructdata",&data);
   optionT->SetBranchAddress("csearchrange",&range);
   optionT->GetEntry(0);
@@ -43,6 +43,9 @@ OneRunGoodnessAnalizeManager::~OneRunGoodnessAnalizeManager()
     delete range;
   if(gfile)
     delete gfile;
+  if(onegoodnessparameters)
+    delete onegoodnessparameters;
+  
 }
 
 void OneRunGoodnessAnalizeManager::GetEntry(int i)

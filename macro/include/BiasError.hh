@@ -1,7 +1,9 @@
 #ifndef BIASERROR_HH
 #define BIASERROR_HH
 
-class BiasError
+#include <TObject.h>
+
+class BiasError : public TObject
 {
 public:
   BiasError(){}
@@ -13,6 +15,7 @@ public:
   double biaserror;
   double error;
   double errorerror;
+  ClassDef(BiasError,1)
 };
 
 #endif

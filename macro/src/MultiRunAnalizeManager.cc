@@ -17,7 +17,15 @@ MultiRunAnalizeManager::MultiRunAnalizeManager()
 void MultiRunAnalizeManager::SetBasefile(const char* basefile)
 {
   sbasefile = basefile;
-  if(sbasefile.find("LSR") != std::string::npos)
+  if(sbasefile.find("GMT") != std::string::npos)
+    {
+      mode = 3;
+      std::cout << "set goodness minimize mode!" << std::endl;
+      basegoodnessminimizeparameters.Setpair(sbasefile);
+      basegoodnessminimizeparameters.SetValue();
+    }
+  
+  else if(sbasefile.find("LSR") != std::string::npos)
     {
       mode = 2;
       std::cout << "set likelihood mode!" << std::endl;
@@ -54,6 +62,8 @@ void MultiRunAnalizeManager::SetAllfile()
     directory = "/home/fujigami/store/goodnessfile/";
   if(mode == 2)
     directory = "/home/fujigami/store/likelihoodfile/";
+  if(mode == 3)
+    directory = "/home/fujigami/store/goodnessminimizefile/";
   DIR* dir;
   dir = opendir(directory.c_str());
   if(dir == NULL)
@@ -94,6 +104,15 @@ void MultiRunAnalizeManager::SetAllfile()
 	      olp.SetValue();
 	      olp.PrintValue();
 	      vlikelihoodparameters.push_back(olp);
+	    }
+	  if(mode == 3)
+	    {
+	      std::cout << fullpath << std::endl;
+	      OneGoodnessMinimizeParameters ogmp;
+	      ogmp.Setpair(fullpath);
+	      ogmp.SetValue();
+	      ogmp.PrintValue();
+	      vgoodnessminimizeparameters.push_back(ogmp);
 	    }
 	  
 	}
@@ -138,16 +157,30 @@ void MultiRunAnalizeManager::SetComparefile(std::vector<std::string> vexclusionn
 	    }
 	}
     }
-  vrunanalizemanager = std::vector<OneRunAnalizeManager>(number);
+  if(mode == 3)
+    {
+      for(auto itrgm = vgoodnessminimizeparameters.begin();itrgm != vgoodnessminimizeparameters.end();itrgm++)
+	{
+	  if(basegoodnessminimizeparameters.isEqual(*itrgm,vexclusionname))
+	    {
+	      number++;
+	      vfile.push_back((*itrgm).Getfile());
+	    }
+	}
+    }
+  vrunanalizemanager = std::vector<OneRunAnalizeManager*>(number);
   size_t i = 0;
   for(auto itrf = vfile.begin();itrf != vfile.end();itrf++)
     {
+      vrunanalizemanager.at(i) = new OneRunAnalizeManager();
       if(mode == 0)
-	vrunanalizemanager.at(i).Setdatafile((*itrf).c_str());
+	vrunanalizemanager.at(i)->Setdatafile((*itrf).c_str());
       if(mode == 1)
-	vrunanalizemanager.at(i).SetGoodnessfile((*itrf).c_str());
+	vrunanalizemanager.at(i)->SetGoodnessfile((*itrf).c_str());
       if(mode == 2)
-	vrunanalizemanager.at(i).SetLikelihoodfile((*itrf).c_str());
+	vrunanalizemanager.at(i)->SetLikelihoodfile((*itrf).c_str());
+      if(mode == 3)
+	vrunanalizemanager.at(i)->SetGoodnessMinimizefile((*itrf).c_str());
       i++;
     }
 }
@@ -175,6 +208,14 @@ void MultiRunAnalizeManager::PrintAllfile()
 	  std::cout << (*itrl).Getfile() << std::endl;
 	}
     }
+  if(mode == 3)
+    {
+      for(auto itrgm = vgoodnessminimizeparameters.begin();itrgm != vgoodnessminimizeparameters.end();itrgm++)
+	{
+	  std::cout << (*itrgm).Getfile() << std::endl;
+	}
+    }
+  
   
 }
 
@@ -183,115 +224,137 @@ void MultiRunAnalizeManager::PrintComparefile()
   for(auto itr = vrunanalizemanager.begin();itr != vrunanalizemanager.end();itr++)
     {
       if(mode == 0)
-	std::cout << (*itr).Getdatamanager()->GetDataParameters()->Getfile() << std::endl;
+	std::cout << (*itr)->Getdatamanager()->GetDataParameters()->Getfile() << std::endl;
       if(mode == 1)
-	std::cout << (*itr).Getgoodnessmanager()->GetGoodnessParameters()->Getfile() << std::endl;
+	std::cout << (*itr)->Getgoodnessmanager()->GetGoodnessParameters()->Getfile() << std::endl;
       if(mode == 2)
-	std::cout << (*itr).Getlikelihoodmanager()->GetLikelihoodParameters()->Getfile() << std::endl;
+	std::cout << (*itr)->Getlikelihoodmanager()->GetLikelihoodParameters()->Getfile() << std::endl;
+      if(mode == 3)
+	std::cout << (*itr)->Getgoodnessminimizemanager()->GetGoodnessMinimizeParameters()->Getfile() << std::endl;
     }
 }
 
 MultiRunAnalizeManager::~MultiRunAnalizeManager()
 {
+  for(auto itr = vrunanalizemanager.begin();itr != vrunanalizemanager.end();itr++)
+    {
+      delete (*itr);
+    }
+  vrunanalizemanager.clear();
+  vrunanalizemanager.shrink_to_fit();
+  vdataparameters.clear();
+  vdataparameters.shrink_to_fit();
+  vgoodnessparameters.clear();
+  vgoodnessparameters.shrink_to_fit();
+  vlikelihoodparameters.clear();
+  vlikelihoodparameters.shrink_to_fit();
+  vgoodnessminimizeparameters.clear();
+  vgoodnessminimizeparameters.shrink_to_fit();
 }
 
-TH1D MultiRunAnalizeManager::GetTH1D(int num,double min,double max,const char* xvar,const char* yvar,bool berror,const char* errorval)
+void MultiRunAnalizeManager::GetTH1D(TH1D* h1,const char* xvar,const char* yvar,bool berror,const char* errorval)
 {
-  TH1D th1d("","",num,min,max);
+  if(!h1)
+    {
+      std::cout << "hist is null!" << std::endl;
+      throw "void MultiRunAnalizeManager::GetTH1D(TH1D* h1,const char* xvar,const char* yvar,bool berror,const char* errorval)";
+    }
+  
   for(auto itr = vrunanalizemanager.begin();itr != vrunanalizemanager.end();itr++)
     {
       double xval = GetVariable(xvar,*itr);
       double yval = GetVariable(yvar,*itr);
-      th1d.Fill(xval,yval);
+      h1->Fill(xval,yval);
       if(berror)
 	{
-	  int bin = th1d.FindBin(xval);
+	  int bin = h1->FindBin(xval);
 	  double yerror = GetVariable(errorval,*itr);
-	  th1d.SetBinError(bin,yerror);
+	  h1->SetBinError(bin,yerror);
 	}
       
     }
-  return th1d;
 }
 
-double MultiRunAnalizeManager::GetVariable(const char* var,OneRunAnalizeManager& oram)
+double MultiRunAnalizeManager::GetVariable(const char* var,OneRunAnalizeManager* oram)
 {
   std::string svar = var;
+  if(svar == "zero")
+    return 0.;
   if(svar == "tzmaxreflectivity")
     {
-      return oram.Getdatamanager()->GetDataParameters()->trapezoidreflectivity;
+      return oram->Getdatamanager()->GetDataParameters()->trapezoidreflectivity;
     }
   if(svar == "fixedenergy")
     {
-      return oram.Getdatamanager()->GetDataParameters()->fixedenergy;
+      return oram->Getdatamanager()->GetDataParameters()->fixedenergy;
     }
   if(svar == "triggerefficiency")
     {
-      return oram.Getdatamanager()->GetEfficiency();
+      return oram->Getdatamanager()->GetEfficiency();
     }
   if(svar == "xbiasbygoodness")
     {
-      BiasError xbiaserror = oram.GetXBiasErrorbygoodness();
+      BiasError xbiaserror = oram->GetXBiasErrorbygoodness();
       return xbiaserror.bias;
     }
   if(svar == "xbiaserrorbygoodness")
     {
-      BiasError xbiaserror = oram.GetXBiasErrorbygoodness();
+      BiasError xbiaserror = oram->GetXBiasErrorbygoodness();
       return xbiaserror.biaserror;
     }
   if(svar == "xerrorbygoodness")
     {
-      BiasError xbiaserror = oram.GetXBiasErrorbygoodness();
+      BiasError xbiaserror = oram->GetXBiasErrorbygoodness();
       return xbiaserror.error;
     }
   if(svar == "xerrorerrorbygoodness")
     {
-      BiasError xbiaserror = oram.GetXBiasErrorbygoodness();
+      BiasError xbiaserror = oram->GetXBiasErrorbygoodness();
       return xbiaserror.errorerror;
     }
     if(svar == "ybiasbygoodness")
     {
-      BiasError ybiaserror = oram.GetYBiasErrorbygoodness();
+      BiasError ybiaserror = oram->GetYBiasErrorbygoodness();
       return ybiaserror.bias;
     }
   if(svar == "ybiaserrorbygoodness")
     {
-      BiasError ybiaserror = oram.GetYBiasErrorbygoodness();
+      BiasError ybiaserror = oram->GetYBiasErrorbygoodness();
       return ybiaserror.biaserror;
     }
   if(svar == "yerrorbygoodness")
     {
-      BiasError ybiaserror = oram.GetYBiasErrorbygoodness();
+      BiasError ybiaserror = oram->GetYBiasErrorbygoodness();
       return ybiaserror.error;
     }
   if(svar == "yerrorerrorbygoodness")
     {
-      BiasError ybiaserror = oram.GetYBiasErrorbygoodness();
+      BiasError ybiaserror = oram->GetYBiasErrorbygoodness();
       return ybiaserror.errorerror;
     }
     if(svar == "zbiasbygoodness")
     {
-      BiasError zbiaserror = oram.GetZBiasErrorbygoodness();
+      BiasError zbiaserror = oram->GetZBiasErrorbygoodness();
       return zbiaserror.bias;
     }
   if(svar == "zbiaserrorbygoodness")
     {
-      BiasError zbiaserror = oram.GetZBiasErrorbygoodness();
+      BiasError zbiaserror = oram->GetZBiasErrorbygoodness();
       return zbiaserror.biaserror;
     }
   if(svar == "zerrorbygoodness")
     {
-      BiasError zbiaserror = oram.GetZBiasErrorbygoodness();
+      BiasError zbiaserror = oram->GetZBiasErrorbygoodness();
       return zbiaserror.error;
     }
   if(svar == "zerrorerrorbygoodness")
     {
-      BiasError zbiaserror = oram.GetZBiasErrorbygoodness();
+      BiasError zbiaserror = oram->GetZBiasErrorbygoodness();
       return zbiaserror.errorerror;
     }
-  if(svar == "angleerrrorbylikeliihood")
+  if(svar == "angleerrorbylikelihood")
     {
-      double angle = oram.angleerror1sigma();
+      double angle = oram->angleerror1sigma();
       return angle;
     }
   

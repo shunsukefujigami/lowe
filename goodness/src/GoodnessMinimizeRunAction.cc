@@ -28,6 +28,7 @@ void GoodnessMinimizeRunAction::BeginOfAction(std::shared_ptr<Process>)
   goodnessminimizetree = new TTree("goodnessminimizeT","Goodness Minimize Data Tree");
   optiontree = new TTree("gmoptionT","GoodnessMinimizeOption Tree");
   data = new TReconstructdata_minimize();
+  goodnessminimizetree->Branch("reconstructdataminimize",&data);
   option = new TOption_minimize();
   optiontree->Branch("option_minimize",&option);
   option->SetOption(optionin);

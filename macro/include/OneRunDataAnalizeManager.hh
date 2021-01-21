@@ -91,12 +91,12 @@ public:
   int ncherenkovdigihits;
   int Getncherenkovdigihits(int ievent)
   {
-    GetEntry(ievent);
-    return ncherenkovdigihits;
+    return vncherenkovdigihits[ievent];
   }
   
   TReconstructdata reconstructdatatrue;
   std::vector<Thitinfo> vhitinfo;
+  std::vector<int> vncherenkovdigihits;
 private:
   TFile* dfile = nullptr;
   TTree* wcsimT;

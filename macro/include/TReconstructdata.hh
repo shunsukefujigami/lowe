@@ -92,7 +92,7 @@ protected:
   double likelihoodnoretro;
   std::vector<TReconstructhit> fhit;
 public:
-  ClassDef(TReconstructdata,1)
+  ClassDef(TReconstructdata,2)
 };
 
 class TReconstructdata_minimize : public TReconstructdata

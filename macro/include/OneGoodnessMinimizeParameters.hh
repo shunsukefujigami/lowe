@@ -1,20 +1,20 @@
-#ifndef ONEGOODNESSPARAMETERS_HH
-#define ONEGOODNESSPARAMETERS_HH
-// c++ STL
-#include <vector>
-#include <cstring>
-#include <utility>
+#ifndef ONEGOODNESSMINIMIZEPARAMETERS_HH
+#define ONEGOODNESSMINIMIZEPARAMETERS_HH
+
 // ROOT library
 #include <TObject.h>
 #include <TVector3.h>
 // self
 #include "CSearch_range.hh"
+#include "AngleRange.hh"
 
-class OneGoodnessParameters
+class OneGoodnessMinimizeParameters : public TObject
 {
 public:
-  OneGoodnessParameters(){}
-  virtual ~OneGoodnessParameters()
+  OneGoodnessMinimizeParameters()
+  {
+  }
+  virtual ~OneGoodnessMinimizeParameters()
   {
   }
   enum Detector
@@ -86,12 +86,68 @@ public:
     };
   GoodnessSearchRangeType goodnesssearchrangetype;
   CSearch_range searchrange;
-  int goodnesseventnumber;
+  int goodnesseventnumber;  
+  enum LikelihoodType
+    {
+      LikelihoodType_noretro,LikelihoodType_onretro,LikelihoodType_sum
+    };
+  LikelihoodType likelihoodtype;
+  enum NoRetroFdirection
+    {
+      NoRetroFdirection_notuse,NoRetroFdirection_prototype,NoRetroFdirection_bydata
+    };
+  NoRetroFdirection noretrofdirection;
+  enum OnRetroFdirection
+    {
+      OnRetroFdirection_notuse,OnRetroFdirection_prototype,OnRetroFdirection_bydata
+    };
+  OnRetroFdirection onretrofdirection;
+  enum NoRetroAfunction
+    {
+      NoRetroAfunction_notuse,NoRetroAfunction_prototype
+    };
+  NoRetroAfunction noretroafunction;
+  enum OnRetroAfunction
+    {
+      OnRetroAfunction_notuse,OnRetroAfunction_prototype
+    };
+  OnRetroAfunction onretroafunction;
+  enum LikelihoodSearchRangeType
+  {
+    likelihoodsearchrangetype_true,likelihoodsearchrangetype_normal
+  };
+  LikelihoodSearchRangeType likelihoodsearchrangetype;
+  double costhetanum;
+  double phinum;
+  double timewindownoretro;
+  double timewindowonretro;
+  enum GoodnessMinimizeType
+    {
+      GoodnessMinimizeType_noretro,GoodnessMinimizeType_sum
+    };
+  GoodnessMinimizeType goodnessminimizetype;
+  int maxfunctioncalls;
+  int maxiterations;
+  double tolerance;
+  double stepx;
+  double stepy;
+  double stepz;
+  double stept;
+  double stepcostheta;
+  double stepphi;
+  double goodnessminimizesigma;
+  double sigmaangle;
+  enum OnRetroCorrectionType
+    {
+      OnRetroCorrectionType_notuse,OnRetroCorrectionType_use
+    };
+  OnRetroCorrectionType onretrocorrectiontype;
+  double onretrocorrection;
   std::vector<std::pair<std::string,std::string>> vp;
   void Setpair(std::string filename);
   void SetValue();
   void PrintValue();
-  bool isEqual(OneGoodnessParameters compare,std::vector<std::string> exclusionname);
+  bool isEqual(OneGoodnessMinimizeParameters compare,std::vector<std::string> exclusionname);
   std::string Getfile()
   {
     return file;
@@ -101,8 +157,7 @@ private:
   bool hasname(std::vector<std::string> vname,std::string name);
   std::string file;
 public:
-  ClassDef(OneGoodnessParameters,1)
+  ClassDef(OneGoodnessMinimizeParameters,1)
 };
 
 #endif
-  

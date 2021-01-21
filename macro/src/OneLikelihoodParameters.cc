@@ -156,22 +156,6 @@ void OneLikelihoodParameters::SetValue()
 	      throw "void OneLikelihoodParamters::SetValue()";
 	    }
 	}
-      else if((*itr).first == "R")
-	{
-	  if((*itr).second == "nr")
-	    {
-	      inforetro = Inforetro_noretro;
-	    }
-	  else if((*itr).second == "or")
-	    {
-	      inforetro = Inforetro_onretro;
-	    }
-	  else
-	    {
-	      std::cout << "invalid inforetro value!" << std::endl;
-	      throw "void OneLikelihoodParamters::SetValue()";
-	    }
-	}
       else if((*itr).first == "RF")
 	{
 	  secondvec = split((*itr).second);
@@ -220,11 +204,11 @@ void OneLikelihoodParameters::SetValue()
 	{
 	  triggerwindow = atoi((*itr).second.c_str());
 	}
-      else if((*itr).first == "TPR")
+      else if((*itr).first == "PR")
 	{
 	  triggerprewindow = atof((*itr).second.c_str());
 	}
-      else if((*itr).first == "TPO")
+      else if((*itr).first == "PO")
 	{
 	  triggerpostwindow = atof((*itr).second.c_str());
 	}
@@ -232,7 +216,7 @@ void OneLikelihoodParameters::SetValue()
 	{
 	  darkrate = atof((*itr).second.c_str());
 	}
-      else if((*itr).first == "AFN")
+      else if((*itr).first == "AN")
 	{
 	  if((*itr).second == "t")
 	    {
@@ -248,7 +232,7 @@ void OneLikelihoodParameters::SetValue()
 	      throw "void OneLikelihoodParamters::SetValue()";
 	    }
 	}
-      else if((*itr).first == "EN")
+      else if((*itr).first == "N")
 	{
 	  eventnumber = atoi((*itr).second.c_str());
 	}
@@ -280,7 +264,7 @@ void OneLikelihoodParameters::SetValue()
 	      throw "void OneLikelihoodParameters::SetValue()";
 	    }
 	}
-      else if((*itr).first == "GSR")
+      else if((*itr).first == "GR")
 	{
 	  secondvec = split((*itr).second);
 	  if((*itr).second == "t")
@@ -315,7 +299,7 @@ void OneLikelihoodParameters::SetValue()
 	      throw "void OneLikelihoodParameters::SetValue()";
 	    }
 	}
-      else if((*itr).first == "GEN")
+      else if((*itr).first == "GN")
 	{
 	  goodnesseventnumber = atoi((*itr).second.c_str());
 	}
@@ -333,7 +317,7 @@ void OneLikelihoodParameters::SetValue()
 	      throw "void OneLikelihoodParameters::SetValue()";
 	    }
 	}
-      else if((*itr).first == "NFT")
+      else if((*itr).first == "NF")
 	{
 	  if((*itr).second == "n")
 	    noretrofdirection = NoRetroFdirection_notuse;
@@ -343,11 +327,11 @@ void OneLikelihoodParameters::SetValue()
 	    noretrofdirection = NoRetroFdirection_bydata;
 	  else
 	    {
-	      std::cout << "invalid NFT value!" << std::endl;
+	      std::cout << "invalid NF value!" << std::endl;
 	      throw "void OneLikelihoodParameters::SetValue()";
 	    }
 	}
-      else if((*itr).first == "OFT")
+      else if((*itr).first == "OF")
 	{
 	  if((*itr).second == "n")
 	    onretrofdirection = OnRetroFdirection_notuse;
@@ -357,11 +341,11 @@ void OneLikelihoodParameters::SetValue()
 	    onretrofdirection = OnRetroFdirection_bydata;
 	  else
 	    {
-	      std::cout << "invalid OFT value!" << std::endl;
+	      std::cout << "invalid OF value!" << std::endl;
 	      throw "void OneLikelihoodParameters::SetValue()";
 	    }
 	}
-      else if((*itr).first == "NAT")
+      else if((*itr).first == "NA")
 	{
 	  if((*itr).second == "n")
 	    noretroafunction = NoRetroAfunction_notuse;
@@ -369,11 +353,11 @@ void OneLikelihoodParameters::SetValue()
 	    noretroafunction = NoRetroAfunction_prototype;
 	  else
 	    {
-	      std::cout << "invalid NAT value!" << std::endl;
+	      std::cout << "invalid NA value!" << std::endl;
 	      throw "void OneLikelihoodParameters::SetValue()";
 	    }
 	}
-      else if((*itr).first == "OAT")
+      else if((*itr).first == "OA")
 	{
 	  if((*itr).second == "n")
 	    onretroafunction = OnRetroAfunction_notuse;
@@ -381,11 +365,11 @@ void OneLikelihoodParameters::SetValue()
 	    onretroafunction = OnRetroAfunction_prototype;
 	  else
 	    {
-	      std::cout << "invalid OAT value!" << std::endl;
+	      std::cout << "invalid OA value!" << std::endl;
 	      throw "void OneLikelihoodParameters::SetValue()";
 	    }
 	}
-      else if((*itr).first == "LSR")
+      else if((*itr).first == "LR")
 	{
 	  secondvec = split((*itr).second);
 	  if((*itr).second == "t")
@@ -393,30 +377,22 @@ void OneLikelihoodParameters::SetValue()
 	  else if(secondvec[0] == "n")
 	    {
 	      likelihoodsearchrangetype = likelihoodsearchrangetype_normal;
-	      anglerange.SetCosthetaNum(atoi(secondvec[1].c_str()));
-	      anglerange.SetCosthetamin(atof(secondvec[2].c_str()));
-	      anglerange.SetCosthetawidth(atof(secondvec[3].c_str()));
-	      anglerange.SetPhiNum(atoi(secondvec[4].c_str()));
-	      anglerange.SetPhimin(atof(secondvec[5].c_str()));
-	      anglerange.SetPhiwidth(atof(secondvec[6].c_str()));
+	      costhetanum = atof(secondvec[1].c_str());
+	      phinum = atof(secondvec[2].c_str());
 	    }
 	  else
 	    {
-	      std::cout << "invalid LSR value!" << std::endl;
+	      std::cout << "invalid LR value!" << std::endl;
 	      throw "void OneLikelihoodParameters::SetValue()";
 	    }
 	}
-      else if((*itr).first == "TWNR")
+      else if((*itr).first == "WN")
 	{
 	  timewindownoretro = atof((*itr).second.c_str());
 	}
-      else if((*itr).first == "TWOR")
+      else if((*itr).first == "WO")
 	{
 	  timewindowonretro = atof((*itr).second.c_str());
-	}
-      else if((*itr).first == "LEN")
-	{
-	  likelihoodeventnumber = atoi((*itr).second.c_str());
 	}
       else
 	{
@@ -457,14 +433,6 @@ void OneLikelihoodParameters::PrintValue()
   if(dirtype == dirtype_uniformrandom)
     {
       std::cout << "Direction is uniform random in range of " << uniformcosthetamin << " < costheta < " << uniformcosthetamax << " , " << uniformphimin << " < phi < " << uniformphimax << std::endl;
-    }
-  if(inforetro == Inforetro_noretro)
-    {
-      std::cout << "not use retro reflector" << std::endl;
-    }
-  if(inforetro == Inforetro_onretro)
-    {
-      std::cout << "use retro reflector" << std::endl;
     }
   if(inforeflectivity == Inforeflectivity_blacksheet)
     {
@@ -544,16 +512,11 @@ void OneLikelihoodParameters::PrintValue()
   if(likelihoodsearchrangetype == likelihoodsearchrangetype_normal)
     {
       std::cout << "likelihood search range type is normal" << std::endl;
-      std::cout << "costheata number is " << anglerange.GetCosthetaNum() << std::endl;
-      std::cout << "costheta min is " << anglerange.GetCosthetamin() << std::endl;
-      std::cout << "costheta width is " << anglerange.GetCosthetawidth() << std::endl;
-      std::cout << "phi number is " << anglerange.GetPhiNum() << std::endl;
-      std::cout << "phi min is " << anglerange.GetPhimin() << std::endl;
-      std::cout << "phi width is " << anglerange.GetPhiwidth() << std::endl;
+      std::cout << "costheata number is " << costhetanum << std::endl;
+      std::cout << "phi number is " << phinum << std::endl;
     }
   std::cout << "time window no retro is " << timewindownoretro << std::endl;
   std::cout << "time window on retro is " << timewindowonretro << std::endl;
-  std::cout << "likelihood event number is " << likelihoodeventnumber << std::endl;
 }
 
 bool OneLikelihoodParameters::hasname(std::vector<std::string> vname,std::string name)
@@ -668,11 +631,6 @@ bool OneLikelihoodParameters::isEqual(OneLikelihoodParameters compare,std::vecto
     {
       // undefined
     }
-  if(compare.inforetro != inforetro)
-    {
-      return false;
-    }
-  
   if(compare.inforeflectivity != inforeflectivity)
     {
       return false;
@@ -708,12 +666,12 @@ bool OneLikelihoodParameters::isEqual(OneLikelihoodParameters compare,std::vecto
       if(compare.triggerwindow != triggerwindow)
 	return false;
     }
-  if(!hasname(vexclusionname,"TPR"))
+  if(!hasname(vexclusionname,"PR"))
     {
       if(compare.triggerprewindow != triggerprewindow)
 	return false;
     }
-  if(!hasname(vexclusionname,"TPO"))
+  if(!hasname(vexclusionname,"PO"))
     {
       if(compare.triggerpostwindow != triggerpostwindow)
 	return false;
@@ -725,7 +683,7 @@ bool OneLikelihoodParameters::isEqual(OneLikelihoodParameters compare,std::vecto
     }
   if(compare.adjustfornoise != adjustfornoise)
     return false;
-  if(!hasname(vexclusionname,"EN"))
+  if(!hasname(vexclusionname,"N"))
     {
       if(compare.eventnumber != eventnumber)
 	return false;
@@ -803,7 +761,7 @@ bool OneLikelihoodParameters::isEqual(OneLikelihoodParameters compare,std::vecto
 	    return false;
 	}
     }
-  if(!hasname(vexclusionname,"GEN"))
+  if(!hasname(vexclusionname,"GN"))
     {
       if(goodnesseventnumber != compare.goodnesseventnumber)
 	return false;
@@ -813,22 +771,22 @@ bool OneLikelihoodParameters::isEqual(OneLikelihoodParameters compare,std::vecto
       if(likelihoodtype != compare.likelihoodtype)
 	return false;
     }
-  if(!hasname(vexclusionname,"NFT"))
+  if(!hasname(vexclusionname,"NF"))
     {
       if(noretrofdirection != compare.noretrofdirection)
 	return false;
     }
-  if(!hasname(vexclusionname,"OFT"))
+  if(!hasname(vexclusionname,"OF"))
     {
       if(onretrofdirection != compare.onretrofdirection)
 	return false;
     }
-  if(!hasname(vexclusionname,"NAT"))
+  if(!hasname(vexclusionname,"NA"))
     {
       if(noretroafunction != compare.noretroafunction)
 	return false;
     }
-  if(!hasname(vexclusionname,"OAT"))
+  if(!hasname(vexclusionname,"OA"))
     {
       if(onretroafunction != compare.onretroafunction)
 	return false;
@@ -840,34 +798,14 @@ bool OneLikelihoodParameters::isEqual(OneLikelihoodParameters compare,std::vecto
     }
   if(likelihoodsearchrangetype == likelihoodsearchrangetype_normal)
     {
-      if(!hasname(vexclusionname,"LSR_costhetaNum"))
+      if(!hasname(vexclusionname,"LR_costhetaNum"))
 	{
-	  if(anglerange.GetCosthetaNum() != compare.anglerange.GetCosthetaNum())
-	    return false;
-	}
-      if(!hasname(vexclusionname,"LSR_costhetamin"))
-	{
-	  if(anglerange.GetCosthetamin() != compare.anglerange.GetCosthetamin())
-	    return false;
-	}
-      if(!hasname(vexclusionname,"LSR_costhetawidth"))
-	{
-	  if(anglerange.GetCosthetawidth() != compare.anglerange.GetCosthetawidth())
+	  if(costhetanum != compare.costhetanum)
 	    return false;
 	}
       if(!hasname(vexclusionname,"LSR_phiNum"))
 	{
-	  if(anglerange.GetPhiNum() != compare.anglerange.GetPhiNum())
-	    return false;
-	}
-      if(!hasname(vexclusionname,"LSR_phimin"))
-	{
-	  if(anglerange.GetPhimin() != compare.anglerange.GetPhimin())
-	    return false;
-	}
-      if(!hasname(vexclusionname,"LSR_phiwidth"))
-	{
-	  if(anglerange.GetPhiwidth() != compare.anglerange.GetPhiwidth())
+	  if(phinum != compare.phinum)
 	    return false;
 	}
     }
@@ -879,11 +817,6 @@ bool OneLikelihoodParameters::isEqual(OneLikelihoodParameters compare,std::vecto
   if(!hasname(vexclusionname,"TWOR"))
     {
       if(timewindowonretro != compare.timewindowonretro)
-	return false;
-    }
-  if(!hasname(vexclusionname,"LEN"))
-    {
-      if(likelihoodeventnumber != compare.likelihoodeventnumber)
 	return false;
     }
   return true;

@@ -1,6 +1,6 @@
 #ifndef FDIRECTION_HH
 #define FDIRECTION_HH
-
+#include <memory>
 #include "function.hh"
 #include "hitinfo.hh"
 #include "Reconstructdata.hh"

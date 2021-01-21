@@ -54,11 +54,6 @@ public:
   double fixedenergy;
   double uniformenergymin;
   double uniformenergymax;
-  enum Inforetro
-    {
-      Inforetro_noretro,Inforetro_onretro
-    };
-  Inforetro inforetro;
   enum Inforeflectivity
     {
       Inforeflectivity_blacksheet,Inforeflectivity_conventional,Inforeflectivity_trapezoid
@@ -122,10 +117,10 @@ public:
     likelihoodsearchrangetype_true,likelihoodsearchrangetype_normal
   };
   LikelihoodSearchRangeType likelihoodsearchrangetype;
-  AngleRange anglerange;
+  double costhetanum;
+  double phinum;
   double timewindownoretro;
   double timewindowonretro;
-  int likelihoodeventnumber;
   std::vector<std::pair<std::string,std::string>> vp;
   void Setpair(std::string filename);
   void SetValue();

@@ -21,6 +21,7 @@
 #pragma link C++ class OneRunDataAnalizeManager+;
 #pragma link C++ class OneRunGoodnessAnalizeManager+;
 #pragma link C++ class OneRunLikelihoodAnalizeManager+;
+#pragma link C++ class OneRunGoodnessMinimizeAnalizeManager+;
 #pragma link C++ class AngleRange+;
 #pragma link C++ class TReconstructdata+;
 #pragma link C++ class TReconstructdata_minimize+;
@@ -48,6 +49,8 @@
 #pragma link C++ class OneDataParameters+;
 #pragma link C++ class OneGoodnessParameters+;
 #pragma link C++ class OneLikelihoodParameters+;
+#pragma link C++ class OneGoodnessMinimizeParameters+;
 #pragma link C++ class TOption_minimize+;
+#pragma link C++ class BiasError+;
 
 #endif

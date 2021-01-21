@@ -27,11 +27,8 @@ void OneLikelihoodDirectionCalculateManager::SetParameters()
 
 void OneLikelihoodDirectionCalculateManager::Doprocess()
 {
-  hitinfo info;
-  info.Sethit(hit,wcsimrootgeom);
-  Reconstructdata data;
-  data.Set4Vector(currentprocess->Getfitted4Vector());
-  data.Setdirection(currentprocess->GetCurrent3Direction());
+  std::shared_ptr<hitinfo> info = currentprocess->vhitinfo[currentprocess->Gethitnumber()];
+  std::shared_ptr<Reconstructdata> data = currentprocess->reconstructdata;
   ln->SetHitInfo(info);
   ln->SetReconstructdata(data);
   lo->SetHitInfo(info);
@@ -40,6 +37,8 @@ void OneLikelihoodDirectionCalculateManager::Doprocess()
   lo->Setfdirectiononretro(fo);
   ln->Setafunctionnoretro(an);
   lo->Setafunctiononretro(ao);
+  ln->Settoferrornoretro(currentprocess->vtoferrornoretro[currentprocess->Gethitnumber()]);
+  lo->Settoferroronretro(currentprocess->vtoferroronretro[currentprocess->Gethitnumber()]);
   double lnoretro = ln->returnvalue();
   currentprocess->onelikelihoodnoretro.at(currentprocess->Gethitnumber()) = lnoretro;
   double lonretro = lo->returnvalue();

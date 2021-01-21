@@ -14,15 +14,8 @@ double likelihoodnoretro::returnvalue()
   fdirnoretro->SetReconstructdata(data);
   afuncnoretro->SetHitInfo(info);
   afuncnoretro->SetReconstructdata(data);
-  std::shared_ptr<distance_function> dfuncnoretro = std::make_shared<distance_position_pmt>();
-  tof tofnoretro;
-  tofnoretro.SetHitInfo(info);
-  tofnoretro.SetReconstructdata(data);
-  tofnoretro.Setdistancefunction(dfuncnoretro);
-  double tof_no_retro = tofnoretro.returnvalue();
-  double toferror = tof_no_retro - data.Get4Vector().t();
   double l = 0;
-  if(toferror > -timewindownoretro && toferror < timewindowonretro)
+  if(toferrornoretro > -timewindownoretro && toferrornoretro < timewindowonretro)
     {
       double fdir = fdirnoretro->returnvalue();
       double afunc = afuncnoretro->returnvalue();
@@ -41,15 +34,8 @@ double likelihoodonretro::returnvalue()
   fdironretro->SetReconstructdata(data);
   afunconretro->SetHitInfo(info);
   afunconretro->SetReconstructdata(data);
-  std::shared_ptr<distance_function> dfunconretro = std::make_shared<distance_fly_retro>();
-  tof tofonretro;
-  tofonretro.SetHitInfo(info);
-  tofonretro.SetReconstructdata(data);
-  tofonretro.Setdistancefunction(dfunconretro);
-  double tof_on_retro = tofonretro.returnvalue();
-  double toferror = tof_on_retro - data.Get4Vector().t();
   double l = 0;
-  if(toferror > -timewindowonretro && toferror < timewindowonretro)
+  if(toferroronretro > -timewindowonretro && toferroronretro < timewindowonretro)
     {
       double fdir = fdironretro->returnvalue();
       double afunc = afunconretro->returnvalue();
@@ -72,20 +58,6 @@ double likelihoodsum::returnvalue()
   fdironretro->SetReconstructdata(data);
   afunconretro->SetHitInfo(info);
   afunconretro->SetReconstructdata(data);
-  std::shared_ptr<distance_function> dfunconretro = std::make_shared<distance_fly_retro>();
-  std::shared_ptr<distance_function> dfuncnoretro = std::make_shared<distance_position_pmt>();
-  tof tofnoretro;
-  tof tofonretro;
-  tofonretro.SetHitInfo(info);
-  tofonretro.SetReconstructdata(data);
-  tofonretro.Setdistancefunction(dfunconretro);
-  double tof_on_retro = tofonretro.returnvalue();
-  double toferroronretro = tof_on_retro - data.Get4Vector().t();
-  tofnoretro.SetHitInfo(info);
-  tofnoretro.SetReconstructdata(data);
-  tofnoretro.Setdistancefunction(dfunconretro);
-  double tof_no_retro = tofnoretro.returnvalue();
-  double toferrornoretro = tof_no_retro - data.Get4Vector().t();
   double l = 0;
   if(toferroronretro > -timewindowonretro && toferroronretro < timewindowonretro)
     {

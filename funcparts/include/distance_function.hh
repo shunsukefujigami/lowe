@@ -1,6 +1,7 @@
 #ifndef DISTANCE_FUNCTION_HH
 #define DISTANCE_FUNCTION_HH
-
+// c++ STL
+#include <memory>
 // self-introduced library
 #include "function.hh"
 #include "hitinfo.hh"

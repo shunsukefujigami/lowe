@@ -19,7 +19,7 @@ public:
   {
     data = datain;
   }
-  double returnvalue() = 0; 
+  virtual double returnvalue() = 0; 
 private:
   hitinfo info;
   Reconstructdata data;

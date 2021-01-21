@@ -12,6 +12,8 @@ TReconstructdata::TReconstructdata()
 
 TReconstructdata::~TReconstructdata()
 {
+  fhit.clear();
+  fhit.shrink_to_fit();
 }
 
 void TReconstructdata::addhit(int hittype)

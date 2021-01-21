@@ -1,6 +1,7 @@
 #ifndef FGOODNESSDIRECTION_HH
 #define FGOODNESSDIRECTION_HH
-
+// c++ STL
+#include <memory>
 // self
 #include "function.hh"
 #include "hitinfo.hh"

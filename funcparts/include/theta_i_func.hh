@@ -1,6 +1,7 @@
 #ifndef THETA_I_FUNC_HH
 #define THETA_I_FUNC_HH
-
+// c++ STL
+#include <memory>
 // ROOT library
 #include <TVector3.h>
 // self-introduced library

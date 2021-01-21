@@ -30,7 +30,8 @@ public:
   {
     int tubeId = h->GetTubeId();
     hittime = h->GetT();
-    WCSimRootPMT pmt = wcsimrootgeom->GetPMT(tubeId-1);
+    static WCSimRootPMT pmt;
+    pmt = wcsimrootgeom->GetPMT(tubeId-1);
     pmtposition.setX(pmt.GetPosition(0));
     pmtposition.setY(pmt.GetPosition(1));
     pmtposition.setZ(pmt.GetPosition(2));

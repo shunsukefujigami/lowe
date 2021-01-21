@@ -20,7 +20,6 @@ public:
   void Setlikelihoodfile(const char* likelihoodfile);
   virtual ~OneRunLikelihoodAnalizeManager();
   void GetEntry(int i);
-  std::vector<TReconstructdata> vreconstructlikelihood;
   AngleRange GetAngleRange()
   {
     return *range;

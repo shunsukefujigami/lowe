@@ -157,22 +157,6 @@ void OneDataParameters::SetValue()
 	      throw "void OneDataParameters::SetValue()";
 	    }
 	}
-      else if((*itr).first == "R")
-	{
-	  if((*itr).second == "nr")
-	    {
-	      inforetro = Inforetro_noretro;
-	    }
-	  else if((*itr).second == "or")
-	    {
-	      inforetro = Inforetro_onretro;
-	    }
-	  else
-	    {
-	      std::cout << "invalid inforetro value!" << std::endl;
-	      throw "void OneDataParameters::SetValue()";
-	    }
-	}
       else if((*itr).first == "RF")
 	{
 	  secondvec = split((*itr).second);
@@ -221,11 +205,11 @@ void OneDataParameters::SetValue()
 	{
 	  triggerwindow = atoi((*itr).second.c_str());
 	}
-      else if((*itr).first == "TPR")
+      else if((*itr).first == "PR")
 	{
 	  triggerprewindow = atof((*itr).second.c_str());
 	}
-      else if((*itr).first == "TPO")
+      else if((*itr).first == "PO")
 	{
 	  triggerpostwindow = atof((*itr).second.c_str());
 	}
@@ -233,7 +217,7 @@ void OneDataParameters::SetValue()
 	{
 	  darkrate = atof((*itr).second.c_str());
 	}
-      else if((*itr).first == "AFN")
+      else if((*itr).first == "AN")
 	{
 	  if((*itr).second == "t")
 	    {
@@ -249,7 +233,7 @@ void OneDataParameters::SetValue()
 	      throw "void OneDataParameters::SetValue()";
 	    }
 	}
-      else if((*itr).first == "EN")
+      else if((*itr).first == "N")
 	{
 	  eventnumber = atoi((*itr).second.c_str());
 	}
@@ -292,14 +276,6 @@ void OneDataParameters::PrintValue()
   if(dirtype == dirtype_uniformrandom)
     {
       std::cout << "Direction is uniform random in range of " << uniformcosthetamin << " < costheta < " << uniformcosthetamax << " , " << uniformphimin << " < phi < " << uniformphimax << std::endl;
-    }
-  if(inforetro == Inforetro_noretro)
-    {
-      std::cout << "not use retro reflector" << std::endl;
-    }
-  if(inforetro == Inforetro_onretro)
-    {
-      std::cout << "use retro reflector" << std::endl;
     }
   if(inforeflectivity == Inforeflectivity_blacksheet)
     {
@@ -445,11 +421,6 @@ bool OneDataParameters::isEqual(OneDataParameters compare,std::vector<std::strin
     {
       // undefined
     }
-  if(compare.inforetro != inforetro)
-    {
-      return false;
-    }
-  
   if(compare.inforeflectivity != inforeflectivity)
     {
       return false;
@@ -485,12 +456,12 @@ bool OneDataParameters::isEqual(OneDataParameters compare,std::vector<std::strin
       if(compare.triggerwindow != triggerwindow)
 	return false;
     }
-  if(!hasname(vexclusionname,"TPR"))
+  if(!hasname(vexclusionname,"PR"))
     {
       if(compare.triggerprewindow != triggerprewindow)
 	return false;
     }
-  if(!hasname(vexclusionname,"TPO"))
+  if(!hasname(vexclusionname,"PO"))
     {
       if(compare.triggerpostwindow != triggerpostwindow)
 	return false;
@@ -502,7 +473,7 @@ bool OneDataParameters::isEqual(OneDataParameters compare,std::vector<std::strin
     }
   if(compare.adjustfornoise != adjustfornoise)
     return false;
-  if(!hasname(vexclusionname,"EN"))
+  if(!hasname(vexclusionname,"N"))
     {
       if(compare.eventnumber != eventnumber)
 	return false;

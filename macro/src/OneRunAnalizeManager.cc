@@ -25,6 +25,8 @@ OneRunAnalizeManager::OneRunAnalizeManager(const char* datafile,const char* mode
     SetGoodnessfile(datafile);
   if(smode == "l")
     SetLikelihoodfile(datafile);
+  if(smode == "gm")
+    SetGoodnessMinimizefile(datafile);
 }
 
 
@@ -76,7 +78,40 @@ void OneRunAnalizeManager::SetLikelihoodfile(const char* likelihoodfile)
   goodnessmanager->Setgoodnessfile(infilegoodnessname->Getstring().c_str());
   likelihoodmanager = new OneRunLikelihoodAnalizeManager();
   likelihoodmanager->Setlikelihoodfile(likelihoodfile);
+  delete lfile;
 }
+
+void OneRunAnalizeManager::SetGoodnessMinimizefile(const char* goodnessminimizefile)
+{
+  if(datamanager)
+    {
+      std::cout << "data file is already exist!" << std::endl;
+      throw "OneRunAnalizeManager::SetGoodnessMinimizefile(const char* goodnessminimizefile)";
+    }
+  if(goodnessmanager)
+    {
+      std::cout << "goodness file is already exist!" << std::endl;
+      throw "OneRunAnalizeManager::SetGoodnessMinimizefile(const char* goodnessminimizefile)";
+    }
+  if(likelihoodmanager)
+    {
+      std::cout << "likelihood file is already exist!" << std::endl;
+      throw "OneRunAnalizeManager::SetGoodnessMinimizefile(const char* goodnessminimizefile)";
+    }
+  TFile* gmfile = new TFile(goodnessminimizefile);
+  MyString* infiledataname = (MyString*)gmfile->Get("infiledataname_bygoodnessminimize");
+  MyString* infilegoodnessname = (MyString*)gmfile->Get("infilegoodnessname_bygoodnessminimize");
+  MyString* infilelikelihoodname = (MyString*)gmfile->Get("infilelikelihoodname_bygoodnessminimize");
+  datamanager = new OneRunDataAnalizeManager();
+  datamanager->Setdatafile(infiledataname->Getstring().c_str());
+  goodnessmanager = new OneRunGoodnessAnalizeManager();
+  goodnessmanager->Setgoodnessfile(infilegoodnessname->Getstring().c_str());
+  likelihoodmanager = new OneRunLikelihoodAnalizeManager();
+  likelihoodmanager->Setlikelihoodfile(infilelikelihoodname->Getstring().c_str());
+  goodnessminimizemanager->Setgoodnessminimizefile(goodnessminimizefile);
+  delete gmfile;
+}
+
 
 OneRunAnalizeManager::~OneRunAnalizeManager()
 {
@@ -86,66 +121,81 @@ OneRunAnalizeManager::~OneRunAnalizeManager()
     delete goodnessmanager;
   if(likelihoodmanager)
     delete likelihoodmanager;
+  if(goodnessminimizemanager)
+    delete goodnessminimizemanager;
 }
 
 
-TH2D OneRunAnalizeManager::GetTH2DEvent(int n,int xnum,double xmin,double xmax,int ynum,double ymin,double ymax,const char* xvar,const char* yvar)
+void OneRunAnalizeManager::GetTH2DEvent(TH2D* h1,int n,const char* xvar,const char* yvar)
 {
-  TH2D th2d("","",xnum,xmin,xmax,ynum,ymin,ymax);
+  if(!h1)
+    {
+      std::cout << "hist is null!" << std::endl;
+      throw "void OneRunAnalizeManager::GetTH2DEvent(TH2D* h1,const char* xvar,const char* yvar)";
+    }
+  
   for(int i = 0;i < n;i++)
     {
       if(datamanager->Getncherenkovdigihits(i) != 0)
 	{
 	  double xval = GetVariableEvent(xvar,i);
 	  double yval = GetVariableEvent(yvar,i);
-	  th2d.Fill(xval,yval);
+	  h1->Fill(xval,yval);
 	}
     }
-  return th2d;
 }
 
-TH2D OneRunAnalizeManager::GetTH2DHit(int n,int xnum,double xmin,double xmax,int ynum,double ymin,double ymax,const char* xvar,const char* yvar)
+void OneRunAnalizeManager::GetTH2DHit(TH2D* h1,int n,const char* xvar,const char* yvar)
 {
-   TH2D th2d("","",xnum,xmin,xmax,ynum,ymin,ymax);
+  if(!h1)
+    {
+      std::cout << "hist is null!" << std::endl;
+      throw "void OneRunAnalizeManager::GetTH2DHit(TH2D* h1,const char* xvar,const char* yvar)";
+    }
   for(int i = 0;i < n;i++)
     {
       for(int j = 0; j < datamanager->Getncherenkovdigihits(i); j++)
 	{
 	  double xval = GetVariableHit(xvar,i,j);
 	  double yval = GetVariableHit(yvar,i,j);
-	  th2d.Fill(xval,yval);
+	  h1->Fill(xval,yval);
 	}
     }
-  return th2d;
 }
 
-TH1D OneRunAnalizeManager::GetTH1DEvent(int n,int num,double min,double max,const char* var)
+void OneRunAnalizeManager::GetTH1DEvent(TH1D* h1,int n,const char* var)
 {
-  TH1D th1d("","",num,min,max);
+  if(!h1)
+    {
+      std::cout << "hist is null!" << std::endl;
+      throw "void OneRunAnalizeManager::GetTH1DEvent(TH1D* h1,const char* xvar)";
+    }
   for(int i = 0; i < n;i++)
     {
       if(datamanager->Getncherenkovdigihits(i) != 0)
 	{
 	  double val = GetVariableEvent(var,i);
-	  th1d.Fill(val);
+	  h1->Fill(val);
 	}
       
     }
-  return th1d;
 }
 
-TH1D OneRunAnalizeManager::GetTH1DHit(int n,int num,double min,double max,const char* var)
+void OneRunAnalizeManager::GetTH1DHit(TH1D* h1,int n,const char* var)
 {
-  TH1D th1d("","",num,min,max);
+  if(!h1)
+    {
+      std::cout << "hist is null!" << std::endl;
+      throw "void OneRunAnalizeManager::GetTH1DHit(TH1D* h1,const char* xvar)";
+    }
   for(int i = 0; i < n;i++)
     {
       for(int j = 0; j < datamanager->Getncherenkovdigihits(i);j++)
 	{
 	  double val = GetVariableHit(var,i,j);
-	  th1d.Fill(val);
+	  h1->Fill(val);
 	}
     }
-  return th1d;
 }
 
 
@@ -242,21 +292,22 @@ BiasError OneRunAnalizeManager::GetXBiasErrorbygoodness()
   double histmin = -(range.GetXmax()-range.GetXmin())/2. - range.GetXwidth()/2;
   double histmax = (range.GetXmax()-range.GetXmin())/2. + range.GetXwidth()/2.;
   int histnum = range.GetXNum();
-  TH1D h1 = GetTH1DEvent(goodnessmanager->Getnevent(),histnum,histmin,histmax,"xbiasgoodness");
-  TF1* f1 = new TF1("f1","[0]*exp(-0.5*pow((x-[1])/[2],2))",h1.GetXaxis()->GetXmin(),h1.GetXaxis()->GetXmax());
+  TH1D* h1 = new TH1D("","",histnum,histmin,histmax);
+  GetTH1DEvent(h1,goodnessmanager->Getnevent(),"xbiasgoodness");
+  TF1* f1 = new TF1("f1","[0]*exp(-0.5*pow((x-[1])/[2],2))",h1->GetXaxis()->GetXmin(),h1->GetXaxis()->GetXmax());
   f1->SetParameters(goodnessmanager->Getnevent()/10.,0.,100.);
-  h1.Fit("f1","0");
+  h1->Fit("f1","0");
   double xbias = f1->GetParameter(1);
   double xbiaserror = f1->GetParError(1);
   double xerror = f1->GetParameter(2);
   double xerrorerror = f1->GetParError(2);
-  std::vector<double> xvec;
   BiasError biaserror;
   biaserror.bias = xbias;
   biaserror.biaserror = xbiaserror;
   biaserror.error = xerror;
   biaserror.errorerror = xerrorerror;
   delete f1;
+  delete h1;
   return biaserror;
 }
 
@@ -266,21 +317,22 @@ BiasError OneRunAnalizeManager::GetYBiasErrorbygoodness()
   double histmin = -(range.GetYmax()-range.GetYmin())/2. - range.GetYwidth()/2;
   double histmax = (range.GetYmax()-range.GetYmin())/2. + range.GetYwidth()/2.;
   int histnum = range.GetYNum();
-  TH1D h1 = GetTH1DEvent(goodnessmanager->Getnevent(),histnum,histmin,histmax,"ybiasgoodness");
-  TF1* f1 = new TF1("f1","[0]*exp(-0.5*pow((x-[1])/[2],2))",h1.GetXaxis()->GetXmin(),h1.GetXaxis()->GetXmax());
+  TH1D* h1 = new TH1D("","",histnum,histmin,histmax);
+  GetTH1DEvent(h1,goodnessmanager->Getnevent(),"ybiasgoodness");
+  TF1* f1 = new TF1("f1","[0]*exp(-0.5*pow((x-[1])/[2],2))",h1->GetXaxis()->GetXmin(),h1->GetXaxis()->GetXmax());
   f1->SetParameters(goodnessmanager->Getnevent()/10.,0.,100.);
-  h1.Fit("f1","0");
+  h1->Fit("f1","0");
   double ybias = f1->GetParameter(1);
   double ybiaserror = f1->GetParError(1);
   double yerror = f1->GetParameter(2);
   double yerrorerror = f1->GetParError(2);
-  std::vector<double> yvec;
   BiasError biaserror;
   biaserror.bias = ybias;
   biaserror.biaserror = ybiaserror;
   biaserror.error = yerror;
   biaserror.errorerror = yerrorerror;
   delete f1;
+  delete h1;
   return biaserror;
 }
 
@@ -290,40 +342,42 @@ BiasError OneRunAnalizeManager::GetZBiasErrorbygoodness()
   double histmin = -(range.GetZmax()-range.GetZmin())/2. - range.GetZwidth()/2;
   double histmax = (range.GetZmax()-range.GetZmin())/2. + range.GetZwidth()/2.;
   int histnum = range.GetZNum();
-  TH1D h1 = GetTH1DEvent(goodnessmanager->Getnevent(),histnum,histmin,histmax,"zbiasgoodness");
-  TF1* f1 = new TF1("f1","[0]*exp(-0.5*pow((x-[1])/[2],2))",h1.GetXaxis()->GetXmin(),h1.GetXaxis()->GetXmax());
+  TH1D* h1 = new TH1D("","",histnum,histmin,histmax);
+  GetTH1DEvent(h1,goodnessmanager->Getnevent(),"zbiasgoodness");
+  TF1* f1 = new TF1("f1","[0]*exp(-0.5*pow((x-[1])/[2],2))",h1->GetXaxis()->GetXmin(),h1->GetXaxis()->GetXmax());
   f1->SetParameters(goodnessmanager->Getnevent()/10.,0.,100.);
-  h1.Fit("f1","0");
+  h1->Fit("f1","0");
   double zbias = f1->GetParameter(1);
   double zbiaserror = f1->GetParError(1);
   double zerror = f1->GetParameter(2);
   double zerrorerror = f1->GetParError(2);
-  std::vector<double> zvec;
   BiasError biaserror;
   biaserror.bias = zbias;
   biaserror.biaserror = zbiaserror;
   biaserror.error = zerror;
   biaserror.errorerror = zerrorerror;
   delete f1;
+  delete h1;
   return biaserror;
 }
 
 double OneRunAnalizeManager::angleerror1sigma()
 {
-  TH1D h1 = GetTH1DEvent(likelihoodmanager->Getevent(),10000,0.,3.141593,"angleerrorlikelihood");
-  double all = h1.Integral();
+  TH1D* h1 = new TH1D("","",10000,0.,3.141593);
+  GetTH1DEvent(h1,likelihoodmanager->Getevent(),"angleerrorlikelihood");
+  double all = h1->Integral();
   double angle = 0;
   double ratio = 0.6827;
-  for(int min = 1;min < h1.GetMaximumBin();min++)
+  for(int min = 1;min < h1->GetNbinsX();min++)
     {
-      double integral = h1.Integral(1.,min);
-      
+      double integral = h1->Integral(1,min);
       if(integral/all > ratio)
 	{
-	  angle = h1.GetBinCenter(min);
+	  angle = h1->GetBinCenter(min);
 	  break;
 	}
     }
+  delete h1;
   return angle;
 }
 

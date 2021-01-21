@@ -52,6 +52,14 @@ public:
   {
     timewindowonretro = t;
   }
+  void Settoferrornoretro(double t)
+  {
+    toferrornoretro = t;
+  }
+  void Settoferroronretro(double t)
+  {
+    toferroronretro = t;
+  }
   
 protected:
   hitinfo info;
@@ -60,6 +68,8 @@ protected:
   std::shared_ptr<afunction> afuncnoretro;
   std::shared_ptr<fdirection> fdironretro;
   std::shared_ptr<afunction> afunconretro;
+  double toferrornoretro;
+  double toferroronretro;
   double timewindownoretro;
   double timewindowonretro;
 };

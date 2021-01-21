@@ -55,11 +55,6 @@ public:
   double fixedenergy;
   double uniformenergymin;
   double uniformenergymax;
-  enum Inforetro
-    {
-      Inforetro_noretro,Inforetro_onretro
-    };
-  Inforetro inforetro;
   enum Inforeflectivity
     {
       Inforeflectivity_blacksheet,Inforeflectivity_conventional,Inforeflectivity_trapezoid

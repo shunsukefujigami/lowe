@@ -1,17 +1,17 @@
-// C++
+// c++ STL
 #include <iostream>
 #include <cctype>
 #include <cstdlib>
 #include <sstream>
 // self
-#include "OneGoodnessParameters.hh"
+#include "OneGoodnessMinimizeParameters.hh"
 
-ClassImp(OneGoodnessParameters)
+ClassImp(OneGoodnessMinimizeParameters)
 
-void OneGoodnessParameters::Setpair(std::string filename)
+void OneGoodnessMinimizeParameters::Setpair(std::string filename)
 {
   file = filename;
-    vp.clear();
+  vp.clear();
   size_t lastslashpos = filename.rfind("/");
   if(lastslashpos == std::string::npos)
     {
@@ -56,7 +56,7 @@ void OneGoodnessParameters::Setpair(std::string filename)
   vp.erase(vp.begin());
 }
 
-void OneGoodnessParameters::SetValue()
+void OneGoodnessMinimizeParameters::SetValue()
 {
   std::vector<std::string> secondvec;
    for(auto itr = vp.begin(); itr != vp.end(); itr++)
@@ -70,7 +70,7 @@ void OneGoodnessParameters::SetValue()
 	  else
 	    {
 	    std::cout << "invalid detector value!" << std::endl;
-	    throw "void OneGoodnessParameters::SetValue()";
+	    throw "void OneLikelihoodParamters::SetValue()";
 	    
 	    }
 	  
@@ -90,7 +90,7 @@ void OneGoodnessParameters::SetValue()
 	  else
 	    {
 	      std::cout << "invalid detector value!" << std::endl;
-	      throw "void OneGoodnessParameters::SetValue()";
+	      throw "void OneLikelihoodParamters::SetValue()";
 	    }
 	}
       else if((*itr).first == "POS")
@@ -110,7 +110,7 @@ void OneGoodnessParameters::SetValue()
 	  else
 	    {
 	      std::cout << "invalid position value!" << std::endl;
-	      throw "void OneGoodnessParameters::SetValue()";
+	      throw "void OneLikelihoodParamters::SetValue()";
 	    }
 	}
       else if((*itr).first == "DIR")
@@ -133,7 +133,7 @@ void OneGoodnessParameters::SetValue()
 	  else
 	    {
 	      std::cout << "invalid Direction value!" << std::endl;
-	      throw "void OneGoodnessParameters::SetValue()";
+	      throw "void OneLikelihoodParamters::SetValue()";
 	    }
 	}
       else if((*itr).first == "E")
@@ -153,7 +153,7 @@ void OneGoodnessParameters::SetValue()
 	  else
 	    {
 	      std::cout << "invalid energy value!" << std::endl;
-	      throw "void OneGoodnessParameters::SetValue()";
+	      throw "void OneLikelihoodParamters::SetValue()";
 	    }
 	}
       else if((*itr).first == "RF")
@@ -177,7 +177,7 @@ void OneGoodnessParameters::SetValue()
 	  else
 	    {
 	      std::cout << "invalid inforeflectivity value!" << std::endl;
-	      throw "void OneGoodnessParameters::SetValue()";
+	      throw "void OneLikelihoodParamters::SetValue()";
 	    }
 	}
       else if((*itr).first == "RS")
@@ -193,7 +193,7 @@ void OneGoodnessParameters::SetValue()
 	  else
 	    {
 	      std::cout << "invalid reflectspread value!" << std::endl;
-	      throw "void OneGoodnessParameters::SetValue()";
+	      throw "void OneLikelihoodParamters::SetValue()";
 	    }
 	}
       else if((*itr).first == "TT")
@@ -229,7 +229,7 @@ void OneGoodnessParameters::SetValue()
 	  else
 	    {
 	      std::cout << "invalid adjust for noise parameter!" << std::endl;
-	      throw "void OneGoodnessParameters::SetValue()";
+	      throw "void OneLikelihoodParamters::SetValue()";
 	    }
 	}
       else if((*itr).first == "N")
@@ -261,7 +261,7 @@ void OneGoodnessParameters::SetValue()
 	  else
 	    {
 	      std::cout << "invalid goodness type parameter!" << std::endl;
-	      throw "void OneGoodnessParameters::SetValue()";
+	      throw "void OneLikelihoodParameters::SetValue()";
 	    }
 	}
       else if((*itr).first == "GR")
@@ -296,24 +296,155 @@ void OneGoodnessParameters::SetValue()
 	  else
 	    {
 	      std::cout << "invalid GSRT value!" << std::endl;
-	      throw "void OneGoodnessParameters::SetValue()";
+	      throw "void OneLikelihoodParameters::SetValue()";
 	    }
 	}
       else if((*itr).first == "GN")
 	{
 	  goodnesseventnumber = atoi((*itr).second.c_str());
-	}	      
+	}
+      else if((*itr).first == "LT")
+	{
+	  if((*itr).second == "nr")
+	    likelihoodtype = LikelihoodType_noretro;
+	  else if((*itr).second == "or")
+	    likelihoodtype = LikelihoodType_onretro;
+	  else if((*itr).second == "s")
+	    likelihoodtype = LikelihoodType_sum;
+	  else
+	    {
+	      std::cout << "invalid LT value!" << std::endl;
+	      throw "void OneLikelihoodParameters::SetValue()";
+	    }
+	}
+      else if((*itr).first == "NF")
+	{
+	  if((*itr).second == "n")
+	    noretrofdirection = NoRetroFdirection_notuse;
+	  else if((*itr).second == "p")
+	    noretrofdirection = NoRetroFdirection_prototype;
+	  else if((*itr).second == "d")
+	    noretrofdirection = NoRetroFdirection_bydata;
+	  else
+	    {
+	      std::cout << "invalid NF value!" << std::endl;
+	      throw "void OneLikelihoodParameters::SetValue()";
+	    }
+	}
+      else if((*itr).first == "OF")
+	{
+	  if((*itr).second == "n")
+	    onretrofdirection = OnRetroFdirection_notuse;
+	  else if((*itr).second == "p")
+	    onretrofdirection = OnRetroFdirection_prototype;
+	  else if((*itr).second == "d")
+	    onretrofdirection = OnRetroFdirection_bydata;
+	  else
+	    {
+	      std::cout << "invalid OF value!" << std::endl;
+	      throw "void OneLikelihoodParameters::SetValue()";
+	    }
+	}
+      else if((*itr).first == "NA")
+	{
+	  if((*itr).second == "n")
+	    noretroafunction = NoRetroAfunction_notuse;
+	  else if((*itr).second == "p")
+	    noretroafunction = NoRetroAfunction_prototype;
+	  else
+	    {
+	      std::cout << "invalid NA value!" << std::endl;
+	      throw "void OneLikelihoodParameters::SetValue()";
+	    }
+	}
+      else if((*itr).first == "OA")
+	{
+	  if((*itr).second == "n")
+	    onretroafunction = OnRetroAfunction_notuse;
+	  else if((*itr).second == "p")
+	    onretroafunction = OnRetroAfunction_prototype;
+	  else
+	    {
+	      std::cout << "invalid OA value!" << std::endl;
+	      throw "void OneLikelihoodParameters::SetValue()";
+	    }
+	}
+      else if((*itr).first == "LR")
+	{
+	  secondvec = split((*itr).second);
+	  if((*itr).second == "t")
+	    likelihoodsearchrangetype = likelihoodsearchrangetype_true;
+	  else if(secondvec[0] == "n")
+	    {
+	      likelihoodsearchrangetype = likelihoodsearchrangetype_normal;
+	      costhetanum = atof(secondvec[1].c_str());
+	      phinum = atof(secondvec[2].c_str());
+	    }
+	  else
+	    {
+	      std::cout << "invalid LR value!" << std::endl;
+	      throw "void OneLikelihoodParameters::SetValue()";
+	    }
+	}
+      else if((*itr).first == "WN")
+	{
+	  timewindownoretro = atof((*itr).second.c_str());
+	}
+      else if((*itr).first == "WO")
+	{
+	  timewindowonretro = atof((*itr).second.c_str());
+	}
+      else if((*itr).first == "GMT")
+	{
+	  if( (*itr).second == "nr")
+	    goodnessminimizetype = GoodnessMinimizeType_noretro;
+	  if( (*itr).second == "s")
+	    goodnessminimizetype = GoodnessMinimizeType_sum;
+	}
+      else if((*itr).first == "TO")
+	{
+	  tolerance = atof((*itr).second.c_str());
+	}
+      else if((*itr).first == "GST")
+	{
+	  secondvec = split((*itr).second);
+	  stepx = atoi(secondvec[0].c_str());
+	  stepy = atoi(secondvec[1].c_str());
+	  stepz = atoi(secondvec[2].c_str());
+	  stept = atoi(secondvec[3].c_str());
+	  stepcostheta = atoi(secondvec[4].c_str());
+	  stepphi = atoi(secondvec[5].c_str());
+	}
+      else if((*itr).first == "GMS")
+	{
+	  goodnessminimizesigma = atof((*itr).second.c_str());
+	}
+      else if((*itr).first == "SA")
+	{
+	  sigmaangle = atof((*itr).second.c_str());
+	}
+      else if((*itr).first == "RC")
+	{
+	  secondvec = split((*itr).second);
+	  if( (*itr).second == "n")
+	    onretrocorrectiontype = OnRetroCorrectionType_notuse;
+	  else if( secondvec[0] == "u")
+	    {
+	      onretrocorrectiontype = OnRetroCorrectionType_use;
+	      onretrocorrection = atof(secondvec[1].c_str());
+	    }
+	}
       else
 	{
 	  std::cout << "invalid identifier value!" << std::endl;
-	  throw "void OneGoodnessParameters::SetValue()";
+	  throw "void OneLikelihoodParamters::SetValue()";
 	}
     }
 }
 
-void OneGoodnessParameters::PrintValue()
+void OneGoodnessMinimizeParameters::PrintValue()
 {
-  if(detector == SK)
+    if(detector == SK)
     std::cout << "detector is SK" << std::endl;
   if(detector == HK)
     std::cout << "detector is HK" << std::endl;
@@ -390,9 +521,57 @@ void OneGoodnessParameters::PrintValue()
       searchrange.Printrange();
     }
   std::cout << "goodness event number is " << goodnesseventnumber << std::endl;
+  if(likelihoodtype == LikelihoodType_noretro)
+    std::cout << "likelihood type is noretro" << std::endl;
+  if(likelihoodtype == LikelihoodType_onretro)
+    std::cout << "likelihood type is onretro" << std::endl;
+  if(likelihoodtype == LikelihoodType_sum)
+    std::cout << "lieklihood type is sum" << std::endl;
+  if(noretrofdirection == NoRetroFdirection_notuse)
+    std::cout << "no retro fdirection is not use" << std::endl;
+  if(noretrofdirection == NoRetroFdirection_prototype)
+    std::cout << "no retro fdirection is prototype" << std::endl;
+  if(noretrofdirection == NoRetroFdirection_bydata)
+    std::cout << "no retro fdirection is bydata" << std::endl;
+  if(onretrofdirection == OnRetroFdirection_notuse)
+    std::cout << "on retro fdirection is not use" << std::endl;
+  if(onretrofdirection == OnRetroFdirection_prototype)
+    std::cout << "on retro fdirection is prototype" << std::endl;
+  if(onretrofdirection == OnRetroFdirection_bydata)
+    std::cout << "on retro fdirection is bydata" << std::endl;
+  if(noretroafunction == NoRetroAfunction_notuse)
+    std::cout << "no retro afunction is not use" << std::endl;
+  if(noretroafunction == NoRetroAfunction_prototype)
+    std::cout << "no retro afunction is prototype" << std::endl;
+  if(onretroafunction == OnRetroAfunction_notuse)
+    std::cout << "on retro afunction is not use" << std::endl;
+  if(onretroafunction == OnRetroAfunction_prototype)
+    std::cout << "on retro afunction is prototype" << std::endl;
+  if(likelihoodsearchrangetype == likelihoodsearchrangetype_true)
+    std::cout << "likelihood search range type is true" << std::endl;
+  if(likelihoodsearchrangetype == likelihoodsearchrangetype_normal)
+    {
+      std::cout << "likelihood search range type is normal" << std::endl;
+      std::cout << "costheata number is " << costhetanum << std::endl;
+      std::cout << "phi number is " << phinum << std::endl;
+    }
+  std::cout << "time window no retro is " << timewindownoretro << std::endl;
+  std::cout << "time window on retro is " << timewindowonretro << std::endl;
+  if(goodnessminimizetype == GoodnessMinimizeType_noretro)
+    std::cout << "goodnessminimizetype is noretro" << std::endl;
+  if(goodnessminimizetype == GoodnessMinimizeType_sum)
+    std::cout << "goodnessminimizetype is sum" << std::endl;
+  std::cout << "tolerance is " << tolerance << std::endl;
+  std::cout << "step is (x,y,z,t,costheta,phi) = (" << stepx << "," << stepy << "," << stepz << "," << stept << "," << stepcostheta << "," << stepphi << ")" << std::endl;
+  std::cout << "goodness minimize sigma is " << goodnessminimizesigma << std::endl;
+  std::cout << "sigmaangle is " << sigmaangle << std::endl;
+  if(onretrocorrectiontype == OnRetroCorrectionType_notuse)
+    std::cout << "OnRetroCorectionType is not use" << std::endl;
+  if(onretrocorrectiontype == OnRetroCorrectionType_use)
+    std::cout << "onretrocorrection value is " << onretrocorrection << std::endl;
 }
 
-bool OneGoodnessParameters::hasname(std::vector<std::string> vname,std::string name)
+bool OneGoodnessMinimizeParameters::hasname(std::vector<std::string> vname,std::string name)
 {
   for(auto itr = vname.begin(); itr != vname.end(); itr++)
     {
@@ -401,8 +580,8 @@ bool OneGoodnessParameters::hasname(std::vector<std::string> vname,std::string n
     }
   return false;
 }
-      
-bool OneGoodnessParameters::isEqual(OneGoodnessParameters compare,std::vector<std::string> vexclusionname)
+
+bool OneGoodnessMinimizeParameters::isEqual(OneGoodnessMinimizeParameters compare,std::vector<std::string> vexclusionname)
 {
   if(!hasname(vexclusionname,"DET"))
     {
@@ -639,10 +818,123 @@ bool OneGoodnessParameters::isEqual(OneGoodnessParameters compare,std::vector<st
       if(goodnesseventnumber != compare.goodnesseventnumber)
 	return false;
     }
+  if(!hasname(vexclusionname,"LT"))
+    {
+      if(likelihoodtype != compare.likelihoodtype)
+	return false;
+    }
+  if(!hasname(vexclusionname,"NF"))
+    {
+      if(noretrofdirection != compare.noretrofdirection)
+	return false;
+    }
+  if(!hasname(vexclusionname,"OF"))
+    {
+      if(onretrofdirection != compare.onretrofdirection)
+	return false;
+    }
+  if(!hasname(vexclusionname,"NA"))
+    {
+      if(noretroafunction != compare.noretroafunction)
+	return false;
+    }
+  if(!hasname(vexclusionname,"OA"))
+    {
+      if(onretroafunction != compare.onretroafunction)
+	return false;
+    }
+  if(likelihoodsearchrangetype != compare.likelihoodsearchrangetype)
+    return false;
+  if(likelihoodsearchrangetype == likelihoodsearchrangetype_true)
+    {
+    }
+  if(likelihoodsearchrangetype == likelihoodsearchrangetype_normal)
+    {
+      if(!hasname(vexclusionname,"LSR_costhetaNum"))
+	{
+	  if(costhetanum != compare.costhetanum)
+	    return false;
+	}
+      if(!hasname(vexclusionname,"LSR_phiNum"))
+	{
+	  if(phinum != compare.phinum)
+	    return false;
+	}
+    }
+  if(!hasname(vexclusionname,"WN"))
+    {
+      if(timewindownoretro != compare.timewindownoretro)
+	return false;
+    }
+  if(!hasname(vexclusionname,"WO"))
+    {
+      if(timewindowonretro != compare.timewindowonretro)
+	return false;
+    }
+  if(compare.goodnessminimizetype != goodnessminimizetype)
+    return false;
+  if(!hasname(vexclusionname,"TO"))
+    {
+      if(tolerance != compare.tolerance)
+	return false;
+    }
+  if(!hasname(vexclusionname,"GSTx"))
+    {
+      if(stepx != compare.stepx)
+	return false;
+    }
+  if(!hasname(vexclusionname,"GSTy"))
+    {
+      if(stepy != compare.stepy)
+	return false;
+    }
+  if(!hasname(vexclusionname,"GSTz"))
+    {
+      if(stepz != compare.stepz)
+	return false;
+    }
+  if(!hasname(vexclusionname,"GSTt"))
+    {
+      if(stept != compare.stept)
+	return false;
+    }
+  if(!hasname(vexclusionname,"GSTcostheta"))
+    {
+      if(stepcostheta != compare.stepcostheta)
+	return false;
+    }
+  if(!hasname(vexclusionname,"GSTphi"))
+    {
+      if(stepphi != compare.stepphi)
+	return false;
+    }
+  if(!hasname(vexclusionname,"GMS"))
+    {
+      if(goodnessminimizesigma != compare.goodnessminimizesigma)
+	return false;
+    }
+  if(!hasname(vexclusionname,"SA"))
+    {
+      if(sigmaangle != compare.sigmaangle)
+	return false;
+    }
+  if(onretrocorrectiontype != compare.onretrocorrectiontype)
+    return false;
+  if(onretrocorrectiontype == OnRetroCorrectionType_notuse)
+    {
+    }
+  if(onretrocorrectiontype == OnRetroCorrectionType_use)
+    {
+      if(!hasname(vexclusionname,"RCOvalue"))
+	{
+	  if(onretrocorrection != compare.onretrocorrection)
+	    return false;
+	}
+    }
   return true;
 }
 
-std::vector<std::string> OneGoodnessParameters::split(std::string& str)
+std::vector<std::string> OneGoodnessMinimizeParameters::split(std::string& str)
 {
   std::vector<std::string> v;
   std::istringstream ss(str);
