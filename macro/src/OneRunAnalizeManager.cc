@@ -11,6 +11,8 @@
 #include "Ttof.hh"
 #include "MyString.hh"
 #include "BiasError.hh"
+#include "Tfunction.hh"
+#include "Tfsumgoodness.hh"
 
 OneRunAnalizeManager::OneRunAnalizeManager()
 {
@@ -198,6 +200,71 @@ void OneRunAnalizeManager::GetTH1DHit(TH1D* h1,int n,const char* var)
     }
 }
 
+void OneRunAnalizeManager::GetFuncmap1DTrue(TH1D* h1,const char* xvar,const char* yvar,int ievent)
+{
+  if(!h1)
+    {
+      std::cout << "hist is null!" << std::endl;
+      throw "void OneRunAnalizeManager::GetFuncmap1DTrue(TH1D* h1,const char* xvar,const char* yvar,int ievent)";
+    }
+  std::string xvalname = xvar;
+  std::string yvalname = yvar;
+  double xval = h1->GetBinCenter(1);
+  double xwidth = h1->GetBinWidth(1);
+  Tfunction* function = nullptr;
+  if(yvalname == "sumgoodnessnoretro")
+    {
+      function = new Tfsumgoodnessnoretro();
+      function->Setsigma(goodnessminimizemanager->GetGoodnessMinimizeParameters()->goodnessminimizesigma);
+      function->Setsigmaangle(goodnessminimizemanager->GetGoodnessMinimizeParameters()->sigmaangle);
+    }
+  if(yvalname == "sumgoodnesssum")
+    {
+      function = new Tfsumgoodnesssum();
+      function->Setsigma(goodnessminimizemanager->GetGoodnessMinimizeParameters()->goodnessminimizesigma);
+      function->Setsigmaangle(goodnessminimizemanager->GetGoodnessMinimizeParameters()->sigmaangle);
+      function->Setonretrocorrection(goodnessminimizemanager->GetGoodnessMinimizeParameters()->onretrocorrection);
+    }
+  
+  else
+    {
+      std::cout << "invalid yvalname " << yvalname << std::endl;
+      throw "void OneRunAnalizeManager::GetFuncmap1DTrue(TH1D* h1,int n,const char* xvar,const char* yvar,int ievent)";
+    }
+  function->SetvHitInfo(datamanager->vhitinfo);
+  for(int bin = 1;bin <= h1->GetNbinsX();bin++,xval += xwidth)
+    {
+      double x = datamanager->Getxvtx(ievent);
+      double y = datamanager->Getyvtx(ievent);
+      double z = datamanager->Getzvtx(ievent);
+      double t = -datamanager->GetTriggerTime(ievent);
+      double costheta = datamanager->Getdirection(ievent).CosTheta();
+      double phi = datamanager->Getdirection(ievent).Phi();
+      if(xvalname == "x")
+	x = xval;
+      if(xvalname == "y")
+	y = xval;
+      if(xvalname == "z")
+	z = xval;
+      if(xvalname == "t")
+	t = xval;
+      if(xvalname == "costheta")
+	costheta = xval;
+      if(xvalname == "phi")
+	phi = xval;
+      TLorentzVector vec(x,y,z,t);
+      TVector3 dir;
+      dir.SetMagThetaPhi(1.,std::acos(costheta),phi);
+      TReconstructdata data;
+      data.Set4Vector(vec);
+      data.Setdirection(dir);
+      function->SetReconstructdata(data);
+      double value = function->returnvalue();
+      h1->Fill(xval,value);
+    }
+  delete function;
+}
+
 
 double OneRunAnalizeManager::GetVariableEvent(const char* valname,int i)
 {
@@ -254,11 +321,27 @@ double OneRunAnalizeManager::GetVariableEvent(const char* valname,int i)
     {
       return goodnessmanager->GetZ(i) - datamanager->Getzvtx(i);
     }
+  if(s_valname == "xbiasgoodnessminimize")
+    {
+      return goodnessminimizemanager->GetX(i) - datamanager->Getxvtx(i);
+    }
+  if(s_valname == "ybiasgoodnessminimize")
+    {
+      return goodnessminimizemanager->GetY(i) - datamanager->Getyvtx(i);
+    }
+  if(s_valname == "zbiasgoodnessminimize")
+    {
+      return goodnessminimizemanager->GetZ(i) - datamanager->Getzvtx(i);
+    }
+  
   if(s_valname == "angleerrorlikelihood")
     {
       return likelihoodmanager->GetDirection(i).Angle(datamanager->Getdirection(i));
     }
-  
+  if(s_valname == "angleerrorbygoodnessminimize")
+    {
+      return goodnessminimizemanager->GetDirection(i).Angle(datamanager->Getdirection(i));
+    }
   std::cout << "invalid valname!" << std::endl;
   throw "OneRunAnalizeManager::GetVariable(const char* valname)";;
 }
@@ -277,6 +360,14 @@ double OneRunAnalizeManager::GetVariableHit(const char* valname,int ievent,int j
   if(s_valname == "tofonretrotrue")
     {
       return datamanager->Gettofonretrotrue(ievent,jhit);
+    }
+  if(s_valname == "toferrornoretrotrue")
+    {
+      return datamanager->Gettoferrornoretrotrue(ievent,jhit);
+    }
+  if(s_valname == "toferroronretrotrue")
+    {
+      return datamanager->Gettoferroronretrotrue(ievent,jhit);
     }
   if(s_valname == "hittimetrue")
     {

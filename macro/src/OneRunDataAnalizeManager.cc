@@ -57,6 +57,8 @@ OneRunDataAnalizeManager::~OneRunDataAnalizeManager()
 
 void OneRunDataAnalizeManager::GetEntry(int ievent)
 {
+  vhitinfo.clear();
+  vhitinfo.shrink_to_fit();
   wcsimT->GetEntry(ievent);
   WCSimRootTrigger* wcsimroottrigger = wcsimrootevent->GetTrigger(0);
   WCSimRootTrack* wcsimroottrack = (WCSimRootTrack*)wcsimroottrigger->GetTracks()->At(0);
@@ -106,6 +108,21 @@ double OneRunDataAnalizeManager::Gettofnoretrotrue(int ievent,int jhit)
   return time;
 }
 
+double OneRunDataAnalizeManager::Gettoferrornoretrotrue(int ievent,int jhit)
+{
+  GetEntry(ievent);
+  Tdistance_position_pmt tdistance;
+  tdistance.SetHitInfo(vhitinfo[jhit]);
+  tdistance.SetReconstructdata(reconstructdatatrue);
+  Ttof tof;
+  tof.SetHitInfo(vhitinfo[jhit]);
+  tof.SetReconstructdata(reconstructdatatrue);
+  tof.Setdistancefunction(&tdistance);
+  double time = tof.returnvalue() + wcsimrootevent->GetTrigger(0)->GetTriggerTime();
+  return time;
+}
+
+
 double OneRunDataAnalizeManager::Gettofonretrotrue(int ievent,int jhit)
 {
   GetEntry(ievent);
@@ -117,5 +134,19 @@ double OneRunDataAnalizeManager::Gettofonretrotrue(int ievent,int jhit)
   tof.SetReconstructdata(reconstructdatatrue);
   tof.Setdistancefunction(&tdistance);
   double time = tof.returnvalue();
+  return time;
+}
+
+double OneRunDataAnalizeManager::Gettoferroronretrotrue(int ievent,int jhit)
+{
+  GetEntry(ievent);
+  Tdistance_fly_retro tdistance;
+  tdistance.SetHitInfo(vhitinfo[jhit]);
+  tdistance.SetReconstructdata(reconstructdatatrue);
+  Ttof tof;
+  tof.SetHitInfo(vhitinfo[jhit]);
+  tof.SetReconstructdata(reconstructdatatrue);
+  tof.Setdistancefunction(&tdistance);
+  double time = tof.returnvalue() + wcsimrootevent->GetTrigger(0)->GetTriggerTime();
   return time;
 }

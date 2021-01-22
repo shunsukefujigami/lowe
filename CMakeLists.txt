@@ -24,7 +24,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG -mtune=native -march=native")
 #set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 
 
-ROOT_GENERATE_DICTIONARY($ENV{MACRODIR}/src/macroRootDict $ENV{MACRODIR}/include/eventdisplay.hh $ENV{MACRODIR}/include/goodness_data.hh $ENV{MACRODIR}/include/likelihood_direction_data.hh $ENV{MACRODIR}/include/AnalizedData.hh $ENV{MACRODIR}/include/CSearch_range.hh LINKDEF $ENV{MACRODIR}/include/C4Number.hh $ENV{MACRODIR}/include/FileList.hh $ENV{MACRODIR}/include/efficiency.hh $ENV{MACRODIR}/include/HistByTree.hh $ENV{MACRODIR}/include/HistError.hh $ENV{MACRODIR}/include/HistBias.hh $ENV{MACRODIR}/include/OneRunAnalizeManager.hh $ENV{MACRODIR}/include/AngleRange.hh $ENV{MACRODIR}/include/Thitinfo.hh $ENV{MACRODIR}/include/TReconstructdata.hh $ENV{MACRODIR}/include/Tfunction.hh $ENV{MACRODIR}/include/Tafunction.hh $ENV{MACRODIR}/include/Tdistance_function.hh $ENV{MACRODIR}/include/Tfdirection.hh $ENV{MACRODIR}/include/Tlikelihood.hh $ENV{MACRODIR}/include/Ttheta_dir_i.hh $ENV{MACRODIR}/include/Ttheta_i_func.hh $ENV{MACRODIR}/include/Ttof.hh $ENV{MACRODIR}/include/OneRunDataAnalizeManager.hh $ENV{MACRODIR}/include/OneRunGoodnessAnalizeManager.hh $ENV{MACRODIR}/include/OneRunLikelihoodAnalizeManager.hh $ENV{MACRODIR}/include/OneRunGoodnessMinimizeAnalizeManager.hh $ENV{MACRODIR}/include/OneDataParameters.hh $ENV{MACRODIR}/include/MyString.hh $ENV{MACRODIR}/include/MultiRunAnalizeManager.hh $ENV{MACRODIR}/include/OneGoodnessParameters.hh $ENV{MACRODIR}/include/OneLikelihoodParameters.hh $ENV{MACRODIR}/include/OneGoodnessMinimizeParameters.hh $ENV{MACRODIR}/include/TOption_minimize.hh $ENV{MACRODIR}/include/BiasError.hh macro/include/macroRootLinkDef.hh)
+ROOT_GENERATE_DICTIONARY($ENV{MACRODIR}/src/macroRootDict $ENV{MACRODIR}/include/eventdisplay.hh $ENV{MACRODIR}/include/goodness_data.hh $ENV{MACRODIR}/include/likelihood_direction_data.hh $ENV{MACRODIR}/include/AnalizedData.hh $ENV{MACRODIR}/include/CSearch_range.hh LINKDEF $ENV{MACRODIR}/include/C4Number.hh $ENV{MACRODIR}/include/FileList.hh $ENV{MACRODIR}/include/efficiency.hh $ENV{MACRODIR}/include/HistByTree.hh $ENV{MACRODIR}/include/HistError.hh $ENV{MACRODIR}/include/HistBias.hh $ENV{MACRODIR}/include/OneRunAnalizeManager.hh $ENV{MACRODIR}/include/AngleRange.hh $ENV{MACRODIR}/include/Thitinfo.hh $ENV{MACRODIR}/include/TReconstructdata.hh $ENV{MACRODIR}/include/Tfunction.hh $ENV{MACRODIR}/include/Tafunction.hh $ENV{MACRODIR}/include/Tdistance_function.hh $ENV{MACRODIR}/include/Tfdirection.hh $ENV{MACRODIR}/include/Tlikelihood.hh $ENV{MACRODIR}/include/Ttheta_dir_i.hh $ENV{MACRODIR}/include/Ttheta_i_func.hh $ENV{MACRODIR}/include/Ttof.hh $ENV{MACRODIR}/include/Tfgoodnessdirection.hh $ENV{MACRODIR}/include/OneRunDataAnalizeManager.hh $ENV{MACRODIR}/include/OneRunGoodnessAnalizeManager.hh $ENV{MACRODIR}/include/OneRunLikelihoodAnalizeManager.hh $ENV{MACRODIR}/include/OneRunGoodnessMinimizeAnalizeManager.hh $ENV{MACRODIR}/include/OneDataParameters.hh $ENV{MACRODIR}/include/MyString.hh $ENV{MACRODIR}/include/MultiRunAnalizeManager.hh $ENV{MACRODIR}/include/OneGoodnessParameters.hh $ENV{MACRODIR}/include/OneLikelihoodParameters.hh $ENV{MACRODIR}/include/OneGoodnessMinimizeParameters.hh $ENV{MACRODIR}/include/TOption_minimize.hh $ENV{MACRODIR}/include/Tfgoodness.hh $ENV{MACRODIR}/include/Tfsumgoodness.hh $ENV{MACRODIR}/include/BiasError.hh macro/include/macroRootLinkDef.hh)
 
 add_library(lowemacro SHARED $ENV{MACRODIR}/src/eventdisplay.cc
 		      	     $ENV{MACRODIR}/src/goodness_data.cc
@@ -60,7 +60,11 @@ add_library(lowemacro SHARED $ENV{MACRODIR}/src/eventdisplay.cc
 			     $ENV{MACRODIR}/src/OneGoodnessMinimizeParameters.cc
 			     $ENV{MACRODIR}/src/MyString.cc
 			     $ENV{MACRODIR}/src/TOption_minimize.cc
-			     $ENV{MACRODIR}/src/BiasError.cc)
+			     $ENV{MACRODIR}/src/BiasError.cc
+			     $ENV{MACRODIR}/src/Tfgoodness.cc
+			     $ENV{MACRODIR}/src/Tfgoodnessdirection.cc
+			     $ENV{MACRODIR}/src/Tfsumgoodness.cc
+			     $ENV{MACRODIR}/src/Tfunction.cc)
 target_include_directories(lowemacro PUBLIC $ENV{MACRODIR}/include
 				             $ENV{WCSIMDIR}/include
 					     ${ROOT_INCLUDE_DIRS})

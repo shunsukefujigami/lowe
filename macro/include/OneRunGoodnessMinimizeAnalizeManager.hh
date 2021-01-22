@@ -20,6 +20,50 @@ public:
   void Setgoodnessminimizefile(const char* goodnessminimizefile);
   virtual ~OneRunGoodnessMinimizeAnalizeManager();
   void GetEntry(int i);
+  double GetT(int i)
+  {
+    GetEntry(i);
+    return data->Get4Vector().T();
+  }
+  double GetX(int i)
+  {
+    GetEntry(i);
+    return data->Get4Vector().X();
+  }
+  double GetY(int i)
+  {
+    GetEntry(i);
+    return data->Get4Vector().Y();
+  }
+  double GetZ(int i)
+  {
+    GetEntry(i);
+    return data->Get4Vector().Z();
+  }
+  double Getcostheta(int i)
+  {
+    GetEntry(i);
+    return data->Getdirection().CosTheta();
+  }
+  double Getphi(int i)
+  {
+    GetEntry(i);
+    return data->Getdirection().Phi();
+  }
+
+  TVector3 GetDirection(int i)
+  {
+    GetEntry(i);
+    return data->Getdirection();
+  }
+  
+  
+  double Getgoodness(int i)
+  {
+    GetEntry(i);
+    return data->Getgoodness();
+  }
+  
   int Getevent()
   {
     return neventgoodnessminimize;

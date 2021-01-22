@@ -46,6 +46,11 @@
 #pragma link C++ class Ttheta_dir_i+;
 #pragma link C++ class Ttheta_i_func+;
 #pragma link C++ class Ttof+;
+#pragma link C++ class Tfgoodness+;
+#pragma link C++ class Tfgoodnessdirection+;
+#pragma link C++ class Tfsumgoodness+;
+#pragma link C++ class Tfsumgoodnessnoretro+;
+#pragma link C++ class Tfsumgoodnesssum+;
 #pragma link C++ class OneDataParameters+;
 #pragma link C++ class OneGoodnessParameters+;
 #pragma link C++ class OneLikelihoodParameters+;

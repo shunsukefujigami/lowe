@@ -99,7 +99,7 @@ double fsumgoodnesssum::returnvalue()
       goodnessdonretro.Setonretromode();
       goodnessdonretro.Setsigmaangle(sigmaangle);
       double go = goodnessonretro.returnvalue();
-      double gdo = goodnessnoretro.returnvalue();
+      double gdo = goodnessdonretro.returnvalue();
       sum += (g*gd + onretrocorrection*go*gdo);
     }
   return sum;

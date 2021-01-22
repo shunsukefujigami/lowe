@@ -54,6 +54,7 @@ extern void G__set_cpp_environmentmacroRootDict();
 #include "/home/fujigami/retro/lowe/source/macro/include/Ttheta_dir_i.hh"
 #include "/home/fujigami/retro/lowe/source/macro/include/Ttheta_i_func.hh"
 #include "/home/fujigami/retro/lowe/source/macro/include/Ttof.hh"
+#include "/home/fujigami/retro/lowe/source/macro/include/Tfgoodnessdirection.hh"
 #include "/home/fujigami/retro/lowe/source/macro/include/OneRunDataAnalizeManager.hh"
 #include "/home/fujigami/retro/lowe/source/macro/include/OneRunGoodnessAnalizeManager.hh"
 #include "/home/fujigami/retro/lowe/source/macro/include/OneRunLikelihoodAnalizeManager.hh"
@@ -65,6 +66,8 @@ extern void G__set_cpp_environmentmacroRootDict();
 #include "/home/fujigami/retro/lowe/source/macro/include/OneLikelihoodParameters.hh"
 #include "/home/fujigami/retro/lowe/source/macro/include/OneGoodnessMinimizeParameters.hh"
 #include "/home/fujigami/retro/lowe/source/macro/include/TOption_minimize.hh"
+#include "/home/fujigami/retro/lowe/source/macro/include/Tfgoodness.hh"
+#include "/home/fujigami/retro/lowe/source/macro/include/Tfsumgoodness.hh"
 #include "/home/fujigami/retro/lowe/source/macro/include/BiasError.hh"
 #include <algorithm>
 namespace std { }
@@ -237,6 +240,7 @@ extern G__linked_taginfo G__macroRootDictLN_Tlikelihoodsum;
 extern G__linked_taginfo G__macroRootDictLN_Ttheta_dir_i;
 extern G__linked_taginfo G__macroRootDictLN_Ttheta_i_func;
 extern G__linked_taginfo G__macroRootDictLN_Ttof;
+extern G__linked_taginfo G__macroRootDictLN_Tfgoodnessdirection;
 extern G__linked_taginfo G__macroRootDictLN_MyString;
 extern G__linked_taginfo G__macroRootDictLN_MultiRunAnalizeManager;
 extern G__linked_taginfo G__macroRootDictLN_vectorlEOneDataParameterscOallocatorlEOneDataParametersgRsPgR;
@@ -249,5 +253,9 @@ extern G__linked_taginfo G__macroRootDictLN_vectorlEOneGoodnessMinimizeParameter
 extern G__linked_taginfo G__macroRootDictLN_reverse_iteratorlEvectorlEOneGoodnessMinimizeParameterscOallocatorlEOneGoodnessMinimizeParametersgRsPgRcLcLiteratorgR;
 extern G__linked_taginfo G__macroRootDictLN_vectorlEOneRunAnalizeManagermUcOallocatorlEOneRunAnalizeManagermUgRsPgR;
 extern G__linked_taginfo G__macroRootDictLN_reverse_iteratorlEvectorlEOneRunAnalizeManagermUcOallocatorlEOneRunAnalizeManagermUgRsPgRcLcLiteratorgR;
+extern G__linked_taginfo G__macroRootDictLN_Tfgoodness;
+extern G__linked_taginfo G__macroRootDictLN_Tfsumgoodness;
+extern G__linked_taginfo G__macroRootDictLN_Tfsumgoodnessnoretro;
+extern G__linked_taginfo G__macroRootDictLN_Tfsumgoodnesssum;
 
 /* STUB derived class for protected member access */

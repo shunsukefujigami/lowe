@@ -54,6 +54,7 @@ public:
   void GetTH2DHit(TH2D* h1,int n,const char* xvar,const char* yvar);
   void GetTH1DEvent(TH1D* h1,int n,const char* var);
   void GetTH1DHit(TH1D* h1,int n,const char* var);
+  void GetFuncmap1DTrue(TH1D* h1,const char* xvar,const char* yvar,int ievent);
   BiasError GetXBiasErrorbygoodness();
   BiasError GetYBiasErrorbygoodness();
   BiasError GetZBiasErrorbygoodness();

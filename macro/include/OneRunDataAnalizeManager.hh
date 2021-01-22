@@ -78,6 +78,8 @@ public:
   }
   double Gettofnoretrotrue(int ievent,int jhit);
   double Gettofonretrotrue(int ievent,int jhit);
+  double Gettoferrornoretrotrue(int ievent,int jhit);
+  double Gettoferroronretrotrue(int ievent,int jhit);
   double Gethittimetrue(int ievent,int jhit)
   {
     wcsimT->GetEntry(ievent);
@@ -93,7 +95,6 @@ public:
   {
     return vncherenkovdigihits[ievent];
   }
-  
   TReconstructdata reconstructdatatrue;
   std::vector<Thitinfo> vhitinfo;
   std::vector<int> vncherenkovdigihits;

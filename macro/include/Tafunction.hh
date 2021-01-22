@@ -23,7 +23,7 @@ public:
   {
     data = datain;
   }
-  double returnvalue() = 0; 
+  virtual double returnvalue() = 0; 
 private:
   Thitinfo info;
   TReconstructdata data;
