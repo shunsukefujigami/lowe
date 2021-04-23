@@ -82,6 +82,7 @@ add_library(lowe SHARED     ./general/src/config.cc
 			    ./funcparts/src/fgoodness.cc
 			    ./funcparts/src/fgoodnessdirection.cc
 			    ./funcparts/src/fsumgoodness.cc
+			    ./funcparts/src/onelikelihoodtof.cc
 			    ./goodness/src/GoodnessManager.cc
 			    ./goodness/src/GoodnessRunAction.cc
 			    ./goodness/src/GoodnessEventManager.cc
@@ -179,3 +180,7 @@ target_link_libraries(LikelihoodDirection lowe lowemacro ${ROOT_LIBRARIES} $ENV{
 add_executable(GoodnessMinimize ./exe/goodness/GoodnessMinimize.cc)
 target_compile_options(GoodnessMinimize PRIVATE "-Wall")
 target_link_libraries(GoodnessMinimize lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
+
+add_executable(printxyzbias ./exe/macro/printxyzbias.cc)
+target_compile_options(printxyzbias PRIVATE "-Wall")
+target_link_libraries(printxyzbias lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)

@@ -1,22 +1,62 @@
 #include <iostream>
-#include <TCanvas.h>
-#include "MultiRunAnalizeManager.hh"
-int main()
+#include <vector>
+
+typedef unsigned long long int ll;
+
+unsigned long long int ack(unsigned long long int m,unsigned long long int n)
 {
-  MultiRunAnalizeManager* mram = new MultiRunAnalizeManager();
-  mram->SetBasefile("~/store/goodnessfile/SIG5GTcGSRn_21_-600_50_21_-500_50_21_-500_50_300_-300_1GEN10000DETskPePOSf_-100_0_0DIRf_0_0Ef_5RorRFtz_0.0_20_60RSnsTT24TW200TPR-400TPO950DR4.2AFNfEN10000.root");
-  mram->SetAllfile();
-  std::vector<std::string> exclusionname;
-  exclusionname.push_back("RFtrmax");
-  mram->SetComparefile(exclusionname);
-  TH1D* h1 = new TH1D("","",11,-0.05,1.05);
-  mram->GetTH1D(h1,"tzmaxreflectivity","xerrorbygoodness");
-  TCanvas* c1 = new TCanvas();
-  h1->Draw();
-  c1->SaveAs("/home/fujigami/retro/lowe/picture/2021January/xerror.png");
-  delete c1;
-  delete h1;
-  delete mram;
+  if(m == 0)
+    return (n + 1);
+  else if(n == 0)
+    return ack(m - 1,1);
+  else
+    {
+      return ack(m - 1,ack(m, n - 1));
+    }
+}
+
+ll arrow(ll m,ll n,int arrownum)
+{
+  if(arrownum == 1)
+    {
+      ll result = 1;
+      for(ll i = 0;i < n;i++)
+	{
+	  result *= m;
+	}
+      return result;
+    }
+  else
+    {
+      ll result = m;
+      for(ll j = 1;j < n;j++)
+	{
+	  result = arrow(m,result,arrownum - 1);
+	}
+      return result;
+    }
+  return 0;
+}
+
+	    
+int main(int argc,char** argv)
+{
+  try
+    {
+      if(argc != 4)
+	{
+	  std::cout << "invalid input value number!" << std::endl;
+	  throw "int main()";
+	}
+      ll m = (ll)atoi(argv[1]);
+      ll n = (ll)atoi(argv[2]);
+      int arrownum = atoi(argv[3]);
+      std::cout << "arrow(" << m << "," << n << "," << arrownum << ") = " << arrow(m,n,arrownum) << std::endl;
+    }
+  catch(const char* e)
+    {
+      std::cout << "error in " << e << std::endl;
+    }
   return 0;
 }
 

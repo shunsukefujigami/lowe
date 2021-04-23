@@ -25,14 +25,14 @@ void MultiRunAnalizeManager::SetBasefile(const char* basefile)
       basegoodnessminimizeparameters.SetValue();
     }
   
-  else if(sbasefile.find("LSR") != std::string::npos)
+  else if(sbasefile.find("LR") != std::string::npos)
     {
       mode = 2;
       std::cout << "set likelihood mode!" << std::endl;
       baselikelihoodparameters.Setpair(sbasefile);
       baselikelihoodparameters.SetValue();
     }
-  else if(sbasefile.find("GSR") != std::string::npos)
+  else if(sbasefile.find("GR") != std::string::npos)
     {
       mode = 1;
       std::cout << "set goodness mode!" << std::endl;
