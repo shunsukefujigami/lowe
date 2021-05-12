@@ -9,6 +9,9 @@ if(NOT ROOT_FOUND)
   return()
 endif()
 
+set(ROOT_LIBRARIES ${ROOT_LIBRARIES} "/home/fujigami/retro/root_build/lib/libMinuit.so")
+set(ROOT_LIBRARIES ${ROOT_LIBRARIES} "/home/fujigami/retro/root_build/lib/libPyROOT.so")
+
 find_package(Geant4 REQUIRED)
 if(NOT Geant4_FOUND)
   message(STATUS "Geant4 package not found.")
@@ -24,7 +27,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG -mtune=native -march=native")
 #set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
 
 
-ROOT_GENERATE_DICTIONARY($ENV{MACRODIR}/src/macroRootDict $ENV{MACRODIR}/include/eventdisplay.hh $ENV{MACRODIR}/include/goodness_data.hh $ENV{MACRODIR}/include/likelihood_direction_data.hh $ENV{MACRODIR}/include/AnalizedData.hh $ENV{MACRODIR}/include/CSearch_range.hh LINKDEF $ENV{MACRODIR}/include/C4Number.hh $ENV{MACRODIR}/include/FileList.hh $ENV{MACRODIR}/include/efficiency.hh $ENV{MACRODIR}/include/HistByTree.hh $ENV{MACRODIR}/include/HistError.hh $ENV{MACRODIR}/include/HistBias.hh $ENV{MACRODIR}/include/OneRunAnalizeManager.hh $ENV{MACRODIR}/include/AngleRange.hh $ENV{MACRODIR}/include/Thitinfo.hh $ENV{MACRODIR}/include/TReconstructdata.hh $ENV{MACRODIR}/include/Tfunction.hh $ENV{MACRODIR}/include/Tafunction.hh $ENV{MACRODIR}/include/Tdistance_function.hh $ENV{MACRODIR}/include/Tfdirection.hh $ENV{MACRODIR}/include/Tlikelihood.hh $ENV{MACRODIR}/include/Ttheta_dir_i.hh $ENV{MACRODIR}/include/Ttheta_i_func.hh $ENV{MACRODIR}/include/Ttof.hh $ENV{MACRODIR}/include/Tfgoodnessdirection.hh $ENV{MACRODIR}/include/OneRunDataAnalizeManager.hh $ENV{MACRODIR}/include/OneRunGoodnessAnalizeManager.hh $ENV{MACRODIR}/include/OneRunLikelihoodAnalizeManager.hh $ENV{MACRODIR}/include/OneRunGoodnessMinimizeAnalizeManager.hh $ENV{MACRODIR}/include/OneDataParameters.hh $ENV{MACRODIR}/include/MyString.hh $ENV{MACRODIR}/include/MultiRunAnalizeManager.hh $ENV{MACRODIR}/include/OneGoodnessParameters.hh $ENV{MACRODIR}/include/OneLikelihoodParameters.hh $ENV{MACRODIR}/include/OneGoodnessMinimizeParameters.hh $ENV{MACRODIR}/include/TOption_minimize.hh $ENV{MACRODIR}/include/Tfgoodness.hh $ENV{MACRODIR}/include/Tfsumgoodness.hh $ENV{MACRODIR}/include/BiasError.hh macro/include/macroRootLinkDef.hh)
+ROOT_GENERATE_DICTIONARY($ENV{MACRODIR}/src/macroRootDict $ENV{MACRODIR}/include/eventdisplay.hh $ENV{MACRODIR}/include/goodness_data.hh $ENV{MACRODIR}/include/likelihood_direction_data.hh $ENV{MACRODIR}/include/AnalizedData.hh $ENV{MACRODIR}/include/CSearch_range.hh LINKDEF $ENV{MACRODIR}/include/C4Number.hh $ENV{MACRODIR}/include/FileList.hh $ENV{MACRODIR}/include/efficiency.hh $ENV{MACRODIR}/include/HistByTree.hh $ENV{MACRODIR}/include/HistError.hh $ENV{MACRODIR}/include/HistBias.hh $ENV{MACRODIR}/include/OneRunAnalizeManager.hh $ENV{MACRODIR}/include/AngleRange.hh $ENV{MACRODIR}/include/Thitinfo.hh $ENV{MACRODIR}/include/TReconstructdata.hh $ENV{MACRODIR}/include/Tfunction.hh $ENV{MACRODIR}/include/Tafunction.hh $ENV{MACRODIR}/include/Tdistance_function.hh $ENV{MACRODIR}/include/Tfdirection.hh $ENV{MACRODIR}/include/Tlikelihood.hh $ENV{MACRODIR}/include/Ttheta_dir_i.hh $ENV{MACRODIR}/include/Ttheta_i_func.hh $ENV{MACRODIR}/include/Ttof.hh $ENV{MACRODIR}/include/Tfgoodnessdirection.hh $ENV{MACRODIR}/include/OneRunDataAnalizeManager.hh $ENV{MACRODIR}/include/OneRunGoodnessAnalizeManager.hh $ENV{MACRODIR}/include/OneRunLikelihoodAnalizeManager.hh $ENV{MACRODIR}/include/OneRunGoodnessMinimizeAnalizeManager.hh $ENV{MACRODIR}/include/OneDataParameters.hh $ENV{MACRODIR}/include/MyString.hh $ENV{MACRODIR}/include/MultiRunAnalizeManager.hh $ENV{MACRODIR}/include/OneGoodnessParameters.hh $ENV{MACRODIR}/include/OneLikelihoodParameters.hh $ENV{MACRODIR}/include/OneGoodnessMinimizeParameters.hh $ENV{MACRODIR}/include/TOption_minimize.hh $ENV{MACRODIR}/include/Tfgoodness.hh $ENV{MACRODIR}/include/Tfsumgoodness.hh $ENV{MACRODIR}/include/BiasError.hh $ENV{MACRODIR}/include/FileManager.hh $ENV{MACRODIR}/include/AnalizeTag.hh $ENV{MACRODIR}/include/AnalizeManager.hh $ENV{MACRODIR}/include/AnalizeFile.hh macro/include/macroRootLinkDef.hh)
 
 add_library(lowemacro SHARED $ENV{MACRODIR}/src/eventdisplay.cc
 		      	     $ENV{MACRODIR}/src/goodness_data.cc
@@ -64,7 +67,11 @@ add_library(lowemacro SHARED $ENV{MACRODIR}/src/eventdisplay.cc
 			     $ENV{MACRODIR}/src/Tfgoodness.cc
 			     $ENV{MACRODIR}/src/Tfgoodnessdirection.cc
 			     $ENV{MACRODIR}/src/Tfsumgoodness.cc
-			     $ENV{MACRODIR}/src/Tfunction.cc)
+			     $ENV{MACRODIR}/src/Tfunction.cc
+			     $ENV{MACRODIR}/src/AnalizeTag.cc
+			     $ENV{MACRODIR}/src/AnalizeFile.cc
+			     $ENV{MACRODIR}/src/FileManager.cc
+			     $ENV{MACRODIR}/src/AnalizeManager.cc)
 target_include_directories(lowemacro PUBLIC $ENV{MACRODIR}/include
 				             $ENV{WCSIMDIR}/include
 					     ${ROOT_INCLUDE_DIRS})
@@ -121,7 +128,6 @@ target_include_directories(lowe PUBLIC ./goodness/include
 
 target_link_libraries(lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so ${Geant4_LIBRARIES})
 
-set(ROOT_LIBRARIES ${ROOT_LIBRARIES} "/home/fujigami/retro/root_build/lib/libMinuit.so")
 
 #add_executable(goodness_moment ./exe/goodness/goodness_moment.cc)
 #target_compile_options(goodness_moment PRIVATE "-Wall")
@@ -184,3 +190,11 @@ target_link_libraries(GoodnessMinimize lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCS
 add_executable(printxyzbias ./exe/macro/printxyzbias.cc)
 target_compile_options(printxyzbias PRIVATE "-Wall")
 target_link_libraries(printxyzbias lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
+
+add_executable(comparecsv ./exe/macro/comparecsv.cc)
+target_compile_options(comparecsv PRIVATE "-Wall")
+target_link_libraries(comparecsv lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)
+
+add_executable(isexistsamecsv ./exe/macro/isexistsamecsv.cc)
+target_compile_options(isexistsamecsv PRIVATE "-Wall")
+target_link_libraries(isexistsamecsv lowe lowemacro ${ROOT_LIBRARIES} $ENV{WCSIMBUILD}/libWCSimRoot.so)

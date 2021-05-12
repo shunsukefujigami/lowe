@@ -1,62 +1,46 @@
+#include "FileManager.hh"
+#include "AnalizeManager.hh"
+#include <TPython.h>
+#include <TH1D.h>
+#include <TRint.h>
+#include <exception>
 #include <iostream>
-#include <vector>
+#include <string>
 
-typedef unsigned long long int ll;
-
-unsigned long long int ack(unsigned long long int m,unsigned long long int n)
-{
-  if(m == 0)
-    return (n + 1);
-  else if(n == 0)
-    return ack(m - 1,1);
-  else
-    {
-      return ack(m - 1,ack(m, n - 1));
-    }
-}
-
-ll arrow(ll m,ll n,int arrownum)
-{
-  if(arrownum == 1)
-    {
-      ll result = 1;
-      for(ll i = 0;i < n;i++)
-	{
-	  result *= m;
-	}
-      return result;
-    }
-  else
-    {
-      ll result = m;
-      for(ll j = 1;j < n;j++)
-	{
-	  result = arrow(m,result,arrownum - 1);
-	}
-      return result;
-    }
-  return 0;
-}
-
-	    
 int main(int argc,char** argv)
 {
   try
     {
-      if(argc != 4)
-	{
-	  std::cout << "invalid input value number!" << std::endl;
-	  throw "int main()";
-	}
-      ll m = (ll)atoi(argv[1]);
-      ll n = (ll)atoi(argv[2]);
-      int arrownum = atoi(argv[3]);
-      std::cout << "arrow(" << m << "," << n << "," << arrownum << ") = " << arrow(m,n,arrownum) << std::endl;
+      TRint app("app",&argc,argv);
+      TPython::Exec("import macro");
+      FileManager* filemanager = new FileManager();
+      filemanager->SetAllFile();
+      AnalizeTag tag("ParticleEnergyFixedValue","double",5.);
+      AnalizeTag tag2("GoodnessSigma","double",5.);
+      filemanager->narrowdowntag.push_back(tag);
+      filemanager->narrowdowntag.push_back(tag2);
+      filemanager->reflectNarrowDownTag();
+      AnalizeManager* manager = new AnalizeManager();
+      manager->cpFileList(filemanager,"test");
+      manager->SetData();
+      TH1D* h2 = new TH1D("h2","",100,0.,100.);
+      manager->SetTH1DEvent(h2,"wcsimT.wcsimrootevent.GetTrigger(0).GetNcherenkovdigihits()","int","number","int","test");
+      h2->Draw();
+      app.Run();
+      delete h2;
+      delete manager;
+      delete filemanager;
     }
-  catch(const char* e)
+  catch(std::exception& e)
     {
-      std::cout << "error in " << e << std::endl;
+      std::cout << e.what() << std::endl;
     }
+  
+  catch(std::string str)
+    {
+      std::cout << "Error in " << str << std::endl;
+    }
+  
   return 0;
 }
 

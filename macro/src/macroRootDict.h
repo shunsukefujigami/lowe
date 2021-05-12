@@ -69,6 +69,10 @@ extern void G__set_cpp_environmentmacroRootDict();
 #include "/home/fujigami/retro/lowe/source/macro/include/Tfgoodness.hh"
 #include "/home/fujigami/retro/lowe/source/macro/include/Tfsumgoodness.hh"
 #include "/home/fujigami/retro/lowe/source/macro/include/BiasError.hh"
+#include "/home/fujigami/retro/lowe/source/macro/include/FileManager.hh"
+#include "/home/fujigami/retro/lowe/source/macro/include/AnalizeTag.hh"
+#include "/home/fujigami/retro/lowe/source/macro/include/AnalizeManager.hh"
+#include "/home/fujigami/retro/lowe/source/macro/include/AnalizeFile.hh"
 #include <algorithm>
 namespace std { }
 using namespace std;
@@ -257,5 +261,18 @@ extern G__linked_taginfo G__macroRootDictLN_Tfgoodness;
 extern G__linked_taginfo G__macroRootDictLN_Tfsumgoodness;
 extern G__linked_taginfo G__macroRootDictLN_Tfsumgoodnessnoretro;
 extern G__linked_taginfo G__macroRootDictLN_Tfsumgoodnesssum;
+extern G__linked_taginfo G__macroRootDictLN_AnalizeTag;
+extern G__linked_taginfo G__macroRootDictLN_AnalizeFile;
+extern G__linked_taginfo G__macroRootDictLN_vectorlEAnalizeTagcOallocatorlEAnalizeTaggRsPgR;
+extern G__linked_taginfo G__macroRootDictLN_vectorlEAnalizeTagcOallocatorlEAnalizeTaggRsPgRcLcLiterator;
+extern G__linked_taginfo G__macroRootDictLN_reverse_iteratorlEvectorlEAnalizeTagcOallocatorlEAnalizeTaggRsPgRcLcLiteratorgR;
+extern G__linked_taginfo G__macroRootDictLN_vectorlEAnalizeFilecOallocatorlEAnalizeFilegRsPgR;
+extern G__linked_taginfo G__macroRootDictLN_vectorlEAnalizeFilecOallocatorlEAnalizeFilegRsPgRcLcLiterator;
+extern G__linked_taginfo G__macroRootDictLN_reverse_iteratorlEvectorlEAnalizeFilecOallocatorlEAnalizeFilegRsPgRcLcLiteratorgR;
+extern G__linked_taginfo G__macroRootDictLN_FileManager;
+extern G__linked_taginfo G__macroRootDictLN_AnalizeManager;
+extern G__linked_taginfo G__macroRootDictLN_maplEstringcOvectorlEAnalizeFilecOallocatorlEAnalizeFilegRsPgRcOlesslEstringgRcOallocatorlEpairlEconstsPstringcOvectorlEAnalizeFilecOallocatorlEAnalizeFilegRsPgRsPgRsPgRsPgR;
 
 /* STUB derived class for protected member access */
+typedef vector<AnalizeTag,allocator<AnalizeTag> > G__vectorlEAnalizeTagcOallocatorlEAnalizeTaggRsPgR;
+typedef vector<AnalizeFile,allocator<AnalizeFile> > G__vectorlEAnalizeFilecOallocatorlEAnalizeFilegRsPgR;

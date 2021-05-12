@@ -29,7 +29,7 @@ int main()
       goodnessparameters->Print();
       GoodnessManager goodnessmanager(Getchar("INFILE"));
       goodnessmanager.SetGoodnessParameters(goodnessparameters);
-      GoodnessRunAction* goodnessrunaction = new GoodnessRunAction(Getchar("OUTFILE"),Getchar("INFILE"));
+      GoodnessRunAction* goodnessrunaction = new GoodnessRunAction(Getchar("OUTFILE"));
       goodnessmanager.SetGoodnessRunAction(goodnessrunaction);
       goodnessmanager.SetGoodnessEventAction(new GoodnessEventAction(goodnessrunaction));
       goodnessmanager.SetParameters();

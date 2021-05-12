@@ -57,5 +57,11 @@
 #pragma link C++ class OneGoodnessMinimizeParameters+;
 #pragma link C++ class TOption_minimize+;
 #pragma link C++ class BiasError+;
+#pragma link C++ class FileManager++;
+#pragma link C++ class AnalizeTag++;
+#pragma link C++ class AnalizeManager++;
+#pragma link C++ class AnalizeFile++;
+#pragma link C++ class std::vector<AnalizeTag>++;
+#pragma link C++ class std::vector<AnalizeFile>++;
 
 #endif

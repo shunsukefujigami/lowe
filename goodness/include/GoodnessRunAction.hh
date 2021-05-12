@@ -11,7 +11,7 @@
 class GoodnessRunAction
 {
 public:
-  GoodnessRunAction(const char* outfile_in,const char* infile_in);
+  GoodnessRunAction(const char* outfile_in);
   virtual ~GoodnessRunAction(){};
 public:
   void BeginOfRunAction();
@@ -21,13 +21,9 @@ public:
   TTree* GetTTree(){ return goodnesstree;}
 private:
   const char* outfile;
-  const char* cinfile;
-  MyString* infile = nullptr;
   TFile* file = nullptr;
   TTree* goodnesstree = nullptr;
-  TTree* optiontree = nullptr;
   TReconstructdata* data = nullptr;
-  CSearch_range* range = nullptr;
 };
 
 #endif
